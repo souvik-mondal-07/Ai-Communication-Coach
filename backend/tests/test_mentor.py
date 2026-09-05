@@ -1,0 +1,3 @@
+"""
+Placeholder AI Mentor tests.
+"""

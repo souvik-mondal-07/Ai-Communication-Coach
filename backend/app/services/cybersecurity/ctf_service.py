@@ -1,0 +1,3 @@
+"""
+Placeholder CTF challenge service.
+"""
