@@ -39,9 +39,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 60
 
-    # --- AI provider (reserved for a future step; not used yet) ---
+    # --- AI provider (Gemini) ---
     gemini_api_key: str = ""
     gemini_model: str = "gemini-3.1-flash-lite"
+    gemini_timeout_seconds: int = 60
 
     model_config = SettingsConfigDict(
         env_file=".env",

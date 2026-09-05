@@ -18,6 +18,7 @@ from pymongo.database import Database
 from app.core.security import TokenError, decode_access_token
 from app.db import mongodb
 from app.models.user import UserDocument
+from app.services.ai.ai_service import AIService, ai_service
 from app.services.auth import auth_service
 
 # auto_error=False so a missing header raises our own consistently-shaped
@@ -80,3 +81,14 @@ def get_current_user(
         raise _unauthorized("This account has been deactivated.")
 
     return user
+
+
+def get_ai_service() -> AIService:
+    """
+    FastAPI dependency for the AI service singleton.
+
+    Routing this through a dependency (rather than importing `ai_service`
+    directly) lets tests swap in a fake/mocked service via
+    `app.dependency_overrides` without making real Gemini calls.
+    """
+    return ai_service

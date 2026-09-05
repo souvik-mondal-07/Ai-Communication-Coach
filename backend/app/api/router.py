@@ -10,6 +10,7 @@ in place before their endpoints are implemented.
 from fastapi import APIRouter
 
 from app.api.routes import (
+    ai,
     auth,
     communication,
     cybersecurity,
@@ -26,6 +27,7 @@ api_router = APIRouter()
 api_router.include_router(health.router)
 api_router.include_router(auth.router)
 api_router.include_router(users.router)
+api_router.include_router(ai.router)
 api_router.include_router(mentor.router)
 api_router.include_router(cybersecurity.router)
 api_router.include_router(communication.router)

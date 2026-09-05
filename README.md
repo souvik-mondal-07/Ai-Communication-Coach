@@ -132,16 +132,70 @@ cp backend/.env.example backend/.env
 `GEMINI_API_KEY` and `JWT_SECRET_KEY` are reserved for later steps and can
 stay blank for now.
 
+## Gemini setup
+
+The AI mentor engine is backed by Google Gemini. To enable it:
+
+1. Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/).
+2. Open `backend/.env` (copy it from `backend/.env.example` first if you
+   haven't already).
+3. Set the following:
+
+   ```env
+   GEMINI_API_KEY=your_key_here
+   GEMINI_MODEL=gemini-3.1-flash-lite
+   GEMINI_TIMEOUT_SECONDS=60
+   ```
+
+   Never commit a real key — `backend/.env` is already git-ignored, and
+   `backend/.env.example` must always stay blank.
+4. Start the backend (`uvicorn app.main:app --reload`).
+5. Authenticate: register/login via `/api/v1/auth/register` and
+   `/api/v1/auth/login` to get an access token (see the API section below).
+6. Test the AI engine:
+
+   ```bash
+   curl -X POST http://localhost:8000/api/v1/ai/chat \
+     -H "Authorization: Bearer <your_access_token>" \
+     -H "Content-Type: application/json" \
+     -d '{"message": "What is SQL injection?", "conversation_history": []}'
+   ```
+
+If `GEMINI_API_KEY` is left blank, the endpoint still responds — it returns
+a clean `503 AI_SERVICE_UNAVAILABLE` error instead of crashing.
+
+The API key is backend-only. It is never sent to the frontend, never
+appears in `frontend/.env`, and the frontend never calls Gemini directly —
+only `POST /api/v1/ai/chat` on this backend.
+
 ## API
 
 ```text
-GET  /                  Project status
-GET  /api/v1/health      Health check (includes MongoDB connection status)
+GET  /                       Project status
+GET  /api/v1/health          Health check (includes MongoDB connection status)
+
+POST /api/v1/auth/register   Register a new account
+POST /api/v1/auth/login      Log in, receive a JWT access token
+GET  /api/v1/auth/me         Current authenticated user (requires Bearer token)
+POST /api/v1/auth/logout     Logout (client discards the token)
+
+POST /api/v1/ai/chat         AI mentor chat — requires a Bearer token
 ```
 
 All future endpoints are added under the versioned `/api/v1` prefix.
+Interactive docs are available at `http://localhost:8000/docs` while the
+backend is running.
 
 ## Project status
+
+**Completed:** Step 1 — Project Foundation & Architecture, Step 2 —
+Authentication, Step 3 — Gemini AI Engine (a reusable AI service backing a
+single test endpoint; not yet the full Mentor experience).
+
+**Not yet implemented:** the full AI Mentor page, cybersecurity learning
+dashboard, CTF/lab mentor, communication coach, voice features, interview
+simulator, progress analytics, recommendations, and conversation
+persistence. These arrive in later steps.
 
 **Completed:** Step 1 — Project Foundation & Architecture.
 
