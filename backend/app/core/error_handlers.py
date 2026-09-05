@@ -33,10 +33,19 @@ _STATUS_TO_ERROR_CODE = {
 def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(HTTPException)
     async def http_exception_handler(_: Request, exc: HTTPException) -> JSONResponse:
-        error_code = _STATUS_TO_ERROR_CODE.get(exc.status_code, "HTTP_ERROR")
+        # Routes may raise HTTPException(detail={"message": ..., "error_code": ...})
+        # for precise, domain-specific error codes (e.g. EMAIL_ALREADY_EXISTS).
+        # Anything else falls back to a generic status-based mapping.
+        if isinstance(exc.detail, dict) and "message" in exc.detail and "error_code" in exc.detail:
+            content = error_response(exc.detail["message"], exc.detail["error_code"])
+        else:
+            error_code = _STATUS_TO_ERROR_CODE.get(exc.status_code, "HTTP_ERROR")
+            content = error_response(str(exc.detail), error_code)
+
         return JSONResponse(
             status_code=exc.status_code,
-            content=error_response(str(exc.detail), error_code),
+            content=content,
+            headers=exc.headers,
         )
 
     @app.exception_handler(RequestValidationError)

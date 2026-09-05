@@ -6,9 +6,15 @@ should read `os.environ` directly — import `settings` from this module
 instead, so configuration stays in one predictable place.
 """
 
+import logging
+import secrets
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Plain stdlib logger here (not app.utils.logger) to avoid a circular import:
+# app.utils.logger itself imports `settings` from this module.
+_bootstrap_logger = logging.getLogger("app.core.config")
 
 
 class Settings(BaseSettings):
@@ -28,9 +34,10 @@ class Settings(BaseSettings):
     mongodb_uri: str = "mongodb://localhost:27017"
     mongodb_database: str = "ai_cybersec_mentor"
 
-    # --- Auth (reserved for a future step; not used yet) ---
+    # --- Auth ---
     jwt_secret_key: str = ""
     jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 60
 
     # --- AI provider (reserved for a future step; not used yet) ---
     gemini_api_key: str = ""
@@ -51,7 +58,20 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     """Cached settings instance — environment is read once per process."""
-    return Settings()
+    resolved = Settings()
+
+    if not resolved.jwt_secret_key:
+        # Never run with an empty secret: fall back to a random, per-process
+        # secret so the app still starts in a fresh dev checkout, but make
+        # noise about it since tokens won't survive a restart with this.
+        resolved.jwt_secret_key = secrets.token_urlsafe(32)
+        _bootstrap_logger.warning(
+            "JWT_SECRET_KEY is not set — generated a temporary secret for this "
+            "process. Set JWT_SECRET_KEY in backend/.env for stable sessions "
+            "across restarts."
+        )
+
+    return resolved
 
 
 settings = get_settings()
