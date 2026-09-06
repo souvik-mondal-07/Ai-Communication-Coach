@@ -189,16 +189,11 @@ backend is running.
 ## Project status
 
 **Completed:** Step 1 — Project Foundation & Architecture, Step 2 —
-Authentication, Step 3 — Gemini AI Engine (a reusable AI service backing a
-single test endpoint; not yet the full Mentor experience).
+Authentication, Step 3 — Gemini AI Engine, Step 4 — AI Cybersecurity Mentor
+chat.
 
-**Not yet implemented:** the full AI Mentor page, cybersecurity learning
-dashboard, CTF/lab mentor, communication coach, voice features, interview
-simulator, progress analytics, recommendations, and conversation
-persistence. These arrive in later steps.
-
-**Completed:** Step 1 — Project Foundation & Architecture.
-
-**Not yet implemented:** authentication, AI Mentor chat, cybersecurity
-labs/CTFs, communication analysis, interview practice, voice conversations,
-progress tracking. These arrive in later steps.
+**Not yet implemented:** cybersecurity learning dashboard, CTF/lab mentor,
+communication coach, voice features, interview simulator, progress
+analytics, recommendations, and conversation persistence (the current chat
+history lives in frontend state for the session only). These arrive in
+later steps.

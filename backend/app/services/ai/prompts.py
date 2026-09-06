@@ -1,10 +1,12 @@
 """
-Base prompts for the AI mentor.
+Prompts for the AI mentor.
 
-This step only defines the mentor's core personality and teaching approach.
-Dedicated prompt variants for specific modules (interview simulator,
-communication coach, CTF mentor, etc.) belong to later steps — they will
-build on `MENTOR_SYSTEM_PROMPT` rather than replace it.
+`MENTOR_SYSTEM_PROMPT` is the base personality used directly by the generic
+AI engine test endpoint (`/api/v1/ai/chat`, Step 3). The Mentor feature
+(Step 4) builds on top of it via `build_mentor_system_prompt()`, layering in
+mode- and level-specific instructions rather than replacing the base
+personality. Dedicated prompt variants for other future modules (interview
+simulator, communication coach, CTF mentor, etc.) belong to later steps.
 """
 
 MENTOR_SYSTEM_PROMPT = """\
@@ -46,3 +48,84 @@ narrow it down.
 Keep responses focused and readable. It's fine to ask a clarifying question \
 when the request is ambiguous.
 """
+
+# --- Step 4: Mentor chat mode/level layering -------------------------------
+
+BASE_MENTOR_PROMPT = MENTOR_SYSTEM_PROMPT
+
+LEARN_MODE_PROMPT = """\
+Current mode: LEARN.
+The person wants to actually understand a concept, not just get a quick \
+answer. Teach it properly: a clear definition, how it works, a concrete \
+example, and why it matters in practice. Where it fits naturally, end with \
+a small question that checks their understanding rather than just moving \
+on to the next thing. It's fine to adapt or skip parts of this structure \
+when the question doesn't call for it.
+"""
+
+EXPLAIN_MODE_PROMPT = """\
+Current mode: EXPLAIN.
+The person wants a direct, clear explanation right now. Give it to them \
+plainly, with an example if it helps, without stalling on questions first. \
+It's still fine to mention a genuinely useful related point.
+"""
+
+PRACTICE_MODE_PROMPT = """\
+Current mode: PRACTICE.
+The person wants to actively practice, not be told the answer outright. \
+Prefer posing a small question, scenario, or exercise that makes them \
+apply the concept themselves. If what they're asking about looks like a \
+learning exercise or CTF-style challenge and they ask you to just give \
+them the answer, don't dump the solution immediately — offer a hint \
+first, a stronger hint if they push further, and the full solution only \
+after that or if a direct solution is clearly and explicitly what they \
+want.
+"""
+
+TROUBLESHOOT_MODE_PROMPT = """\
+Current mode: TROUBLESHOOT.
+The person is trying to fix something that isn't working. Reason through \
+the problem with them rather than guessing at a fix. If they haven't \
+already told you the command they ran, the exact output or error message, \
+relevant configuration, or their environment, ask for whichever of those \
+would actually narrow things down before proposing a solution.
+"""
+
+_MODE_PROMPTS: dict[str, str] = {
+    "learn": LEARN_MODE_PROMPT,
+    "explain": EXPLAIN_MODE_PROMPT,
+    "practice": PRACTICE_MODE_PROMPT,
+    "troubleshoot": TROUBLESHOOT_MODE_PROMPT,
+}
+
+_LEVEL_INSTRUCTIONS: dict[str, str] = {
+    "beginner": (
+        "The person's level is BEGINNER. Avoid jargon, or define it "
+        "immediately when you have to use it. Lean on everyday analogies "
+        "and keep the initial explanation short before adding depth."
+    ),
+    "intermediate": (
+        "The person's level is INTERMEDIATE. Standard technical "
+        "terminology is fine, but still explain non-obvious details and "
+        "reasoning rather than assuming them."
+    ),
+    "advanced": (
+        "The person's level is ADVANCED. You can go straight to technical "
+        "depth, precise terminology, and nuance, without over-explaining "
+        "fundamentals they've almost certainly already got."
+    ),
+}
+
+
+def build_mentor_system_prompt(*, mode: str, level: str) -> str:
+    """
+    Compose the full mentor system prompt for a given mode/level pairing.
+
+    Falls back to sensible defaults for an unrecognized mode/level instead
+    of raising — the request schema already constrains these to valid
+    values, so this is just defensive.
+    """
+    mode_prompt = _MODE_PROMPTS.get(mode, LEARN_MODE_PROMPT)
+    level_prompt = _LEVEL_INSTRUCTIONS.get(level, _LEVEL_INSTRUCTIONS["intermediate"])
+    return f"{BASE_MENTOR_PROMPT}\n\n{level_prompt}\n\n{mode_prompt}"
+

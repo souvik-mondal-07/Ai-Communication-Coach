@@ -20,6 +20,7 @@ from app.db import mongodb
 from app.models.user import UserDocument
 from app.services.ai.ai_service import AIService, ai_service
 from app.services.auth import auth_service
+from app.services.mentor.mentor_service import MentorService, mentor_service
 
 # auto_error=False so a missing header raises our own consistently-shaped
 # 401 response instead of FastAPI's default one.
@@ -92,3 +93,11 @@ def get_ai_service() -> AIService:
     `app.dependency_overrides` without making real Gemini calls.
     """
     return ai_service
+
+
+def get_mentor_service() -> MentorService:
+    """
+    FastAPI dependency for the mentor service singleton — same rationale as
+    `get_ai_service`: lets tests override it with a fake in isolation.
+    """
+    return mentor_service
