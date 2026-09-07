@@ -15,6 +15,8 @@ from app.core.config import settings
 from app.core.error_handlers import register_exception_handlers
 from app.db import mongodb
 from app.services.auth import auth_service
+from app.services.cybersecurity import learning_service as learning_service_module
+from app.services.cybersecurity import practice_service as practice_service_module
 from app.utils.helpers import success_response
 from app.utils.logger import get_logger
 
@@ -26,10 +28,20 @@ async def lifespan(_: FastAPI):
     logger.info("Starting %s (%s)", settings.app_name, settings.app_env)
     mongodb.connect()
     if mongodb.is_connected():
+        db = mongodb.get_database()
         try:
-            auth_service.ensure_indexes(mongodb.get_database())
+            auth_service.ensure_indexes(db)
         except Exception:  # noqa: BLE001 - startup should never crash on this
-            logger.warning("Could not ensure database indexes", exc_info=True)
+            logger.warning("Could not ensure auth indexes", exc_info=True)
+        try:
+            learning_service_module.learning_service.ensure_indexes(db)
+            learning_service_module.learning_service.ensure_seeded(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not ensure cybersecurity topic data", exc_info=True)
+        try:
+            practice_service_module.practice_service.ensure_indexes(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not ensure practice session indexes", exc_info=True)
     yield
     mongodb.disconnect()
     logger.info("Shutdown complete")

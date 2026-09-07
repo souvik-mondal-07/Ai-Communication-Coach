@@ -166,7 +166,40 @@ a clean `503 AI_SERVICE_UNAVAILABLE` error instead of crashing.
 
 The API key is backend-only. It is never sent to the frontend, never
 appears in `frontend/.env`, and the frontend never calls Gemini directly —
-only `POST /api/v1/ai/chat` on this backend.
+only `POST /api/v1/ai/chat` and the mentor/cybersecurity endpoints on this
+backend do.
+
+## Cybersecurity Learning
+
+A structured learning-and-practice system, separate from the free-form
+Mentor chat.
+
+- **Browse topics** at `/cybersecurity` — a starter set of ~36 topics across
+  16 categories (Fundamentals, Networking, Linux, Windows, Web Security,
+  SOC, SIEM, Incident Response, Digital Forensics, Penetration Testing,
+  Cryptography, Threat Intelligence, Cloud Security, Active Directory,
+  Malware Basics, Security Tools), searchable and filterable by category
+  and difficulty (beginner / intermediate / advanced).
+- **Learning mode** — open a topic to read its overview, learning
+  objectives, explanation, examples, and key points.
+- **Practice mode** — click "Start Practice" (or "Practice" from a topic
+  card) to generate a short quiz for that topic. Gemini generates each
+  question (multiple-choice or short-answer) through the same `AIService`
+  used by the Mentor — never a second AI client — and the backend validates
+  every generated question before it's shown to you; the correct answer is
+  never sent to the frontend before you submit.
+- **Answer evaluation** — multiple-choice is scored directly; short answers
+  are graded by Gemini for accuracy, completeness, and technical
+  understanding, with feedback, missing points, and an ideal answer shown
+  after you submit.
+- **Practice history** — completed (and in-progress) sessions are
+  persisted in MongoDB and visible under practice history, paginated. A
+  session only shows up for the user who created it — the backend checks
+  ownership on every request.
+- **Basic progress** — a simple per-category average score and attempt
+  count, with a topic marked "weak" below 60, "developing" 60–79, and
+  "strong" 80+. This is not the full progress dashboard (that's a later
+  step) — just enough to see where you're weak right now.
 
 ## API
 
@@ -180,20 +213,30 @@ GET  /api/v1/auth/me         Current authenticated user (requires Bearer token)
 POST /api/v1/auth/logout     Logout (client discards the token)
 
 POST /api/v1/ai/chat         AI mentor chat — requires a Bearer token
+POST /api/v1/mentor/chat     Mode/level-aware cybersecurity mentor chat
+
+GET  /api/v1/cybersecurity/topics                    List/filter topics
+GET  /api/v1/cybersecurity/topics/{slug}             Topic detail
+POST /api/v1/cybersecurity/practice/start            Start a practice session
+POST /api/v1/cybersecurity/practice/{id}/answer      Submit an answer
+POST /api/v1/cybersecurity/practice/{id}/complete    Complete a session
+GET  /api/v1/cybersecurity/practice/history          Paginated practice history
+GET  /api/v1/cybersecurity/progress                  Basic per-category progress
 ```
 
-All future endpoints are added under the versioned `/api/v1` prefix.
-Interactive docs are available at `http://localhost:8000/docs` while the
-backend is running.
+All endpoints above except the two health/status checks require
+authentication. All future endpoints are added under the versioned
+`/api/v1` prefix. Interactive docs are available at
+`http://localhost:8000/docs` while the backend is running.
 
 ## Project status
 
 **Completed:** Step 1 — Project Foundation & Architecture, Step 2 —
 Authentication, Step 3 — Gemini AI Engine, Step 4 — AI Cybersecurity Mentor
-chat.
+chat, Step 5 — Cybersecurity Learning & Practice System.
 
-**Not yet implemented:** cybersecurity learning dashboard, CTF/lab mentor,
-communication coach, voice features, interview simulator, progress
-analytics, recommendations, and conversation persistence (the current chat
-history lives in frontend state for the session only). These arrive in
-later steps.
+**Not yet implemented:** CTF/lab mentor, communication coach, voice
+features, interview simulator, the full progress/analytics dashboard, a
+recommendations engine, and conversation persistence for the Mentor chat
+(the Mentor's chat history still lives in frontend state only — practice
+sessions, unlike Mentor chat, are persisted). These arrive in later steps.

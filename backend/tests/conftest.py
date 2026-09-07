@@ -18,6 +18,7 @@ from fastapi.testclient import TestClient
 from app.core.dependencies import get_db
 from app.main import app
 from app.services.auth import auth_service
+from app.services.cybersecurity.learning_service import learning_service
 
 
 @pytest.fixture()
@@ -26,6 +27,8 @@ def fake_db():
     client = mongomock.MongoClient()
     db = client["test_ai_cybersec_mentor"]
     auth_service.ensure_indexes(db)
+    learning_service.ensure_indexes(db)
+    learning_service.ensure_seeded(db)
     return db
 
 

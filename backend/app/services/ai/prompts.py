@@ -129,3 +129,94 @@ def build_mentor_system_prompt(*, mode: str, level: str) -> str:
     level_prompt = _LEVEL_INSTRUCTIONS.get(level, _LEVEL_INSTRUCTIONS["intermediate"])
     return f"{BASE_MENTOR_PROMPT}\n\n{level_prompt}\n\n{mode_prompt}"
 
+
+# --- Step 5: Cybersecurity practice question generation & evaluation -------
+
+QUESTION_GENERATION_SYSTEM_PROMPT = """\
+You write cybersecurity self-study practice questions. You always respond \
+with a single raw JSON object and nothing else — no markdown code fences, \
+no commentary before or after it. Never reveal the correct answer inside \
+the question text itself.
+"""
+
+ANSWER_EVALUATION_SYSTEM_PROMPT = """\
+You grade a learner's short-answer response to a cybersecurity practice \
+question. You always respond with a single raw JSON object and nothing \
+else — no markdown code fences, no commentary before or after it. Be fair \
+but precise: partial understanding earns partial credit, not full marks.
+"""
+
+
+def build_question_generation_prompt(
+    *,
+    topic_title: str,
+    topic_description: str,
+    learning_objectives: list[str],
+    difficulty: str,
+    question_type: str,
+) -> str:
+    """Build the user-turn prompt asking Gemini to generate one practice question."""
+    objectives_text = (
+        "\n".join(f"- {objective}" for objective in learning_objectives)
+        if learning_objectives
+        else "(none specified)"
+    )
+    return f"""\
+Generate ONE cybersecurity practice question for self-study.
+
+Topic: {topic_title}
+Topic summary: {topic_description}
+Learning objectives:
+{objectives_text}
+Difficulty: {difficulty}
+Question type: {question_type}
+
+Rules:
+- Do not reveal the correct answer inside the question text.
+- If question type is "multiple_choice": provide exactly 4 plausible, \
+distinct options as a JSON array of strings, and "correct_answer" must \
+match one of the options verbatim. Set "ideal_answer" to null.
+- If question type is "short_answer": set "options" and "correct_answer" \
+to null, and provide "ideal_answer": a concise model answer covering the \
+key points a good response should include.
+- Keep the question focused and under about 300 characters.
+
+Respond with ONLY a single JSON object (no markdown fences, no extra \
+commentary) matching exactly this shape:
+{{
+  "question": "...",
+  "type": "{question_type}",
+  "options": ["...", "...", "...", "..."] or null,
+  "correct_answer": "..." or null,
+  "ideal_answer": "..." or null,
+  "explanation": "a short explanation of the correct answer, shown to the \
+learner only after they answer"
+}}
+"""
+
+
+def build_answer_evaluation_prompt(
+    *, question: str, ideal_answer: str, user_answer: str
+) -> str:
+    """Build the user-turn prompt asking Gemini to grade a short-answer response."""
+    return f"""\
+Evaluate a learner's answer to a cybersecurity practice question.
+
+Question: {question}
+Ideal answer / key points expected: {ideal_answer}
+Learner's answer: {user_answer}
+
+Score the answer for accuracy, completeness, and technical understanding, \
+on a 0-100 scale. A score of 60 or higher means the answer is fundamentally \
+correct (it may still be missing minor points).
+
+Respond with ONLY a single JSON object (no markdown fences, no extra \
+commentary) matching exactly this shape:
+{{
+  "score": <integer 0-100>,
+  "correct": <true or false>,
+  "feedback": "one or two sentences of specific, constructive feedback",
+  "missing_points": ["...", "..."]
+}}
+"""
+

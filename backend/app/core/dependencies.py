@@ -20,6 +20,8 @@ from app.db import mongodb
 from app.models.user import UserDocument
 from app.services.ai.ai_service import AIService, ai_service
 from app.services.auth import auth_service
+from app.services.cybersecurity.learning_service import LearningService, learning_service
+from app.services.cybersecurity.practice_service import PracticeService, practice_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
 
 # auto_error=False so a missing header raises our own consistently-shaped
@@ -101,3 +103,16 @@ def get_mentor_service() -> MentorService:
     `get_ai_service`: lets tests override it with a fake in isolation.
     """
     return mentor_service
+
+
+def get_learning_service() -> LearningService:
+    """FastAPI dependency for the cybersecurity learning service singleton."""
+    return learning_service
+
+
+def get_practice_service() -> PracticeService:
+    """
+    FastAPI dependency for the cybersecurity practice service singleton —
+    lets tests override it with a fake, same as `get_ai_service`/`get_mentor_service`.
+    """
+    return practice_service

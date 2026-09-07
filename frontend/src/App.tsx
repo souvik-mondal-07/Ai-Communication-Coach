@@ -9,6 +9,8 @@ import Register from "@/pages/auth/Register";
 import Dashboard from "@/pages/Dashboard";
 import Mentor from "@/pages/Mentor";
 import Cybersecurity from "@/pages/Cybersecurity";
+import CybersecurityTopic from "@/pages/CybersecurityTopic";
+import CybersecurityPractice from "@/pages/CybersecurityPractice";
 import Communication from "@/pages/Communication";
 import Interview from "@/pages/Interview";
 import Practice from "@/pages/Practice";
@@ -48,6 +50,8 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/mentor" element={<Mentor />} />
           <Route path="/cybersecurity" element={<Cybersecurity />} />
+          <Route path="/cybersecurity/practice/:sessionId" element={<CybersecurityPractice />} />
+          <Route path="/cybersecurity/:slug" element={<CybersecurityTopic />} />
           <Route path="/communication" element={<Communication />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/practice" element={<Practice />} />
