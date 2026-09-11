@@ -11,6 +11,8 @@ import Mentor from "@/pages/Mentor";
 import Cybersecurity from "@/pages/Cybersecurity";
 import CybersecurityTopic from "@/pages/CybersecurityTopic";
 import CybersecurityPractice from "@/pages/CybersecurityPractice";
+import CTF from "@/pages/CTF";
+import CtfSession from "@/pages/CtfSession";
 import Communication from "@/pages/Communication";
 import Interview from "@/pages/Interview";
 import Practice from "@/pages/Practice";
@@ -52,6 +54,8 @@ export default function App() {
           <Route path="/cybersecurity" element={<Cybersecurity />} />
           <Route path="/cybersecurity/practice/:sessionId" element={<CybersecurityPractice />} />
           <Route path="/cybersecurity/:slug" element={<CybersecurityTopic />} />
+          <Route path="/ctf" element={<CTF />} />
+          <Route path="/ctf/:sessionId" element={<CtfSession />} />
           <Route path="/communication" element={<Communication />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/practice" element={<Practice />} />

@@ -7,6 +7,7 @@ export const NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "AI Mentor", path: "/mentor" },
   { label: "Cybersecurity", path: "/cybersecurity" },
+  { label: "CTF & Labs", path: "/ctf" },
   { label: "Communication", path: "/communication" },
   { label: "Interview", path: "/interview" },
   { label: "Practice", path: "/practice" },

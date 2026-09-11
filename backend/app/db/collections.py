@@ -19,6 +19,7 @@ class Collections(StrEnum):
     LEARNING_PROGRESS = "learning_progress"
     CYBERSECURITY_TOPICS = "cybersecurity_topics"
     PRACTICE_SESSIONS = "practice_sessions"
+    CTF_SESSIONS = "ctf_sessions"
     USER_WEAKNESSES = "user_weaknesses"
     RECOMMENDATIONS = "recommendations"
     UPLOADED_DOCUMENTS = "uploaded_documents"

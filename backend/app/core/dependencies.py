@@ -20,6 +20,7 @@ from app.db import mongodb
 from app.models.user import UserDocument
 from app.services.ai.ai_service import AIService, ai_service
 from app.services.auth import auth_service
+from app.services.cybersecurity.ctf_service import CtfService, ctf_service
 from app.services.cybersecurity.learning_service import LearningService, learning_service
 from app.services.cybersecurity.practice_service import PracticeService, practice_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
@@ -116,3 +117,8 @@ def get_practice_service() -> PracticeService:
     lets tests override it with a fake, same as `get_ai_service`/`get_mentor_service`.
     """
     return practice_service
+
+
+def get_ctf_service() -> CtfService:
+    """FastAPI dependency for the CTF & practical lab mentor service singleton."""
+    return ctf_service

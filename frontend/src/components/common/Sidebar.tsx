@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Bot,
   ShieldHalf,
+  Flag,
   MessagesSquare,
   Mic,
   Target,
@@ -26,6 +27,7 @@ const NAV_SECTIONS = [
     heading: "Train",
     items: [
       { label: "Cybersecurity", path: "/cybersecurity", icon: ShieldHalf },
+      { label: "CTF & Labs", path: "/ctf", icon: Flag },
       { label: "Communication", path: "/communication", icon: MessagesSquare },
       { label: "Interview", path: "/interview", icon: Mic },
       { label: "Practice", path: "/practice", icon: Target },

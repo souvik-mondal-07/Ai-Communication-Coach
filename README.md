@@ -201,6 +201,45 @@ Mentor chat.
   "strong" 80+. This is not the full progress dashboard (that's a later
   step) — just enough to see where you're weak right now.
 
+## CTF & Practical Lab Mentor
+
+An AI *guidance* system for CTFs and practical labs (Hack The Box,
+TryHackMe, a local VM, or any other environment you're already
+authorized to work in) — separate from both the free-form Mentor chat and
+the structured Cybersecurity Learning quizzes.
+
+**It does not automatically attack, scan, or access anything.** There's no
+HTB/TryHackMe integration, no automatic exploitation, and no automatic flag
+submission — you do the practical work yourself, the AI reasons about what
+*you* tell it and never claims to have run a command or observed an output
+it wasn't given.
+
+- **Supported categories:** Web Security, Cryptography, Digital Forensics,
+  Steganography, OSINT, Reverse Engineering, Binary/Exploitation Concepts,
+  Linux, Networking, Miscellaneous.
+- **Supported platforms (informational only):** Hack The Box, TryHackMe,
+  CTF, Custom Lab, Other.
+- **Challenge sessions** — describe a challenge (platform, category,
+  difficulty, title, description, and what you've tried so far) at `/ctf`
+  to start a session. Every session belongs to one user; the backend
+  checks ownership on every request, so you can never open someone else's
+  session.
+- **Mentor chat** — ask follow-up questions with the full challenge context
+  already in scope. Conversation history is persisted per session (unlike
+  the general Mentor chat) and bounded before being sent to Gemini on each
+  request.
+- **Progressive hints** — request `hint_1`, `hint_2`, `hint_3`, or go
+  straight to the `solution` if you want it directly. Hints 1–3 unlock in
+  order; each level is generated once and then persisted, so re-requesting
+  the same level always returns the same hint rather than generating a new
+  one.
+- **Solution mode** — the full vulnerability/technique, reasoning,
+  methodology, an illustrative example (using `<LAB_TARGET>` instead of a
+  real address), and how to detect/prevent it defensively.
+- **Session history** — reopen an `in_progress` session to pick up where
+  you left off, or mark it `completed` (optionally recording a flag for
+  your own tracking — it's never verified against HTB/TryHackMe).
+
 ## API
 
 ```text
@@ -222,6 +261,13 @@ POST /api/v1/cybersecurity/practice/{id}/answer      Submit an answer
 POST /api/v1/cybersecurity/practice/{id}/complete    Complete a session
 GET  /api/v1/cybersecurity/practice/history          Paginated practice history
 GET  /api/v1/cybersecurity/progress                  Basic per-category progress
+
+POST /api/v1/ctf/sessions                    Create a CTF/lab challenge session
+GET  /api/v1/ctf/sessions                    Paginated session history
+GET  /api/v1/ctf/sessions/{id}               Session detail (messages + hints)
+POST /api/v1/ctf/sessions/{id}/chat          Mentor chat with challenge context
+GET  /api/v1/ctf/sessions/{id}/hint          Request a hint (?level=hint_1|hint_2|hint_3|solution)
+POST /api/v1/ctf/sessions/{id}/complete      Mark a session complete
 ```
 
 All endpoints above except the two health/status checks require
@@ -233,10 +279,12 @@ authentication. All future endpoints are added under the versioned
 
 **Completed:** Step 1 — Project Foundation & Architecture, Step 2 —
 Authentication, Step 3 — Gemini AI Engine, Step 4 — AI Cybersecurity Mentor
-chat, Step 5 — Cybersecurity Learning & Practice System.
+chat, Step 5 — Cybersecurity Learning & Practice System, Step 6 — CTF &
+Practical Lab Mentor.
 
-**Not yet implemented:** CTF/lab mentor, communication coach, voice
-features, interview simulator, the full progress/analytics dashboard, a
-recommendations engine, and conversation persistence for the Mentor chat
-(the Mentor's chat history still lives in frontend state only — practice
-sessions, unlike Mentor chat, are persisted). These arrive in later steps.
+**Not yet implemented:** communication coach, voice features, interview
+simulator, the full progress/analytics dashboard, a recommendations
+engine, and conversation persistence for the general Mentor chat (the
+Mentor's chat history still lives in frontend state only — CTF and
+practice sessions, unlike Mentor chat, are persisted). These arrive in
+later steps.

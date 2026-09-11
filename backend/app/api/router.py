@@ -13,6 +13,7 @@ from app.api.routes import (
     ai,
     auth,
     communication,
+    ctf,
     cybersecurity,
     health,
     interview,
@@ -30,6 +31,7 @@ api_router.include_router(users.router)
 api_router.include_router(ai.router)
 api_router.include_router(mentor.router)
 api_router.include_router(cybersecurity.router)
+api_router.include_router(ctf.router)
 api_router.include_router(communication.router)
 api_router.include_router(interview.router)
 api_router.include_router(voice.router)
