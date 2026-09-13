@@ -18,6 +18,7 @@ from app.services.auth import auth_service
 from app.services.cybersecurity import learning_service as learning_service_module
 from app.services.cybersecurity import practice_service as practice_service_module
 from app.services.cybersecurity import ctf_service as ctf_service_module
+from app.services.communication import communication_service as communication_service_module
 from app.utils.helpers import success_response
 from app.utils.logger import get_logger
 
@@ -47,6 +48,11 @@ async def lifespan(_: FastAPI):
             ctf_service_module.ctf_service.ensure_indexes(db)
         except Exception:  # noqa: BLE001
             logger.warning("Could not ensure CTF session indexes", exc_info=True)
+        try:
+            communication_service_module.communication_service.ensure_indexes(db)
+            communication_service_module.communication_service.ensure_seeded(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not ensure communication coach data", exc_info=True)
     yield
     mongodb.disconnect()
     logger.info("Shutdown complete")

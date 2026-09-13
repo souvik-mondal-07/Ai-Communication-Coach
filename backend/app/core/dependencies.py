@@ -23,6 +23,11 @@ from app.services.auth import auth_service
 from app.services.cybersecurity.ctf_service import CtfService, ctf_service
 from app.services.cybersecurity.learning_service import LearningService, learning_service
 from app.services.cybersecurity.practice_service import PracticeService, practice_service
+from app.services.communication.communication_service import (
+    CommunicationService,
+    communication_service,
+)
+from app.services.communication.evaluation_service import EvaluationService, evaluation_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
 
 # auto_error=False so a missing header raises our own consistently-shaped
@@ -122,3 +127,13 @@ def get_practice_service() -> PracticeService:
 def get_ctf_service() -> CtfService:
     """FastAPI dependency for the CTF & practical lab mentor service singleton."""
     return ctf_service
+
+
+def get_communication_service() -> CommunicationService:
+    """FastAPI dependency for the communication coach service singleton."""
+    return communication_service
+
+
+def get_evaluation_service() -> EvaluationService:
+    """FastAPI dependency for the communication evaluation service singleton."""
+    return evaluation_service

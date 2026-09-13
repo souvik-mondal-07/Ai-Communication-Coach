@@ -240,6 +240,33 @@ it wasn't given.
   you left off, or mark it `completed` (optionally recording a flag for
   your own tracking — it's never verified against HTB/TryHackMe).
 
+## Real-Life Communication Coach
+
+Text-based communication practice through realistic roleplay conversations,
+with AI-graded feedback at the end. **Text-only in this step** — no
+microphone, speech-to-text, or text-to-speech; voice features are planned
+for Step 8.
+
+- **Scenario categories:** Classmates, Teachers/Professors, Seniors,
+  Recruiters, Teammates, Managers/Team Leads, Everyday Social Situations,
+  Professional Situations — 18 starter scenarios across all 8 categories.
+- **Modes:** Daily Life, Professional, Social, Difficult Conversation,
+  Roleplay. **Difficulty:** Beginner, Intermediate, Advanced — higher
+  difficulty means a more realistic, less forgiving AI character (more
+  unexpected questions, mild pushback, less hand-holding).
+- **Roleplay chat** — the AI stays in character as the scenario's other
+  person and responds naturally; it deliberately does *not* interrupt the
+  conversation with grammar corrections — that happens only at evaluation
+  time, at `/communication`.
+- **Evaluation** — end a session to get scores (0–100) for clarity,
+  grammar, vocabulary, professionalism, confidence, relevance, and
+  conversation flow, plus strengths, weaknesses, improvements, a few
+  "better response" rewrites with an explanation, and a summary. Confidence
+  is inferred only from the language used (hedging, tone) — this is not a
+  claim of measuring actual psychological confidence.
+- **Session history** — completed and in-progress sessions are persisted
+  per user, same ownership rules as the rest of the app.
+
 ## API
 
 ```text
@@ -268,6 +295,14 @@ GET  /api/v1/ctf/sessions/{id}               Session detail (messages + hints)
 POST /api/v1/ctf/sessions/{id}/chat          Mentor chat with challenge context
 GET  /api/v1/ctf/sessions/{id}/hint          Request a hint (?level=hint_1|hint_2|hint_3|solution)
 POST /api/v1/ctf/sessions/{id}/complete      Mark a session complete
+
+GET  /api/v1/communication/scenarios              List/filter scenarios
+GET  /api/v1/communication/scenarios/{slug}       Scenario detail
+POST /api/v1/communication/sessions               Start a practice session
+POST /api/v1/communication/sessions/{id}/message  Send a message, get the AI's reply
+POST /api/v1/communication/sessions/{id}/complete Evaluate and complete a session
+GET  /api/v1/communication/sessions/{id}          Session detail (messages + evaluation)
+GET  /api/v1/communication/sessions               Paginated session history
 ```
 
 All endpoints above except the two health/status checks require
@@ -280,11 +315,11 @@ authentication. All future endpoints are added under the versioned
 **Completed:** Step 1 — Project Foundation & Architecture, Step 2 —
 Authentication, Step 3 — Gemini AI Engine, Step 4 — AI Cybersecurity Mentor
 chat, Step 5 — Cybersecurity Learning & Practice System, Step 6 — CTF &
-Practical Lab Mentor.
+Practical Lab Mentor, Step 7 — Real-Life Communication Coach.
 
-**Not yet implemented:** communication coach, voice features, interview
-simulator, the full progress/analytics dashboard, a recommendations
-engine, and conversation persistence for the general Mentor chat (the
-Mentor's chat history still lives in frontend state only — CTF and
-practice sessions, unlike Mentor chat, are persisted). These arrive in
-later steps.
+**Not yet implemented:** voice features (speech-to-text/text-to-speech),
+interview simulator, the full progress/analytics dashboard, a
+recommendations engine, and conversation persistence for the general
+Mentor chat (the Mentor's chat history still lives in frontend state only —
+CTF, cybersecurity practice, and communication sessions, unlike Mentor
+chat, are all persisted). These arrive in later steps.

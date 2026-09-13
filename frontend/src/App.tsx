@@ -14,6 +14,7 @@ import CybersecurityPractice from "@/pages/CybersecurityPractice";
 import CTF from "@/pages/CTF";
 import CtfSession from "@/pages/CtfSession";
 import Communication from "@/pages/Communication";
+import CommunicationSessionPage from "@/pages/CommunicationSessionPage";
 import Interview from "@/pages/Interview";
 import Practice from "@/pages/Practice";
 import Progress from "@/pages/Progress";
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="/ctf" element={<CTF />} />
           <Route path="/ctf/:sessionId" element={<CtfSession />} />
           <Route path="/communication" element={<Communication />} />
+          <Route path="/communication/:sessionId" element={<CommunicationSessionPage />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/progress" element={<Progress />} />

@@ -18,6 +18,7 @@ from fastapi.testclient import TestClient
 from app.core.dependencies import get_db
 from app.main import app
 from app.services.auth import auth_service
+from app.services.communication.communication_service import communication_service
 from app.services.cybersecurity.learning_service import learning_service
 
 
@@ -29,6 +30,8 @@ def fake_db():
     auth_service.ensure_indexes(db)
     learning_service.ensure_indexes(db)
     learning_service.ensure_seeded(db)
+    communication_service.ensure_indexes(db)
+    communication_service.ensure_seeded(db)
     return db
 
 
