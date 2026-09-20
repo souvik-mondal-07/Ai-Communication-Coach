@@ -21,6 +21,7 @@ from pymongo.database import Database
 from app.db.collections import Collections
 from app.models.communication import CommunicationScenarioDocument, CommunicationSessionDocument
 from app.services.ai.ai_service import AIService, ConversationTurn, ai_service
+from app.services.communication.analysis_service import analyze_transcript
 from app.services.communication.prompts import build_roleplay_system_prompt
 from app.services.communication.seed_data import STARTER_SCENARIOS
 
@@ -255,6 +256,9 @@ class CommunicationService:
                     "role": m["role"],
                     "content": m["content"],
                     "timestamp": m["timestamp"].isoformat(),
+                    # Step 7 messages predate these fields; default to text.
+                    "input_type": m.get("input_type", "text"),
+                    "voice_analysis": m.get("voice_analysis"),
                 }
                 for m in session.get("messages", [])
             ],
@@ -277,7 +281,15 @@ class CommunicationService:
     # --- Roleplay chat -----------------------------------------------------
 
     async def send_message(
-        self, db: Database, *, user_id: str, session_id: str, message: str
+        self,
+        db: Database,
+        *,
+        user_id: str,
+        session_id: str,
+        message: str,
+        input_type: str = "text",
+        audio_metadata: dict | None = None,
+        transcript_edited: bool = False,
     ) -> dict:
         session = self._get_owned_session(db, session_id=session_id, user_id=user_id)
 
@@ -297,6 +309,7 @@ class CommunicationService:
             user_role=scenario["user_role"],
             context=scenario["context"],
             objective=scenario["objective"],
+            voice=input_type == "voice",
         )
 
         result = await self._ai_service.generate_response(
@@ -304,14 +317,40 @@ class CommunicationService:
         )
 
         now = datetime.now(timezone.utc)
+        user_message: dict = {
+            "role": "user",
+            "content": message,
+            "input_type": input_type,
+            "timestamp": now,
+        }
+        voice_analysis: dict | None = None
+        if input_type == "voice":
+            # Deterministic metrics only (no AI, no audio kept). Audio-based
+            # fields are None when the client sent no usable audio metadata.
+            metadata = audio_metadata or {}
+            pause_metrics = metadata.get("pause_metrics")
+            voice_analysis = analyze_transcript(
+                message,
+                duration_seconds=metadata.get("duration_seconds"),
+                pause_metrics=pause_metrics,
+                language=metadata.get("language"),
+                transcript_edited=transcript_edited,
+            )
+            user_message["voice_analysis"] = voice_analysis
+
         db[Collections.COMMUNICATION_SESSIONS].update_one(
             {"_id": session["_id"]},
             {
                 "$push": {
                     "messages": {
                         "$each": [
-                            {"role": "user", "content": message, "timestamp": now},
-                            {"role": "assistant", "content": result.text, "timestamp": now},
+                            user_message,
+                            {
+                                "role": "assistant",
+                                "content": result.text,
+                                "input_type": "text",
+                                "timestamp": now,
+                            },
                         ]
                     }
                 },
@@ -323,7 +362,10 @@ class CommunicationService:
         # simple, stable identifier) is len(existing messages) + 1.
         message_id = str(len(session.get("messages", [])) + 1)
 
-        return {"reply": result.text, "session_id": session_id, "message_id": message_id}
+        response = {"reply": result.text, "session_id": session_id, "message_id": message_id}
+        if voice_analysis is not None:
+            response["voice_analysis"] = voice_analysis
+        return response
 
 
 # Module-level singleton, matching the project's existing pattern.

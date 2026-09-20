@@ -96,6 +96,7 @@ def build_roleplay_system_prompt(
     user_role: str,
     context: str,
     objective: str,
+    voice: bool = False,
 ) -> str:
     """Compose the full system prompt for one turn of scenario roleplay."""
     mode_prompt = _MODE_PROMPTS.get(mode, "")
@@ -111,6 +112,8 @@ What the other person is practicing: {objective}
     parts = [COMMUNICATION_ROLEPLAY_PROMPT, scenario_block, difficulty_prompt]
     if mode_prompt:
         parts.append(mode_prompt)
+    if voice:
+        parts.append(VOICE_ROLEPLAY_ADDENDUM)
     return "\n\n".join(parts)
 
 
@@ -184,3 +187,88 @@ Conversation transcript:
 
 Evaluate the learner's ("user") messages as instructed.
 """
+
+
+# --- Voice mode (Step 8) ----------------------------------------------------
+
+VOICE_ROLEPLAY_ADDENDUM = """\
+VOICE MODE: The other person is speaking out loud and their words were \
+transcribed automatically, and your reply will be read aloud by a \
+text-to-speech voice.
+- The transcript may contain small recognition errors (wrong homophones, \
+missing punctuation or capitalization). Respond to what they clearly meant; \
+never point out or correct transcription mistakes.
+- Keep replies short and conversational — usually one to three sentences.
+- Write plain spoken language only: no markdown, bullet points, emojis, or \
+stage directions like *smiles*.
+"""
+
+SPEAKING_ANALYSIS_PROMPT = """\
+You are a spoken-communication coach reviewing a learner's SPOKEN answers in \
+a practice conversation. The learner practiced a real-life scenario by \
+speaking to an AI playing another person; their speech was transcribed \
+automatically.
+
+Evaluate ONLY the learner's turns marked "(spoken)". Ignore turns marked \
+"(typed)" and the AI character's turns except for context.
+
+Judge the spoken turns on:
+- Clarity — was the message easy to follow when heard aloud?
+- Grammar — grammatical accuracy *for speech*. Do not penalize natural \
+contractions or short fragments that are normal in conversation.
+- Vocabulary — was word choice appropriate and varied for the situation?
+- Conciseness — were answers focused, or rambling / padded with repetition?
+- Structure and relevance — did answers have a clear shape and address what \
+was asked?
+- Naturalness and professionalism — did it sound natural and suit the setting?
+- Unnecessary repetition of the same point or phrase.
+
+Important rules:
+- The transcript comes from speech recognition. Do NOT penalize spelling, \
+capitalization, or punctuation — judge wording and structure only.
+- You are given measured speaking metrics (pace, filler words, pauses). \
+Treat them as facts. Do NOT restate, recompute, or invent metrics; they are \
+reported separately. Focus your feedback on the content and language.
+- You cannot know how the learner felt. Do NOT comment on anxiety, \
+nervousness, personality, emotions, or health, and do not claim to measure \
+psychological confidence.
+- Be constructive and specific: reference what the learner actually said.
+
+Respond with ONLY a single JSON object (no markdown fences, no extra \
+commentary) matching exactly this shape:
+{
+  "clarity_score": <integer 0-100>,
+  "grammar_score": <integer 0-100>,
+  "vocabulary_score": <integer 0-100>,
+  "conciseness_score": <integer 0-100>,
+  "strengths": ["...", "..."],
+  "improvements": ["...", "..."],
+  "summary": "one or two sentences on how the learner sounded in their spoken answers"
+}
+Give 2-4 short strengths and 2-4 short, actionable improvements.
+"""
+
+VOICE_COMMUNICATION_FEEDBACK_PROMPT = """\
+Scenario: {scenario_title}
+What the learner was practicing: {objective}
+
+Measured speaking metrics (facts from audio/text analysis — do not repeat them):
+{metrics}
+
+Conversation transcript ("(spoken)" = transcribed speech, "(typed)" = typed text):
+{transcript}
+
+Evaluate the learner's (spoken) turns as instructed.
+"""
+
+
+def build_speaking_feedback_prompt(
+    *, scenario_title: str, objective: str, metrics: str, transcript: str
+) -> str:
+    """User-turn prompt asking Gemini for qualitative speaking feedback."""
+    return VOICE_COMMUNICATION_FEEDBACK_PROMPT.format(
+        scenario_title=scenario_title,
+        objective=objective,
+        metrics=metrics,
+        transcript=transcript,
+    )

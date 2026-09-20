@@ -21,6 +21,7 @@ from pymongo.database import Database
 from app.db.collections import Collections
 from app.models.communication import CommunicationSessionDocument
 from app.services.ai.ai_service import AIService, AIServiceError, ai_service
+from app.services.communication.analysis_service import SpeakingAnalysisService
 from app.services.communication.prompts import (
     COMMUNICATION_EVALUATION_PROMPT,
     build_evaluation_user_prompt,
@@ -83,8 +84,14 @@ def _build_transcript(session: CommunicationSessionDocument) -> str:
 class EvaluationService:
     """Evaluates a completed communication session using the existing AIService."""
 
-    def __init__(self, ai_service_: AIService = ai_service) -> None:
+    def __init__(
+        self,
+        ai_service_: AIService = ai_service,
+        speaking_analysis_service: SpeakingAnalysisService | None = None,
+    ) -> None:
         self._ai_service = ai_service_
+        # Reuses the same AI service — never a second Gemini client.
+        self._speaking_analysis = speaking_analysis_service or SpeakingAnalysisService(ai_service_)
 
     async def evaluate_session(self, db: Database, *, session: CommunicationSessionDocument) -> dict:
         """
@@ -113,6 +120,13 @@ class EvaluationService:
             raise EvaluationError("AI returned an unusable evaluation.") from exc
 
         evaluation = validated.model_dump()
+
+        # Step 8: only sessions with spoken messages get a voice_summary (and
+        # the extra AI call). This never raises — on AI failure it degrades to
+        # deterministic metrics only.
+        voice_summary = await self._speaking_analysis.build_voice_summary(session)
+        if voice_summary is not None:
+            evaluation["voice_summary"] = voice_summary
 
         now = datetime.now(timezone.utc)
         db[Collections.COMMUNICATION_SESSIONS].update_one(

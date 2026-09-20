@@ -29,6 +29,7 @@ from app.services.communication.communication_service import (
 )
 from app.services.communication.evaluation_service import EvaluationService, evaluation_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
+from app.services.voice.voice_service import VoiceService, voice_service
 
 # auto_error=False so a missing header raises our own consistently-shaped
 # 401 response instead of FastAPI's default one.
@@ -137,3 +138,8 @@ def get_communication_service() -> CommunicationService:
 def get_evaluation_service() -> EvaluationService:
     """FastAPI dependency for the communication evaluation service singleton."""
     return evaluation_service
+
+
+def get_voice_service() -> VoiceService:
+    """FastAPI dependency for the voice (STT/TTS) service singleton."""
+    return voice_service

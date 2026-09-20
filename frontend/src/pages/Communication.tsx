@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ScenarioCard } from "@/features/communication/ScenarioCard";
 import { ScenarioFilters } from "@/features/communication/ScenarioFilters";
+import { InputModeToggle } from "@/features/voice/InputModeToggle";
+import type { InputMode } from "@/features/voice/voiceTypes";
+import { isVoiceSupported } from "@/hooks/useVoice";
 import type {
   Category,
   Difficulty,
@@ -20,6 +23,8 @@ export default function Communication() {
   const [mode, setMode] = useState<Mode | "all">("all");
   const [difficulty, setDifficulty] = useState<Difficulty | "all">("all");
   const [startingId, setStartingId] = useState<string | null>(null);
+  const voiceSupported = isVoiceSupported();
+  const [inputMode, setInputMode] = useState<InputMode>("text");
 
   useEffect(() => {
     let cancelled = false;
@@ -52,7 +57,11 @@ export default function Communication() {
     setStartingId(scenarioId);
     try {
       const result = await communicationService.startSession(scenarioId);
-      navigate(`/communication/${result.session_id}`);
+      navigate(
+        inputMode === "voice"
+          ? `/communication/${result.session_id}?input=voice`
+          : `/communication/${result.session_id}`
+      );
     } catch (err) {
       setError(getApiErrorMessage(err, "Unable to start this practice session."));
     } finally {
@@ -67,9 +76,19 @@ export default function Communication() {
           Real-Life Communication Coach
         </h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Practice realistic conversations through text roleplay, then get concrete feedback on
+          Practice realistic conversations by typing or speaking, then get concrete feedback on
           your communication.
         </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-sm text-text-secondary">Practice with:</span>
+        <InputModeToggle value={inputMode} onChange={setInputMode} voiceSupported={voiceSupported} />
+        {!voiceSupported && (
+          <span className="text-xs text-text-muted">
+            Voice needs a browser with microphone recording support and a secure (https/localhost) connection.
+          </span>
+        )}
       </div>
 
       <ScenarioFilters

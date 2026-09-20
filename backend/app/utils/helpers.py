@@ -8,6 +8,8 @@ so the frontend can rely on a single, predictable envelope:
     { "success": false, "message": "...", "error_code": "..." }
 """
 
+import json
+import re
 from typing import Any
 
 
@@ -25,3 +27,19 @@ def error_response(message: str, error_code: str) -> dict:
         "message": message,
         "error_code": error_code,
     }
+
+
+def parse_json_object(text: str) -> dict:
+    """
+    Parse a JSON object out of a model response, stripping markdown fences if
+    present. Raises ValueError (incl. json.JSONDecodeError) on anything that
+    isn't a JSON object.
+    """
+    cleaned = text.strip()
+    fence_match = re.match(r"^```(?:json)?\s*(.*?)\s*```$", cleaned, re.DOTALL)
+    if fence_match:
+        cleaned = fence_match.group(1).strip()
+    parsed = json.loads(cleaned)
+    if not isinstance(parsed, dict):
+        raise ValueError("Expected a JSON object")
+    return parsed

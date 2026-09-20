@@ -242,10 +242,9 @@ it wasn't given.
 
 ## Real-Life Communication Coach
 
-Text-based communication practice through realistic roleplay conversations,
-with AI-graded feedback at the end. **Text-only in this step** — no
-microphone, speech-to-text, or text-to-speech; voice features are planned
-for Step 8.
+Communication practice through realistic roleplay conversations, with
+AI-graded feedback at the end. Answer by typing (this section) or by
+speaking — see [Step 8 — Voice & Speaking Analysis](#step-8--voice--speaking-analysis).
 
 - **Scenario categories:** Classmates, Teachers/Professors, Seniors,
   Recruiters, Teammates, Managers/Team Leads, Everyday Social Situations,
@@ -266,6 +265,161 @@ for Step 8.
   claim of measuring actual psychological confidence.
 - **Session history** — completed and in-progress sessions are persisted
   per user, same ownership rules as the rest of the app.
+
+## Step 8 — Voice & Speaking Analysis
+
+The Communication Coach now supports **text and voice**. In *Voice* mode you
+speak, review the transcript, send it, and the AI character replies (optionally
+out loud). It is the same scenario, session, roleplay, history and evaluation
+as text mode — voice is an input method, not a separate system.
+
+```text
+Browser microphone -> FastAPI -> faster-whisper (local STT) -> transcript
+   -> you review / edit / send -> Communication Service -> existing AI service
+   -> Gemini -> reply text -> (optional) text-to-speech -> audio in the browser
+```
+
+The frontend never talks to Gemini or a speech provider directly; all keys
+stay in `backend/.env`.
+
+### Using it
+
+1. Open **Communication**, choose **Voice** (or switch inside a session with
+   the Text / Voice toggle), and start a scenario.
+2. Press **🎙 Start Recording**, speak, then **Stop Recording**.
+3. Review the **Transcript**. **Edit** it if it misheard you, then **Send** —
+   or **Discard**. Nothing is sent to the AI until you press Send.
+4. Read the reply, and press **▶ Play AI Response** to hear it (or tick
+   *Auto-play AI replies*).
+5. End the session to get the normal evaluation plus **Speaking Performance**.
+
+### Requirements
+
+- A browser with microphone recording (`MediaRecorder`) — current Chrome,
+  Edge, Firefox and Safari all provide it (Safari records MP4/AAC, which the
+  server accepts). The recording flow was verified against a simulated
+  `MediaRecorder`, so please try it once in your own browser. Recording needs a **secure context** — `https://`
+  or `http://localhost`; browsers refuse the microphone on plain `http://` to
+  other hosts.
+- **Microphone permission.** If you block it, the app explains how to allow
+  it in your browser's site settings; text mode keeps working.
+- No system ffmpeg is needed — audio decoding is bundled with faster-whisper.
+
+### Speech-to-text (faster-whisper, local)
+
+Speech is transcribed **on your own server** with
+[faster-whisper](https://github.com/SYSTRAN/faster-whisper); audio is not sent
+to Gemini or any cloud service. Configure it in `backend/.env`:
+
+```env
+WHISPER_MODEL=small          # tiny | base | small | medium | large-v3 ...
+WHISPER_DEVICE=auto          # auto | cpu | cuda
+WHISPER_COMPUTE_TYPE=auto    # auto | int8 | float16 | float32
+WHISPER_LANGUAGE=en          # empty = auto-detect per recording
+VOICE_MAX_AUDIO_BYTES=10485760
+VOICE_MAX_AUDIO_SECONDS=300
+```
+
+- **CPU (default, no setup):** works out of the box. `int8` is a good CPU
+  `WHISPER_COMPUTE_TYPE`; `tiny`/`base` are fastest on weak machines.
+- **GPU:** set `WHISPER_DEVICE=cuda` (and e.g. `float16`) on a machine with a
+  CUDA-capable GPU and the matching CUDA/cuDNN libraries. Nothing in the app
+  requires a GPU or hard-codes CUDA.
+- The model is loaded **once, lazily**, on first use — never per request. The
+  first run downloads the model weights, so warm it up once after installing:
+
+  ```bash
+  cd backend
+  python ../scripts/download_whisper_model.py
+  ```
+
+- If the model can't load, voice endpoints return a clear error and the UI
+  tells the user to type instead. Text mode is never affected.
+
+### Text-to-speech (optional)
+
+Spoken AI replies are **optional**. With no provider configured the app runs
+in text mode and shows *"Audio unavailable — text response is still
+available."* Configure a provider in `backend/.env` (backend-only — never
+put these in `frontend/.env`):
+
+```env
+TTS_PROVIDER=openai          # openai | google   (empty = disabled)
+TTS_API_KEY=...
+TTS_MODEL=                   # openai: default tts-1
+TTS_VOICE=                   # openai: default alloy | google: e.g. en-US-Neural2-F
+TTS_BASE_URL=                # optional OpenAI-compatible endpoint (e.g. self-hosted)
+```
+
+Providers sit behind a small interface in
+`backend/app/services/voice/text_to_speech.py`; adding another means adding one
+class and one registry entry. The OpenAI and Google providers are written
+against those services' documented REST APIs and covered by mocked-HTTP
+tests, so confirm them once with your own key. Note that with a cloud provider, the **AI reply
+text** (not your audio) is sent to that provider. Generated audio is returned
+to the browser once and is not stored.
+
+### Speaking analysis
+
+After a session that included spoken answers, the evaluation gains a
+**Speaking Performance** section:
+
+- **Scores** — clarity, grammar, vocabulary, conciseness (blended from
+  deterministic measurements and Gemini's qualitative review) alongside the
+  existing overall and conversation-flow scores.
+- **Speaking metrics** — words spoken, speaking rate (WPM), filler words
+  (contextual: "I like security" isn't a filler, "I was, like, nervous" is),
+  repeated words, and pauses measured from word timestamps.
+- **What you did well / what to improve.**
+
+Each spoken message also stores its own metrics under `voice_analysis`, and
+the session evaluation stores a `voice_summary`, in the existing
+`communication_sessions` collection.
+
+**These are approximate communication indicators, not a psychological,
+medical or clinical assessment.** The app does not measure confidence,
+nervousness or anxiety. WPM bands (about 100–160 WPM is a typical
+conversational range) are general guidance, not a standard. A metric that
+can't be measured reliably (e.g. pauses when no word timing exists) is shown
+as *not measured* — it is never invented. Filler detection is
+English-oriented and can be tuned with `FILLER_WORDS` (comma-separated).
+
+### Privacy
+
+Voice is sensitive. By default: audio is written to a private temporary file
+only while it is transcribed, then **deleted immediately**; raw recordings are
+**never stored**; only the transcript and metrics are saved. Audio and
+transcripts are not logged, audio is never sent to Gemini, and only the
+transcript text is sent to the AI. Set `VOICE_TEMP_DIR` to control where the
+temporary file lives (default: the OS temp directory).
+
+### Voice API
+
+```text
+GET  /api/v1/voice/capabilities   Which voice features the server supports (no secrets)
+POST /api/v1/voice/transcribe     multipart/form-data, field "audio" -> transcript + timing
+POST /api/v1/voice/synthesize     {"text": "..."} -> audio (audio/mpeg)
+```
+
+A transcript becomes a normal communication message via the existing
+`POST /api/v1/communication/sessions/{id}/message`, with optional
+`input_type: "voice"`, `audio_metadata` and `transcript_edited` fields (text
+messages are unchanged).
+
+Uploads are limited by size and duration; the format is checked from the
+file's actual bytes (never the filename or declared type); and the endpoint
+authenticates before reading the body. Behind a reverse proxy, also cap the
+request body size there (e.g. nginx `client_max_body_size`).
+
+### Known limits
+
+- Whisper transcription can misrecognise words (accents, background noise,
+  technical terms) — that is why the transcript is always editable. Metrics
+  are computed from the transcript you send.
+- Pause measurement relies on Whisper's word timestamps, which are
+  approximate, so only gaps of 0.5 s or more count as pauses (2 s or more as
+  "long").
+- `large` models are slow on CPU. Start with `small` (or `tiny`/`base`).
 
 ## API
 
@@ -303,6 +457,10 @@ POST /api/v1/communication/sessions/{id}/message  Send a message, get the AI's r
 POST /api/v1/communication/sessions/{id}/complete Evaluate and complete a session
 GET  /api/v1/communication/sessions/{id}          Session detail (messages + evaluation)
 GET  /api/v1/communication/sessions               Paginated session history
+
+GET  /api/v1/voice/capabilities                   Voice features available on this server
+POST /api/v1/voice/transcribe                     Audio upload -> transcript (local Whisper)
+POST /api/v1/voice/synthesize                     Text -> speech audio (optional TTS provider)
 ```
 
 All endpoints above except the two health/status checks require
@@ -315,10 +473,10 @@ authentication. All future endpoints are added under the versioned
 **Completed:** Step 1 — Project Foundation & Architecture, Step 2 —
 Authentication, Step 3 — Gemini AI Engine, Step 4 — AI Cybersecurity Mentor
 chat, Step 5 — Cybersecurity Learning & Practice System, Step 6 — CTF &
-Practical Lab Mentor, Step 7 — Real-Life Communication Coach.
+Practical Lab Mentor, Step 7 — Real-Life Communication Coach, Step 8 — Voice
+& Speaking Analysis.
 
-**Not yet implemented:** voice features (speech-to-text/text-to-speech),
-interview simulator, the full progress/analytics dashboard, a
+**Not yet implemented:** the interview simulator, the full progress/analytics dashboard, a
 recommendations engine, and conversation persistence for the general
 Mentor chat (the Mentor's chat history still lives in frontend state only —
 CTF, cybersecurity practice, and communication sessions, unlike Mentor

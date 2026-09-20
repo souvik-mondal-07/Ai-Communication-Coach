@@ -44,12 +44,49 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-3.1-flash-lite"
     gemini_timeout_seconds: int = 60
 
+    # --- Voice: speech-to-text (Step 8) ---
+    # Local faster-whisper. "auto" lets it pick GPU when available, else CPU.
+    whisper_model: str = "small"
+    whisper_device: str = "auto"
+    whisper_compute_type: str = "auto"
+    # ISO code the recogniser is pinned to (the coach is English-first).
+    # Set empty to let Whisper auto-detect the language per recording.
+    whisper_language: str = "en"
+
+    # --- Voice: audio upload limits & temporary files ---
+    voice_max_audio_bytes: int = 10 * 1024 * 1024
+    voice_max_audio_seconds: int = 300
+    # Where temporary audio is written while it is being transcribed.
+    # Empty = the operating system's temp directory. Files are deleted
+    # immediately after processing.
+    voice_temp_dir: str = ""
+
+    # --- Voice: text-to-speech (Step 8) ---
+    # All backend-only. Leave TTS_PROVIDER empty to run without spoken
+    # replies; text mode is unaffected.  Supported: "openai", "google".
+    tts_provider: str = ""
+    tts_api_key: str = ""
+    tts_model: str = ""
+    tts_voice: str = ""
+    # Optional override for OpenAI-compatible servers (self-hosted TTS etc.)
+    tts_base_url: str = ""
+
+    # --- Speaking analysis (Step 8) ---
+    # Comma-separated override for the filler-word list. Empty = built-in list.
+    filler_words: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
     )
+
+    @property
+    def filler_words_list(self) -> list[str] | None:
+        """Configured filler-word override, or None to use the built-in list."""
+        words = [w.strip().lower() for w in self.filler_words.split(",") if w.strip()]
+        return words or None
 
     @property
     def cors_origins_list(self) -> list[str]:

@@ -1,3 +1,5 @@
+import type { VoiceAnalysis, VoiceSummary } from "@/features/voice/voiceTypes";
+
 export type Category =
   | "classmates"
   | "teachers"
@@ -36,6 +38,9 @@ export interface CommunicationMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: string;
+  /** Absent on messages from before voice mode existed (treat as "text"). */
+  input_type?: "text" | "voice";
+  voice_analysis?: VoiceAnalysis | null;
 }
 
 export interface BetterResponse {
@@ -58,6 +63,8 @@ export interface Evaluation {
   improvements: string[];
   better_responses: BetterResponse[];
   summary: string;
+  /** Present only when the session included spoken messages. */
+  voice_summary?: VoiceSummary;
 }
 
 export interface SessionSummary {

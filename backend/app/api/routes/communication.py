@@ -126,7 +126,13 @@ async def send_message(
     user_id = str(current_user["_id"])
     try:
         result = await service.send_message(
-            db, user_id=user_id, session_id=session_id, message=payload.message
+            db,
+            user_id=user_id,
+            session_id=session_id,
+            message=payload.message,
+            input_type=payload.input_type,
+            audio_metadata=payload.audio_metadata.model_dump() if payload.audio_metadata else None,
+            transcript_edited=payload.transcript_edited,
         )
     except SessionNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=_SESSION_NOT_FOUND)

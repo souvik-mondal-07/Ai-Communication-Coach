@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { SessionDetail } from "@/features/communication/communicationTypes";
+import type { SendMessageOptions } from "@/features/voice/voiceTypes";
 import * as communicationService from "@/services/communicationService";
 import { getApiErrorMessage } from "@/utils/apiError";
 
@@ -11,7 +12,7 @@ interface CommunicationState {
   error: string | null;
 
   loadSession: (sessionId: string) => Promise<void>;
-  sendMessage: (message: string) => Promise<void>;
+  sendMessage: (message: string, options?: SendMessageOptions) => Promise<void>;
   complete: () => Promise<void>;
   clearError: () => void;
   reset: () => void;
@@ -37,14 +38,18 @@ export const useCommunicationStore = create<CommunicationState>((set, get) => ({
     }
   },
 
-  sendMessage: async (message) => {
+  sendMessage: async (message, options) => {
     const { session } = get();
     if (!session) return;
 
     set({ isSendingMessage: true, error: null });
     try {
       const now = new Date().toISOString();
-      const result = await communicationService.sendMessage(session.session_id, message);
+      const result = await communicationService.sendMessage(
+        session.session_id,
+        message,
+        options
+      );
       set((state) =>
         state.session
           ? {
@@ -52,8 +57,14 @@ export const useCommunicationStore = create<CommunicationState>((set, get) => ({
                 ...state.session,
                 messages: [
                   ...state.session.messages,
-                  { role: "user", content: message, timestamp: now },
-                  { role: "assistant", content: result.reply, timestamp: now },
+                  {
+                    role: "user",
+                    content: message,
+                    timestamp: now,
+                    input_type: options?.inputType ?? "text",
+                    voice_analysis: result.voice_analysis ?? null,
+                  },
+                  { role: "assistant", content: result.reply, timestamp: now, input_type: "text" },
                 ],
               },
               isSendingMessage: false,

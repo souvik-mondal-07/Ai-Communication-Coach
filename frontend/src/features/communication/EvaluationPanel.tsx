@@ -3,6 +3,7 @@ import { BetterResponseCard } from "@/features/communication/BetterResponseCard"
 import { ImprovementList } from "@/features/communication/ImprovementList";
 import { ScoreCard } from "@/features/communication/ScoreCard";
 import { SCORE_FIELDS, type Evaluation } from "@/features/communication/communicationTypes";
+import { SpeakingPerformancePanel } from "@/features/voice/SpeakingPerformancePanel";
 
 interface EvaluationPanelProps {
   evaluation: Evaluation;
@@ -34,6 +35,14 @@ export function EvaluationPanel({ evaluation }: EvaluationPanelProps) {
           <ImprovementList title="Improvements" items={evaluation.improvements} variant="neutral" />
         </CardContent>
       </Card>
+
+      {evaluation.voice_summary && (
+        <SpeakingPerformancePanel
+          voiceSummary={evaluation.voice_summary}
+          overallScore={evaluation.overall_score}
+          conversationFlowScore={evaluation.conversation_flow_score}
+        />
+      )}
 
       {evaluation.better_responses.length > 0 && (
         <div className="space-y-2">

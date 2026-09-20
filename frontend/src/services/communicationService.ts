@@ -9,6 +9,7 @@ import type {
   SessionDetail,
   SessionSummary,
 } from "@/features/communication/communicationTypes";
+import type { SendMessageOptions, VoiceAnalysis } from "@/features/voice/voiceTypes";
 
 /**
  * Client for the communication coach endpoints. Talks only to FastAPI
@@ -51,13 +52,33 @@ export async function startSession(
   return data.data;
 }
 
+export interface SendMessageResult {
+  reply: string;
+  session_id: string;
+  message_id: string;
+  /** Present only for voice messages. */
+  voice_analysis?: VoiceAnalysis;
+}
+
 export async function sendMessage(
   sessionId: string,
-  message: string
-): Promise<{ reply: string; session_id: string; message_id: string }> {
-  const { data } = await api.post<
-    ApiEnvelope<{ reply: string; session_id: string; message_id: string }>
-  >(`/communication/sessions/${encodeURIComponent(sessionId)}/message`, { message });
+  message: string,
+  options?: SendMessageOptions
+): Promise<SendMessageResult> {
+  // Text messages keep the exact Step 7 request body.
+  const body =
+    options?.inputType === "voice"
+      ? {
+          message,
+          input_type: "voice",
+          audio_metadata: options.audioMetadata,
+          transcript_edited: options.transcriptEdited ?? false,
+        }
+      : { message };
+  const { data } = await api.post<ApiEnvelope<SendMessageResult>>(
+    `/communication/sessions/${encodeURIComponent(sessionId)}/message`,
+    body
+  );
   return data.data;
 }
 

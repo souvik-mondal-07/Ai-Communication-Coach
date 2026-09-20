@@ -11,7 +11,7 @@ the shape of documents in `communication_scenarios` and
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Literal, TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 from bson import ObjectId
 
@@ -51,10 +51,15 @@ class CommunicationScenarioDocument(TypedDict):
     updated_at: datetime
 
 
-class CommunicationMessageDocument(TypedDict):
+class CommunicationMessageDocument(TypedDict, total=False):
     role: Literal["user", "assistant"]
     content: str
     timestamp: datetime
+    # Step 8 (absent on Step 7 messages, which are implicitly "text"):
+    input_type: Literal["text", "voice"]
+    # Deterministic speaking metrics for a spoken user message (transcript
+    # analysis + audio timing). Raw audio is never stored.
+    voice_analysis: dict
 
 
 class BetterResponseDocument(TypedDict):
@@ -77,6 +82,10 @@ class CommunicationEvaluationDocument(TypedDict):
     improvements: list[str]
     better_responses: list[BetterResponseDocument]
     summary: str
+    # Step 8: present only when the session included spoken messages —
+    # aggregated speaking metrics + blended clarity/grammar/vocabulary/
+    # conciseness scores + strengths/improvements.
+    voice_summary: NotRequired[dict]
 
 
 class CommunicationSessionDocument(TypedDict):

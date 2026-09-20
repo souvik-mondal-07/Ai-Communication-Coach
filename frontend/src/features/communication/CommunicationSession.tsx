@@ -1,14 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CommunicationChat } from "@/features/communication/CommunicationChat";
 import { EvaluationPanel } from "@/features/communication/EvaluationPanel";
 import { SessionControls } from "@/features/communication/SessionControls";
 import type { SessionDetail } from "@/features/communication/communicationTypes";
+import { InputModeToggle } from "@/features/voice/InputModeToggle";
+import type { InputMode, SendMessageOptions } from "@/features/voice/voiceTypes";
+import { isVoiceSupported } from "@/hooks/useVoice";
 
 interface CommunicationSessionProps {
   session: SessionDetail;
-  onSendMessage: (message: string) => Promise<void>;
+  onSendMessage: (message: string, options?: SendMessageOptions) => Promise<void>;
   onComplete: () => Promise<void>;
   isSendingMessage: boolean;
   isCompleting: boolean;
@@ -27,6 +31,11 @@ export function CommunicationSession({
 }: CommunicationSessionProps) {
   const navigate = useNavigate();
   const isCompleted = session.status === "completed";
+  const [searchParams] = useSearchParams();
+  const voiceSupported = isVoiceSupported();
+  const [inputMode, setInputMode] = useState<InputMode>(() =>
+    searchParams.get("input") === "voice" && voiceSupported ? "voice" : "text"
+  );
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
@@ -48,13 +57,20 @@ export function CommunicationSession({
 
       <Card>
         <CardContent className="py-4">
-          <div className="h-96">
+          {!isCompleted && (
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xs text-text-muted">How would you like to respond?</span>
+              <InputModeToggle value={inputMode} onChange={setInputMode} voiceSupported={voiceSupported} />
+            </div>
+          )}
+          <div className={inputMode === "voice" && !isCompleted ? "h-[30rem]" : "h-96"}>
             <CommunicationChat
               messages={session.messages}
               aiLabel={session.ai_role || "AI"}
               onSend={onSendMessage}
               isSending={isSendingMessage}
               disabled={isCompleted}
+              inputMode={isCompleted ? "text" : inputMode}
             />
           </div>
         </CardContent>
