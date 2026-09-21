@@ -26,11 +26,8 @@ function Metric({ label, value, hint }: { label: string; value: string; hint?: s
   );
 }
 
-export function SpeakingPerformancePanel({
-  voiceSummary: v,
-  overallScore,
-  conversationFlowScore,
-}: SpeakingPerformancePanelProps) {
+/** The "Speaking Metrics" tiles (rate, filler words, longest pause, words). Reused by the interview results. */
+export function SpeakingMetricsGrid({ voiceSummary: v }: { voiceSummary: VoiceSummary }) {
   const fillerHint = Object.entries(v.filler_words)
     .slice(0, 3)
     .map(([word, count]) => `“${word}” ×${count}`)
@@ -43,6 +40,28 @@ export function SpeakingPerformancePanel({
         ? "None detected"
         : `${v.longest_pause_seconds} sec`;
 
+  return (
+    <div>
+      <p className="mb-1.5 text-xs font-medium text-text-muted">Speaking Metrics</p>
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        <Metric
+          label="Speaking Rate"
+          value={v.average_speaking_rate_wpm === null ? "Not measured" : `${v.average_speaking_rate_wpm} WPM`}
+          hint={v.speaking_rate_label ? RATE_GUIDANCE[v.speaking_rate_label] : undefined}
+        />
+        <Metric label="Filler Words" value={String(v.total_filler_words)} hint={fillerHint || undefined} />
+        <Metric label="Longest Pause" value={pauseValue} />
+        <Metric label="Words Spoken" value={String(v.total_words_spoken)} />
+      </div>
+    </div>
+  );
+}
+
+export function SpeakingPerformancePanel({
+  voiceSummary: v,
+  overallScore,
+  conversationFlowScore,
+}: SpeakingPerformancePanelProps) {
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-text-primary">Speaking Performance</h3>
@@ -65,19 +84,7 @@ export function SpeakingPerformancePanel({
         <ScoreCard label="Conversation Flow" score={conversationFlowScore} />
       </div>
 
-      <div>
-        <p className="mb-1.5 text-xs font-medium text-text-muted">Speaking Metrics</p>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-          <Metric
-            label="Speaking Rate"
-            value={v.average_speaking_rate_wpm === null ? "Not measured" : `${v.average_speaking_rate_wpm} WPM`}
-            hint={v.speaking_rate_label ? RATE_GUIDANCE[v.speaking_rate_label] : undefined}
-          />
-          <Metric label="Filler Words" value={String(v.total_filler_words)} hint={fillerHint || undefined} />
-          <Metric label="Longest Pause" value={pauseValue} />
-          <Metric label="Words Spoken" value={String(v.total_words_spoken)} />
-        </div>
-      </div>
+      <SpeakingMetricsGrid voiceSummary={v} />
 
       <Card>
         <CardContent className="space-y-4 py-5">

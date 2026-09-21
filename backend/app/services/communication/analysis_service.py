@@ -484,3 +484,9 @@ class SpeakingAnalysisService:
 
 # Module-level singleton, matching the project's existing pattern.
 speaking_analysis_service = SpeakingAnalysisService()
+
+
+# Public names for other features (e.g. the interview simulator) that reuse the
+# Step 8 blending and prompt-formatting rather than reimplementing them.
+blend_scores = _blend
+format_metrics_for_prompt = _format_metrics_for_prompt

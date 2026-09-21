@@ -28,6 +28,7 @@ from app.services.communication.communication_service import (
     communication_service,
 )
 from app.services.communication.evaluation_service import EvaluationService, evaluation_service
+from app.services.interview.interview_service import InterviewService, interview_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
 from app.services.voice.voice_service import VoiceService, voice_service
 
@@ -143,3 +144,8 @@ def get_evaluation_service() -> EvaluationService:
 def get_voice_service() -> VoiceService:
     """FastAPI dependency for the voice (STT/TTS) service singleton."""
     return voice_service
+
+
+def get_interview_service() -> InterviewService:
+    """FastAPI dependency for the interview simulator service singleton."""
+    return interview_service

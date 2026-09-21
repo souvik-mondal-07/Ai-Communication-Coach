@@ -16,6 +16,7 @@ import CtfSession from "@/pages/CtfSession";
 import Communication from "@/pages/Communication";
 import CommunicationSessionPage from "@/pages/CommunicationSessionPage";
 import Interview from "@/pages/Interview";
+import InterviewSessionPage from "@/pages/InterviewSessionPage";
 import Practice from "@/pages/Practice";
 import Progress from "@/pages/Progress";
 import History from "@/pages/History";
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="/communication" element={<Communication />} />
           <Route path="/communication/:sessionId" element={<CommunicationSessionPage />} />
           <Route path="/interview" element={<Interview />} />
+          <Route path="/interview/:sessionId" element={<InterviewSessionPage />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/history" element={<History />} />
