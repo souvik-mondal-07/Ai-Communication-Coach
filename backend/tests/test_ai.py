@@ -169,36 +169,22 @@ class TestChatSuccess:
 
 class TestMissingApiKeyRealPath:
     """
-    Tests the real AIService/GeminiClient behavior when the API key
-    is unavailable.
-
-    The real .env API key is NOT changed. The test temporarily
-    overrides the in-memory setting only.
+    Exercises the real AIService/GeminiClient code (not a fake), with no
+    Gemini API key configured — the state this sandbox is actually in. No
+    network call happens: GeminiClient rejects before ever contacting Gemini.
     """
 
-    def test_generate_response_raises_configuration_error_without_key(
-        self, monkeypatch
-    ):
+    def test_generate_response_raises_configuration_error_without_key(self, monkeypatch):
         import asyncio
 
         from app.core.config import settings
         from app.services.ai.ai_service import AIConfigurationError, ai_service
 
-        # Temporarily simulate a missing API key for this test only.
         monkeypatch.setattr(settings, "gemini_api_key", "")
 
-        async def run():
-            try:
-                await ai_service.generate_response(
-                    user_message="Hello",
-                    history=[],
-                )
-            except AIConfigurationError:
-                return
+        with pytest.raises(AIConfigurationError):
+            asyncio.run(ai_service.generate_response(user_message="Hello"))
 
-            raise AssertionError("Expected AIConfigurationError")
-
-        asyncio.run(run())
 
 class TestChatFailureHandling:
 

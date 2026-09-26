@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
   { label: "CTF & Labs", path: "/ctf" },
   { label: "Communication", path: "/communication" },
   { label: "Interview", path: "/interview" },
+  { label: "Pressure Training", path: "/pressure-training" },
   { label: "Practice", path: "/practice" },
   { label: "Progress", path: "/progress" },
   { label: "History", path: "/history" },
