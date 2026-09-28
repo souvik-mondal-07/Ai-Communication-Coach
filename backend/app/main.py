@@ -21,6 +21,7 @@ from app.services.cybersecurity import ctf_service as ctf_service_module
 from app.services.communication import communication_service as communication_service_module
 from app.services.interview import interview_service as interview_service_module
 from app.services.pressure import pressure_service as pressure_service_module
+from app.services.progress import progress_service as progress_service_module
 from app.utils.helpers import success_response
 from app.utils.logger import get_logger
 
@@ -63,6 +64,10 @@ async def lifespan(_: FastAPI):
             pressure_service_module.pressure_service.ensure_indexes(db)
         except Exception:  # noqa: BLE001
             logger.warning("Could not ensure pressure session indexes", exc_info=True)
+        try:
+            progress_service_module.progress_service.ensure_indexes(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not ensure progress indexes", exc_info=True)
     yield
     mongodb.disconnect()
     logger.info("Shutdown complete")

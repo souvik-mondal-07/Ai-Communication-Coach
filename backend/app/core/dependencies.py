@@ -31,6 +31,7 @@ from app.services.communication.evaluation_service import EvaluationService, eva
 from app.services.interview.interview_service import InterviewService, interview_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
 from app.services.pressure.pressure_service import PressureService, pressure_service
+from app.services.progress.progress_service import ProgressService, progress_service
 from app.services.voice.voice_service import VoiceService, voice_service
 
 # auto_error=False so a missing header raises our own consistently-shaped
@@ -155,3 +156,8 @@ def get_interview_service() -> InterviewService:
 def get_pressure_service() -> PressureService:
     """FastAPI dependency for the pressure & nervousness training service singleton."""
     return pressure_service
+
+
+def get_progress_service() -> ProgressService:
+    """FastAPI dependency for the progress & personal AI profile service singleton."""
+    return progress_service

@@ -24,4 +24,5 @@ class Collections(StrEnum):
     CTF_SESSIONS = "ctf_sessions"
     USER_WEAKNESSES = "user_weaknesses"
     RECOMMENDATIONS = "recommendations"
+    PERSONAL_PROFILES = "personal_profiles"
     UPLOADED_DOCUMENTS = "uploaded_documents"
