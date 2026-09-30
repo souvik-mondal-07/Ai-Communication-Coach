@@ -16,10 +16,24 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.dependencies import get_db
+from app.db import mongodb
 from app.main import app
 from app.services.auth import auth_service
 from app.services.communication.communication_service import communication_service
 from app.services.cybersecurity.learning_service import learning_service
+from app.services.progress.progress_service import progress_service
+
+
+@pytest.fixture(autouse=True)
+def _no_real_mongodb(monkeypatch):
+    """
+    Never touch a real MongoDB during tests.
+
+    The app lifespan calls `mongodb.connect()`, which otherwise blocks for the
+    3s server-selection timeout on every test (and would run startup seeding
+    against a developer's real database if one happened to be running).
+    """
+    monkeypatch.setattr(mongodb, "connect", lambda: None)
 
 
 @pytest.fixture()
@@ -32,6 +46,7 @@ def fake_db():
     learning_service.ensure_seeded(db)
     communication_service.ensure_indexes(db)
     communication_service.ensure_seeded(db)
+    progress_service.ensure_indexes(db)
     return db
 
 

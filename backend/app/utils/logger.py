@@ -36,6 +36,11 @@ def _configure_root_logger() -> None:
     root.setLevel(level)
     root.handlers = [handler]
 
+    # Third-party HTTP/SDK loggers can emit request detail at DEBUG. Keep them
+    # at WARNING so credentials/headers/bodies can't reach the logs.
+    for noisy in ("httpx", "httpcore", "urllib3", "pymongo", "google_genai", "google.genai", "faster_whisper"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
+
     _CONFIGURED = True
 
 

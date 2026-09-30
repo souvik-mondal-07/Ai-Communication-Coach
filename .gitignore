@@ -1,42 +1,36 @@
-# --- Environment / secrets ---
+# --- Secrets / local environment (never commit) ---
 .env
-.env.local
-.env.*.local
-!*.env.example
+.env.*
+!.env.example
 
-# --- Python / backend ---
+# --- Python ---
+__pycache__/
+*.py[cod]
 .venv/
 venv/
-__pycache__/
-*.pyc
-*.pyo
 .pytest_cache/
 .mypy_cache/
-*.egg-info/
+.ruff_cache/
 
 # --- Node / frontend ---
 node_modules/
-dist/
-build/
-.vite/
-*.local
+frontend/dist/
+*.tsbuildinfo
 
-# --- Uploads (keep folder structure, ignore contents) ---
+# --- User-generated data (keep the folder structure only) ---
 uploads/*
-!uploads/resumes/
-!uploads/documents/
-!uploads/audio/
-uploads/resumes/*
-uploads/documents/*
-uploads/audio/*
+!uploads/**/
+uploads/**/*
 !uploads/**/.gitkeep
 
-# --- Editor / OS ---
-.vscode/
-.idea/
+# --- Local ML models (downloaded by scripts/download_whisper_model.py) ---
+models/
+*.bin
+*.onnx
+
+# --- OS / editor ---
 .DS_Store
 Thumbs.db
-
-# --- Logs ---
+.idea/
+.vscode/
 *.log
-npm-debug.log*

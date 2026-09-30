@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { setUnauthorizedHandler } from "@/services/api";
 import * as authService from "@/services/authService";
 import { clearStoredToken, getStoredToken, setStoredToken } from "@/services/tokenStorage";
 import type { User } from "@/types/auth";
@@ -87,3 +88,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   clearError: () => set({ error: null }),
 }));
+
+// A 401 on any protected request means the session is gone: reset state so the
+// route guard sends the user to /login.
+setUnauthorizedHandler(() => {
+  if (useAuthStore.getState().isAuthenticated) {
+    useAuthStore.setState({ user: null, accessToken: null, isAuthenticated: false });
+  }
+});

@@ -1,30 +1,28 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "@/components/common/AppLayout";
 import { FullScreenLoader } from "@/components/common/FullScreenLoader";
 import { ProtectedRoute } from "@/components/common/ProtectedRoute";
 import { PublicOnlyRoute } from "@/components/common/PublicOnlyRoute";
-import Login from "@/pages/auth/Login";
-import Register from "@/pages/auth/Register";
-import Dashboard from "@/pages/Dashboard";
-import Mentor from "@/pages/Mentor";
-import Cybersecurity from "@/pages/Cybersecurity";
-import CybersecurityTopic from "@/pages/CybersecurityTopic";
-import CybersecurityPractice from "@/pages/CybersecurityPractice";
-import CTF from "@/pages/CTF";
-import CtfSession from "@/pages/CtfSession";
-import Communication from "@/pages/Communication";
-import CommunicationSessionPage from "@/pages/CommunicationSessionPage";
-import Interview from "@/pages/Interview";
-import InterviewSessionPage from "@/pages/InterviewSessionPage";
-import PressureTraining from "@/pages/PressureTraining";
-import PressureSessionPage from "@/pages/PressureSessionPage";
-import Practice from "@/pages/Practice";
-import Progress from "@/pages/Progress";
-import History from "@/pages/History";
-import Profile from "@/pages/Profile";
-import Settings from "@/pages/Settings";
 import { useAuthStore } from "@/store/authStore";
+
+// Each page is its own chunk so the first load doesn't ship the whole app.
+const Login = lazy(() => import("@/pages/auth/Login"));
+const Register = lazy(() => import("@/pages/auth/Register"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Mentor = lazy(() => import("@/pages/Mentor"));
+const Cybersecurity = lazy(() => import("@/pages/Cybersecurity"));
+const CybersecurityTopic = lazy(() => import("@/pages/CybersecurityTopic"));
+const CybersecurityPractice = lazy(() => import("@/pages/CybersecurityPractice"));
+const CTF = lazy(() => import("@/pages/CTF"));
+const CtfSession = lazy(() => import("@/pages/CtfSession"));
+const Communication = lazy(() => import("@/pages/Communication"));
+const CommunicationSessionPage = lazy(() => import("@/pages/CommunicationSessionPage"));
+const Interview = lazy(() => import("@/pages/Interview"));
+const InterviewSessionPage = lazy(() => import("@/pages/InterviewSessionPage"));
+const PressureTraining = lazy(() => import("@/pages/PressureTraining"));
+const PressureSessionPage = lazy(() => import("@/pages/PressureSessionPage"));
+const Progress = lazy(() => import("@/pages/Progress"));
 
 export default function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -43,6 +41,7 @@ export default function App() {
   }
 
   return (
+    <Suspense fallback={<FullScreenLoader />}>
     <Routes>
       {/* Public routes — redirect to /dashboard if already authenticated */}
       <Route element={<PublicOnlyRoute />}>
@@ -66,16 +65,18 @@ export default function App() {
           <Route path="/interview/:sessionId" element={<InterviewSessionPage />} />
           <Route path="/pressure-training" element={<PressureTraining />} />
           <Route path="/pressure-training/:sessionId" element={<PressureSessionPage />} />
-          <Route path="/practice" element={<Practice />} />
+          {/* Placeholder-only pages are not linked in the nav; old URLs go to the real feature. */}
+          <Route path="/practice" element={<Navigate to="/cybersecurity" replace />} />
           <Route path="/progress" element={<Progress />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/history" element={<Navigate to="/progress" replace />} />
+          <Route path="/profile" element={<Navigate to="/progress" replace />} />
+          <Route path="/settings" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
+    </Suspense>
   );
 }

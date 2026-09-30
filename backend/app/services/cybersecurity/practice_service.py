@@ -185,6 +185,8 @@ class PracticeService:
         collection.create_index("user_id")
         collection.create_index("started_at")
         collection.create_index("topic_slug")
+        # History listing: the caller's sessions, newest first.
+        collection.create_index([("user_id", 1), ("started_at", -1)])
 
     # --- Question generation -------------------------------------------------
 

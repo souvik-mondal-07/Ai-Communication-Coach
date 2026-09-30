@@ -72,8 +72,8 @@ _AI_ERRORS = (AIServiceError, QuestionGenerationError, InterviewEvaluationError)
 
 
 @router.get("/config")
-def get_config() -> dict:
-    """Public pressure-level descriptions for the setup screen (no internal probabilities)."""
+def get_config(_: UserDocument = Depends(get_current_user)) -> dict:
+    """Pressure-level descriptions for the setup screen (no internal probabilities)."""
     return success_response(message="Pressure levels", data={"levels": public_levels()})
 
 

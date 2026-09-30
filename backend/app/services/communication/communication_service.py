@@ -100,6 +100,8 @@ class CommunicationService:
         sessions.create_index("scenario_id")
         sessions.create_index("started_at")
         sessions.create_index("status")
+        # History listing: the caller's sessions, newest first.
+        sessions.create_index([("user_id", 1), ("started_at", -1)])
 
     def ensure_seeded(self, db: Database) -> None:
         """Upsert the starter scenario dataset by slug. Safe to call every startup."""

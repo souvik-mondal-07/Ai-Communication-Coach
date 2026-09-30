@@ -72,8 +72,11 @@ def _finish(client, headers, sid, limit=80):
 
 
 class TestConfig:
+    def test_config_requires_authentication(self, client):
+        assert client.get("/api/v1/pressure/config").status_code == 401
+
     def test_returns_five_levels_without_internal_probabilities(self, client):
-        response = client.get("/api/v1/pressure/config")
+        response = client.get("/api/v1/pressure/config", headers=_auth(client, "cfg@example.com"))
         assert response.status_code == 200
         levels = response.json()["data"]["levels"]
         assert [lvl["pressure_level"] for lvl in levels] == [1, 2, 3, 4, 5]

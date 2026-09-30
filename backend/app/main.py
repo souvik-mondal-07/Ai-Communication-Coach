@@ -73,9 +73,13 @@ async def lifespan(_: FastAPI):
     logger.info("Shutdown complete")
 
 
+# `debug` is deliberately NOT passed through: Starlette's debug mode takes
+# precedence over the custom 500 handler and would return a full Python
+# traceback (paths, code, exception text) to the client. `settings.debug`
+# only controls log verbosity; tracebacks stay in the server log.
 app = FastAPI(
     title=settings.app_name,
-    debug=settings.debug,
+    debug=False,
     lifespan=lifespan,
 )
 
