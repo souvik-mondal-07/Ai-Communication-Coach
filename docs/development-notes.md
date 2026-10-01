@@ -763,3 +763,10 @@ Pressure & Nervousness Training, Step 11 — Progress & Personal AI Profile.
 dashboard, and conversation persistence for the general Mentor chat (the
 Mentor's chat history still lives in frontend state only). These arrive in
 Step 12 or later.
+
+## Step 13 — Real-time voice conversation (turn-based)
+
+- Backend: `app/services/voice_conversation/` (`conversation_service`, `conversation_engine`, `session_manager`, `prompts`, `audio_store`), `api/routes/voice_conversation.py`, `schemas/voice_conversation.py`; collection `voice_conversation_sessions` (indexes: `user_id+started_at`, `user_id+status`).
+- Reuses Step 8 `VoiceService` (STT/TTS), the shared `AIService`, Step 9 `InterviewService`, Step 10 `PressureService`, Step 7 communication + evaluation services, and Step 11 `get_mentor_context`. Interview/pressure/communication voice sessions wrap real Step 9/10/7 sessions, so progress aggregation needs no changes.
+- Frontend: `/voice-conversation`, `/voice-conversation/:sessionId`; `features/voice-conversation/`, `useAnswerRecorder`, `useAiAudio`, `voiceConversationStore`, `voiceConversationService`.
+- Turn-based (record → upload → transcribe → generate → synthesize → play); not streaming.

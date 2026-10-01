@@ -71,6 +71,22 @@ class Settings(BaseSettings):
     # Optional override for OpenAI-compatible servers (self-hosted TTS etc.)
     tts_base_url: str = ""
 
+    # --- Voice conversation (Step 13) ---
+    # Longest single spoken answer accepted in a voice conversation. Checked
+    # against the transcribed audio duration (VOICE_MAX_AUDIO_SECONDS stays the
+    # global hard ceiling used by the Step 8 pipeline).
+    voice_max_recording_seconds: int = 120
+    # Exchanges (AI turn + user turn) of history sent to Gemini each turn.
+    # Older turns stay in MongoDB. AIService itself caps history at 40 messages.
+    voice_conversation_max_turns: int = 20
+    # User answers allowed in one voice session before it is completed
+    # automatically (protects against unbounded, expensive sessions).
+    voice_conversation_max_session_turns: int = 40
+    # How long a generated AI audio clip stays fetchable (in memory only).
+    voice_audio_url_ttl_seconds: int = 120
+    # Hint to the UI: try to play AI speech automatically (browsers may block it).
+    voice_auto_play: bool = True
+
     # --- Speaking analysis (Step 8) ---
     # Comma-separated override for the filler-word list. Empty = built-in list.
     filler_words: str = ""

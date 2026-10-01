@@ -33,6 +33,10 @@ from app.services.mentor.mentor_service import MentorService, mentor_service
 from app.services.pressure.pressure_service import PressureService, pressure_service
 from app.services.progress.progress_service import ProgressService, progress_service
 from app.services.voice.voice_service import VoiceService, voice_service
+from app.services.voice_conversation.conversation_service import (
+    VoiceConversationService,
+    voice_conversation_service,
+)
 
 # auto_error=False so a missing header raises our own consistently-shaped
 # 401 response instead of FastAPI's default one.
@@ -161,3 +165,8 @@ def get_pressure_service() -> PressureService:
 def get_progress_service() -> ProgressService:
     """FastAPI dependency for the progress & personal AI profile service singleton."""
     return progress_service
+
+
+def get_voice_conversation_service() -> VoiceConversationService:
+    """FastAPI dependency for the real-time voice conversation service singleton."""
+    return voice_conversation_service

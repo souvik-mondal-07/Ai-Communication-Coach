@@ -20,7 +20,7 @@ const MIME_CANDIDATES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "a
 
 export const MIC_DENIED_MESSAGE =
   "Microphone access is required for voice practice. Please allow microphone access in your browser settings.";
-const UNSUPPORTED_MESSAGE =
+export const UNSUPPORTED_MESSAGE =
   "Voice recording isn't supported here. It needs a modern browser and a secure (https or localhost) connection. You can still practise in text mode.";
 
 /** True when this browser can record audio (MediaRecorder + getUserMedia). */
@@ -32,12 +32,12 @@ export function isVoiceSupported(): boolean {
   );
 }
 
-function pickMimeType(): string | undefined {
+export function pickMimeType(): string | undefined {
   if (typeof MediaRecorder.isTypeSupported !== "function") return undefined;
   return MIME_CANDIDATES.find((type) => MediaRecorder.isTypeSupported(type));
 }
 
-function micErrorMessage(err: unknown): { permission: MicPermission; message: string } {
+export function micErrorMessage(err: unknown): { permission: MicPermission; message: string } {
   const name = err instanceof DOMException ? err.name : "";
   if (name === "NotAllowedError" || name === "SecurityError" || name === "PermissionDeniedError") {
     return { permission: "denied", message: MIC_DENIED_MESSAGE };

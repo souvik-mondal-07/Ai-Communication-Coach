@@ -17,6 +17,7 @@ training composure under pressure, and tracking how you improve over time.
 | **CTF & Labs** | Guidance-only mentor with staged hints (hint 1 → 3 → solution). |
 | **Communication coach** | Scenario-based role-play with evaluation and feedback. |
 | **Voice** | Local speech-to-text (faster-whisper), optional text-to-speech, speaking analysis (pace, fillers, pauses). |
+| **Voice conversation** | Turn-based spoken conversation with the AI mentor in six modes (general, cybersecurity, practice, communication, interview, pressure): the AI speaks, you answer by microphone, it transcribes, responds and speaks again. |
 | **Interview simulator** | HR / technical interviews with per-answer and final evaluation. |
 | **Pressure training** | Five pressure levels (interruptions, follow-ups) for building composure. |
 | **Progress & profile** | Skill breakdown, trends, detected weaknesses, recommendations and an AI-written personal profile that ties every module together. |
@@ -105,6 +106,7 @@ Backend (`backend/.env`; copy from `.env.example`, which holds placeholders only
 | `JWT_ALGORITHM`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | Token settings (HS256, 60 min). |
 | `WHISPER_MODEL`, `WHISPER_DEVICE`, `WHISPER_COMPUTE_TYPE`, `WHISPER_LANGUAGE` | Local speech-to-text. |
 | `VOICE_MAX_AUDIO_BYTES`, `VOICE_MAX_AUDIO_SECONDS`, `VOICE_TEMP_DIR` | Upload limits (10 MB / 300 s by default). |
+| `VOICE_MAX_RECORDING_SECONDS`, `VOICE_CONVERSATION_MAX_TURNS`, `VOICE_CONVERSATION_MAX_SESSION_TURNS`, `VOICE_AUDIO_URL_TTL_SECONDS`, `VOICE_AUTO_PLAY` | Voice conversation limits (120 s per answer, 20 exchanges of history sent to Gemini, 40 answers per session, 120 s audio-clip lifetime). |
 | `TTS_PROVIDER` (`openai`\|`google`), `TTS_API_KEY`, `TTS_MODEL`, `TTS_VOICE`, `TTS_BASE_URL` | Optional spoken replies. Leave `TTS_PROVIDER` empty to disable. |
 
 Frontend (`frontend/.env`): only `VITE_API_BASE_URL`. **Never put secrets in
@@ -124,11 +126,76 @@ All routes are under `/api/v1`, return `{success, message, data}` (errors:
 | `ctf` | `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/chat`, `GET /sessions/{id}/hint`, `POST /sessions/{id}/complete` |
 | `communication` | `GET /scenarios`, `GET /scenarios/{slug}`, `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/message`, `POST /sessions/{id}/complete` |
 | `voice` | `POST /transcribe`, `POST /synthesize` |
+| `voice-conversation` | `GET /config`, `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/start`, `POST /sessions/{id}/transcribe` (multipart `audio` → transcript), `POST /sessions/{id}/respond` (JSON transcript → AI turn), `POST /sessions/{id}/end`, `GET /audio/{token}` |
 | `interview` | `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/answer`, `POST /sessions/{id}/complete` |
 | `pressure` | `GET /config`, `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/response`, `POST /sessions/{id}/complete` |
 | `progress` | `GET /overview`, `/skills`, `/trends`, `/weaknesses`, `/recommendations`, `/activity`, `/profile`; `POST /recalculate`, `POST /recommendations/{id}/complete` |
 
 Interactive docs: `http://localhost:8000/docs`.
+
+## Real-time voice conversation
+
+A spoken back-and-forth with the mentor at `/voice-conversation`.
+
+**This is turn-based, not full-duplex streaming.** Each turn is
+record → transcribe → generate → synthesize → play. Expect a few
+seconds of latency per turn (Whisper, then Gemini + TTS). You press the
+microphone to answer and press it again to stop; there is no Send button —
+stopping starts transcription, and the transcript is submitted to the AI
+automatically. The microphone is never open on its own.
+
+Transcription and the AI reply are **two separate requests**, so speech-to-text
+runs exactly once per recording:
+
+```text
+Microphone → MediaRecorder → POST /voice-conversation/sessions/{id}/transcribe   (audio)
+   → Step 8 VoiceService (validate, temp file, faster-whisper, delete) → transcript
+   → blank? "I couldn't hear a clear response. Please try again."  (nothing goes further)
+   → POST /voice-conversation/sessions/{id}/respond                              (JSON transcript, no audio)
+   → ConversationEngine → Gemini (free-form modes) | Step 9 | Step 10 | Step 7
+   → Step 8 TTS → short-lived audio token → browser <audio>
+```
+
+The page shows five distinct states: *Listening*, *Transcribing*,
+*Processing your answer*, *AI is speaking*, *Ready for your response*. If the AI
+step fails after a successful transcription, the transcript is kept and
+**Retry response** re-submits that same text to `/respond` — no audio is
+re-sent and Whisper does not run again. Duplicate protection: the server takes
+a per-session lock and checks `expected_turn` on both requests, and the client
+ignores a recording it has already handed in.
+
+| Mode | What drives it |
+| --- | --- |
+| general, cybersecurity, practice | Gemini via the shared `AIService` with spoken-style prompts; compact Step 11 profile context (strong/weak areas) personalises questions |
+| interview | A real Step 9 interview session (questions, follow-ups, evaluation) with `mode="voice"` |
+| pressure | A real Step 10 pressure session; the pressure engine picks interruptions, topic switches and timing |
+| communication | A real Step 7 role-play session; ending it runs the Step 7 evaluation (with Step 8 speaking analysis) |
+
+Because interview, pressure and communication conversations *are* Step 9/10/7
+sessions, their evaluations and history feed Step 11 progress without a second
+progress system. Voice sessions themselves are stored in
+`voice_conversation_sessions` (indexed on `user_id + started_at` and
+`user_id + status`) and are owned by the JWT user.
+
+**Requirements:** a microphone and a browser with `MediaRecorder`
+(current Chrome, Edge, Firefox, Safari 14.1+), served over HTTPS or
+`localhost`; Gemini key; `faster-whisper` installed. Spoken AI replies need a
+`TTS_PROVIDER`; without one the conversation still works with text replies.
+Accepted upload formats are those of Step 8: WebM/Opus, Ogg, MP4/M4A, WAV, MP3.
+
+**Privacy:** uploaded audio exists only in a private temp file during
+transcription and is deleted immediately (also on errors). AI speech is kept in
+server memory for `VOICE_AUDIO_URL_TTL_SECONDS`, bound to your account, and
+never written to disk or the database. Transcripts and audio are not logged.
+Transcripts are saved in the session so you can resume or review it.
+
+**Known limitations**
+
+- Turn-based latency; no barge-in (you cannot interrupt the AI by speaking).
+- Autoplay may be blocked by the browser; a Play button is then shown.
+- The audio-clip store is per process: run a single uvicorn worker (or sticky routing).
+- A recording in progress is lost if the page is closed; the session itself can be resumed.
+- Long silences are not auto-detected: press Stop when you finish speaking.
 
 ## Testing
 

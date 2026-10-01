@@ -179,7 +179,11 @@ class SpeechToTextService:
                 # server-side problem and must not be blamed on the user's audio.
                 if _is_decode_error(exc):
                     raise MalformedAudioError("The audio could not be decoded.") from exc
-                logger.error("Transcription failed: %s", type(exc).__name__)
+                logger.exception(
+                "Transcription failed: %s: %s",
+                type(exc).__name__,
+                    exc,
+                    )
                 raise TranscriptionFailedError("Transcription failed.") from exc
 
         segments: list[TranscribedSegment] = []

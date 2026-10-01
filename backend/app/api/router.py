@@ -22,6 +22,7 @@ from app.api.routes import (
     progress,
     users,
     voice,
+    voice_conversation,
 )
 
 api_router = APIRouter()
@@ -38,3 +39,4 @@ api_router.include_router(interview.router)
 api_router.include_router(pressure.router)
 api_router.include_router(voice.router)
 api_router.include_router(progress.router)
+api_router.include_router(voice_conversation.router)

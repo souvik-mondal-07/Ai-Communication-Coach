@@ -22,6 +22,8 @@ const Interview = lazy(() => import("@/pages/Interview"));
 const InterviewSessionPage = lazy(() => import("@/pages/InterviewSessionPage"));
 const PressureTraining = lazy(() => import("@/pages/PressureTraining"));
 const PressureSessionPage = lazy(() => import("@/pages/PressureSessionPage"));
+const VoiceConversation = lazy(() => import("@/pages/VoiceConversation"));
+const VoiceConversationSessionPage = lazy(() => import("@/pages/VoiceConversationSessionPage"));
 const Progress = lazy(() => import("@/pages/Progress"));
 
 export default function App() {
@@ -66,6 +68,9 @@ export default function App() {
           <Route path="/pressure-training" element={<PressureTraining />} />
           <Route path="/pressure-training/:sessionId" element={<PressureSessionPage />} />
           {/* Placeholder-only pages are not linked in the nav; old URLs go to the real feature. */}
+          <Route path="/voice-conversation" element={<VoiceConversation />} />
+          <Route path="/voice-conversation/:sessionId" element={<VoiceConversationSessionPage />} />
+
           <Route path="/practice" element={<Navigate to="/cybersecurity" replace />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/history" element={<Navigate to="/progress" replace />} />

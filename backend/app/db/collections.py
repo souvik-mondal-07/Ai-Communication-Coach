@@ -16,6 +16,7 @@ class Collections(StrEnum):
     INTERVIEW_SESSIONS = "interview_sessions"
     INTERVIEW_ANSWERS = "interview_answers"
     PRESSURE_SESSIONS = "pressure_sessions"
+    VOICE_CONVERSATION_SESSIONS = "voice_conversation_sessions"
     COMMUNICATION_SCENARIOS = "communication_scenarios"
     COMMUNICATION_SESSIONS = "communication_sessions"
     LEARNING_PROGRESS = "learning_progress"

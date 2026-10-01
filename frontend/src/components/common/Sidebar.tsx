@@ -1,4 +1,4 @@
-import { Bot, Flag, Gauge, LayoutDashboard, MessagesSquare, Mic, ShieldHalf, TrendingUp, X } from "lucide-react";
+import { Bot, Flag, Gauge, LayoutDashboard, MessagesSquare, AudioLines, Mic, ShieldHalf, TrendingUp, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/appStore";
@@ -16,6 +16,7 @@ const NAV_SECTIONS = [
       { label: "Cybersecurity", path: "/cybersecurity", icon: ShieldHalf },
       { label: "CTF & Labs", path: "/ctf", icon: Flag },
       { label: "Communication", path: "/communication", icon: MessagesSquare },
+      { label: "Voice Conversation", path: "/voice-conversation", icon: AudioLines },
       { label: "Interview", path: "/interview", icon: Mic },
       { label: "Pressure Training", path: "/pressure-training", icon: Gauge },
     ],

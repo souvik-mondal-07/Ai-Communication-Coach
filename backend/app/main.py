@@ -22,6 +22,7 @@ from app.services.communication import communication_service as communication_se
 from app.services.interview import interview_service as interview_service_module
 from app.services.pressure import pressure_service as pressure_service_module
 from app.services.progress import progress_service as progress_service_module
+from app.services.voice_conversation import conversation_service as voice_conversation_module
 from app.utils.helpers import success_response
 from app.utils.logger import get_logger
 
@@ -68,6 +69,10 @@ async def lifespan(_: FastAPI):
             progress_service_module.progress_service.ensure_indexes(db)
         except Exception:  # noqa: BLE001
             logger.warning("Could not ensure progress indexes", exc_info=True)
+        try:
+            voice_conversation_module.voice_conversation_service.ensure_indexes(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not ensure voice conversation indexes", exc_info=True)
     yield
     mongodb.disconnect()
     logger.info("Shutdown complete")
