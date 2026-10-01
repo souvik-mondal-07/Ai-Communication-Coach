@@ -26,6 +26,7 @@ python-multipart==0.0.32
 # Local speech-to-text. Imported lazily: the app still starts (and text mode
 # still works) if the model can't be loaded.
 faster-whisper==1.2.1
+av==15.1.0
 # Async HTTP client for cloud text-to-speech providers (also used by TestClient)
 httpx==0.28.1
 
