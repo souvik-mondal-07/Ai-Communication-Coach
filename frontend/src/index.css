@@ -66,3 +66,21 @@ h1, h2, h3, h4, h5, h6 {
   outline: 2px solid var(--color-signal);
   outline-offset: 2px;
 }
+
+/* Light theme (Step 14). Overrides the @theme tokens above; selected via <html data-theme="light">. */
+html[data-theme="light"] {
+  color-scheme: light;
+  --color-base: #f4f6f9;
+  --color-surface: #ffffff;
+  --color-surface-raised: #edf1f5;
+  --color-border: #d8dfe7;
+  --color-border-strong: #bcc7d4;
+  --color-text-primary: #111a24;
+  --color-text-secondary: #3f4b5b;
+  --color-text-muted: #667284;
+  --color-signal: #0d8576;
+  --color-signal-dim: #0d8576;
+  --color-warn: #b86e00;
+  --color-danger: #c9302f;
+  --color-link: #4452c9;
+}

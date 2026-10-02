@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 
 from bson import ObjectId
 from bson.errors import InvalidId
+from pymongo import ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import DuplicateKeyError
 
@@ -102,3 +103,28 @@ def to_public_user(user: UserDocument) -> dict:
         "name": user["name"],
         "email": user["email"],
     }
+
+
+# --------------------------------------------------------------------------- Step 14
+def update_user_fields(
+    db: Database, user_id: ObjectId, fields: dict
+) -> UserDocument | None:
+    """
+    `$set` the given fields on exactly one user, selected by the authenticated
+    user's own `_id`, and return the updated document.
+
+    Callers pass keys that were validated against an explicit allow-list
+    (see `profile_service`); `updated_at` is always refreshed here. Dotted keys
+    such as "profile.bio" work on users created before Step 14 because MongoDB
+    creates the missing sub-document.
+    """
+    return db[Collections.USERS].find_one_and_update(
+        {"_id": user_id},
+        {"$set": {**fields, "updated_at": datetime.now(timezone.utc)}},
+        return_document=ReturnDocument.AFTER,
+    )
+
+
+def update_password(db: Database, user_id: ObjectId, new_password: str) -> None:
+    """Hash with the shared Argon2 hasher and store. The plaintext is never persisted or logged."""
+    update_user_fields(db, user_id, {"password_hash": hash_password(new_password)})

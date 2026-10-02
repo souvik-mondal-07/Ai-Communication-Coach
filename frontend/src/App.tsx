@@ -25,6 +25,8 @@ const PressureSessionPage = lazy(() => import("@/pages/PressureSessionPage"));
 const VoiceConversation = lazy(() => import("@/pages/VoiceConversation"));
 const VoiceConversationSessionPage = lazy(() => import("@/pages/VoiceConversationSessionPage"));
 const Progress = lazy(() => import("@/pages/Progress"));
+const Profile = lazy(() => import("@/pages/Profile"));
+const Settings = lazy(() => import("@/pages/Settings"));
 
 export default function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -74,8 +76,8 @@ export default function App() {
           <Route path="/practice" element={<Navigate to="/cybersecurity" replace />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/history" element={<Navigate to="/progress" replace />} />
-          <Route path="/profile" element={<Navigate to="/progress" replace />} />
-          <Route path="/settings" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
 

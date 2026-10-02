@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "@/components/common/Sidebar";
 import { Header } from "@/components/common/Header";
+import { useAuthStore } from "@/store/authStore";
+import { useProfileStore } from "@/store/profileStore";
 import { NAV_ITEMS } from "@/utils/constants";
 
 function pageTitleForPath(pathname: string): string {
@@ -10,6 +13,14 @@ function pageTitleForPath(pathname: string): string {
 
 export function AppLayout() {
   const location = useLocation();
+  const userId = useAuthStore((s) => s.user?.id);
+  const loadProfile = useProfileStore((s) => s.loadProfile);
+
+  // Load the profile once per signed-in user so the saved theme is applied
+  // everywhere and Profile/Settings open instantly.
+  useEffect(() => {
+    if (userId) void loadProfile();
+  }, [userId, loadProfile]);
 
   return (
     <div className="min-h-screen bg-base">

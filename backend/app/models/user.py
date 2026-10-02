@@ -11,7 +11,7 @@ over the API.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TypedDict
+from typing import Any, NotRequired, TypedDict
 
 from bson import ObjectId
 
@@ -26,3 +26,8 @@ class UserDocument(TypedDict):
     created_at: datetime
     updated_at: datetime
     is_active: bool
+    # Step 14 — optional so documents created before Step 14 stay valid. Missing
+    # values are filled with safe defaults when read (see profile_service).
+    # The display name stays in the existing top-level `name` field.
+    profile: NotRequired[dict[str, Any]]
+    preferences: NotRequired[dict[str, Any]]

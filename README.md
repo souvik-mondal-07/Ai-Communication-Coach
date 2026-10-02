@@ -21,6 +21,7 @@ training composure under pressure, and tracking how you improve over time.
 | **Interview simulator** | HR / technical interviews with per-answer and final evaluation. |
 | **Pressure training** | Five pressure levels (interruptions, follow-ups) for building composure. |
 | **Progress & profile** | Skill breakdown, trends, detected weaknesses, recommendations and an AI-written personal profile that ties every module together. |
+| **Profile & account** | Editable profile (education, career goal, experience, interests, learning goals), mentor/learning/interview preferences, light/dark/system theme, profile-completion meter and secure password change. Stored on the existing user document for later personalization. |
 
 ## Architecture
 

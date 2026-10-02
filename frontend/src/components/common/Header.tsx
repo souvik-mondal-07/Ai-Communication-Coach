@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { LogOut, Menu, UserCircle2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { LogOut, Menu, Settings, UserCircle2, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -59,6 +59,22 @@ export function Header({ title }: HeaderProps) {
                   <p className="truncate text-xs text-text-muted">{user.email}</p>
                 </div>
               )}
+              <Link
+                to="/profile"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+              >
+                <UserRound size={15} />
+                Profile
+              </Link>
+              <Link
+                to="/settings"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+              >
+                <Settings size={15} />
+                Settings
+              </Link>
               <button
                 type="button"
                 onClick={handleLogout}

@@ -17,6 +17,8 @@ interface AuthState {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loadCurrentUser: () => Promise<void>;
+  /** Update fields of the signed-in user in place (e.g. after a profile edit) without touching the session. */
+  patchUser: (changes: Partial<Pick<User, "name">>) => void;
   clearError: () => void;
 }
 
@@ -85,6 +87,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
   },
+
+  patchUser: (changes) =>
+    set((state) => (state.user ? { user: { ...state.user, ...changes } } : state)),
 
   clearError: () => set({ error: null }),
 }));
