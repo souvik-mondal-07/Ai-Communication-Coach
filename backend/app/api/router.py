@@ -16,6 +16,7 @@ from app.api.routes import (
     ctf,
     cybersecurity,
     health,
+    history,
     interview,
     mentor,
     pressure,
@@ -40,3 +41,4 @@ api_router.include_router(pressure.router)
 api_router.include_router(voice.router)
 api_router.include_router(progress.router)
 api_router.include_router(voice_conversation.router)
+api_router.include_router(history.router)

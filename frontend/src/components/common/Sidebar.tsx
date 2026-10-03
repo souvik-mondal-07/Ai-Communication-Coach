@@ -1,4 +1,4 @@
-import { Bot, Flag, Gauge, LayoutDashboard, MessagesSquare, AudioLines, Mic, Settings, ShieldHalf, TrendingUp, UserRound, X } from "lucide-react";
+import { Bot, Flag, Gauge, History, LayoutDashboard, MessagesSquare, AudioLines, Mic, Settings, ShieldHalf, TrendingUp, UserRound, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/appStore";
@@ -25,6 +25,7 @@ const NAV_SECTIONS = [
     heading: "Track",
     items: [
       { label: "Progress", path: "/progress", icon: TrendingUp },
+      { label: "History", path: "/history", icon: History },
     ],
   },
   {

@@ -28,6 +28,7 @@ from app.services.communication.communication_service import (
     communication_service,
 )
 from app.services.communication.evaluation_service import EvaluationService, evaluation_service
+from app.services.history.history_service import HistoryService, history_service
 from app.services.interview.interview_service import InterviewService, interview_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
 from app.services.pressure.pressure_service import PressureService, pressure_service
@@ -170,3 +171,8 @@ def get_progress_service() -> ProgressService:
 def get_voice_conversation_service() -> VoiceConversationService:
     """FastAPI dependency for the real-time voice conversation service singleton."""
     return voice_conversation_service
+
+
+def get_history_service() -> HistoryService:
+    """FastAPI dependency for the History & Activity Center service singleton."""
+    return history_service

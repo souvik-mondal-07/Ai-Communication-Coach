@@ -24,6 +24,8 @@ const PressureTraining = lazy(() => import("@/pages/PressureTraining"));
 const PressureSessionPage = lazy(() => import("@/pages/PressureSessionPage"));
 const VoiceConversation = lazy(() => import("@/pages/VoiceConversation"));
 const VoiceConversationSessionPage = lazy(() => import("@/pages/VoiceConversationSessionPage"));
+const History = lazy(() => import("@/pages/History"));
+const HistoryDetail = lazy(() => import("@/pages/HistoryDetail"));
 const Progress = lazy(() => import("@/pages/Progress"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Settings = lazy(() => import("@/pages/Settings"));
@@ -75,7 +77,8 @@ export default function App() {
 
           <Route path="/practice" element={<Navigate to="/cybersecurity" replace />} />
           <Route path="/progress" element={<Progress />} />
-          <Route path="/history" element={<Navigate to="/progress" replace />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/history/:type/:id" element={<HistoryDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
