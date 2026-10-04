@@ -770,3 +770,14 @@ Step 12 or later.
 - Reuses Step 8 `VoiceService` (STT/TTS), the shared `AIService`, Step 9 `InterviewService`, Step 10 `PressureService`, Step 7 communication + evaluation services, and Step 11 `get_mentor_context`. Interview/pressure/communication voice sessions wrap real Step 9/10/7 sessions, so progress aggregation needs no changes.
 - Frontend: `/voice-conversation`, `/voice-conversation/:sessionId`; `features/voice-conversation/`, `useAnswerRecorder`, `useAiAudio`, `voiceConversationStore`, `voiceConversationService`.
 - Turn-based (record → upload → transcribe → generate → synthesize → play); not streaming.
+
+## Step 16 — Adaptive AI Mentor & Personalized Learning
+
+- Backend: `app/services/personalization/` (`performance_service`, `weakness_service`, `recommendation_service`, `personalization_service`), `api/routes/personalization.py`. **No new collection**: everything is derived on request from existing practice/CTF/interview/communication/pressure data and the Step 14 profile/preferences. The Gemini service and model are unchanged.
+- Endpoints (authenticated, read-only, user from the JWT): `GET /api/v1/personalization/profile`, `/recommendations`, `/weaknesses`.
+- Classification reuses the Step 11 thresholds (weak < 60, strong >= 80, at least 3 completed practice sessions). Trends need at least 4 sessions. Adaptive difficulty starts from the stated experience level and moves at most one level, only with enough evidence; a fixed difficulty preference is always honoured.
+- Recommendations carry user-facing `reasons` and a `basis` (`performance` or `profile`); with no history they are profile-based and say so.
+- Mentor: `POST /mentor/chat` passes a bounded context (<= 3 strengths/weaknesses/recent topics, career goal capped at 100 chars on one line, styles, suggested depth) via a 30s per-process cache; it falls back to the Step 11 context. No raw history or transcripts are sent.
+- Frontend: `types/personalization.ts`, `services/personalizationService.ts`, `features/personalization/LearningFocusCard.tsx` (Dashboard), a "Personalized for you" line in `MentorChat`, and `?difficulty=` handling on the topic page.
+- Deliberately unchanged: the Step 13 voice conversation still uses the Step 11 `get_mentor_context` (it persists context on the session and takes only a user id), to avoid touching the live voice path.
+- Tests: `cd backend && pytest tests/test_personalization.py -v`.

@@ -14,7 +14,13 @@ import time
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.core.dependencies import get_current_user, get_db, get_mentor_service, get_progress_service
+from app.core.dependencies import (
+    get_current_user,
+    get_db,
+    get_mentor_service,
+    get_personalization_service,
+    get_progress_service,
+)
 from app.models.user import UserDocument
 from app.schemas.mentor import MentorChatRequest
 from app.services.ai.ai_service import (
@@ -24,6 +30,7 @@ from app.services.ai.ai_service import (
     ConversationTurn,
 )
 from app.services.mentor.mentor_service import MentorService
+from app.services.personalization.personalization_service import PersonalizationService
 from app.services.progress.progress_service import ProgressService
 from app.utils.helpers import success_response
 from app.utils.logger import get_logger
@@ -51,6 +58,7 @@ async def chat(
     service: MentorService = Depends(get_mentor_service),
     db: Database = Depends(get_db),
     progress_service_: ProgressService = Depends(get_progress_service),
+    personalization_: PersonalizationService = Depends(get_personalization_service),
 ) -> dict:
     user_id = str(current_user["_id"])
     history = [
@@ -58,14 +66,15 @@ async def chat(
         for item in payload.conversation_history
     ]
 
-    # Step 11: personalize with the learner's compact progress context.
-    # Best-effort only -- a profile lookup failure must never break the
-    # mentor chat itself.
-    mentor_context: dict | None = None
-    try:
-        mentor_context = progress_service_.get_mentor_context(db, user_id=user_id)
-    except Exception:  # noqa: BLE001
-        logger.warning("Could not load mentor context user_id=%s", user_id, exc_info=True)
+    # Step 16: personalize with the bounded profile + performance context
+    # (never raw history). Falls back to the Step 11 progress context, and
+    # both are best-effort -- personalization must never break the chat.
+    mentor_context: dict | None = personalization_.build_mentor_context(db, user=current_user)
+    if mentor_context is None:
+        try:
+            mentor_context = progress_service_.get_mentor_context(db, user_id=user_id)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not load mentor context user_id=%s", user_id, exc_info=True)
 
     # Metadata only — never the message content, which may contain
     # sensitive details the user is troubleshooting with.

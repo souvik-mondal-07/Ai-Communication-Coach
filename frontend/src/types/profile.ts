@@ -55,7 +55,7 @@ export const LEARNING_DIFFICULTIES = [
   { value: "beginner", label: "Beginner" },
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced", label: "Advanced" },
-  { value: "adaptive", label: "Adaptive", description: "Saved now; automatic adjustment arrives in a later update." },
+  { value: "adaptive", label: "Adaptive", description: "The mentor adjusts difficulty gradually from your recent results." },
 ] as const satisfies readonly Option[];
 
 export const LEARNING_STYLES = [

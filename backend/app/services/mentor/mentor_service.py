@@ -82,16 +82,35 @@ def _build_mentor_context_block(mentor_context: dict) -> str:
     recent = ", ".join(mentor_context.get("recent_focus") or []) or "none yet"
     recommended = ", ".join(mentor_context.get("recommended_focus") or []) or "none yet"
     level = mentor_context.get("technical_level", "beginner")
-    return (
-        "LEARNER CONTEXT (from this user's personal progress profile -- use it to "
+    lines = [
+        "LEARNER CONTEXT (from this user's personal profile and progress -- use it to "
         "personalize explanations, e.g. spend more time on weak areas and build on "
-        "strong ones; never mention this block explicitly to the user):\n"
-        f"- Current technical level: {level}\n"
-        f"- Strong areas: {strong}\n"
-        f"- Areas needing work: {weak}\n"
-        f"- Recently practiced: {recent}\n"
-        f"- Recommended next focus: {recommended}"
-    )
+        "strong ones; never mention this block explicitly to the user):",
+        f"- Current technical level: {level}",
+    ]
+    # Step 16 additions -- present only when personalization supplied them.
+    if mentor_context.get("career_goal"):
+        lines.append(f"- Career goal: {mentor_context['career_goal']}")
+    if mentor_context.get("interests"):
+        lines.append(f"- Interests: {', '.join(mentor_context['interests'])}")
+    lines += [
+        f"- Strong areas: {strong}",
+        f"- Areas needing work: {weak}",
+        f"- Recently practiced: {recent}",
+        f"- Recommended next focus: {recommended}",
+    ]
+    if mentor_context.get("response_style"):
+        lines.append(f"- Preferred response style: {mentor_context['response_style']}")
+    if mentor_context.get("learning_style"):
+        lines.append(f"- Preferred learning style: {mentor_context['learning_style']}")
+    if mentor_context.get("suggested_difficulty"):
+        lines.append(
+            f"- Suggested depth for this learner: {mentor_context['suggested_difficulty']} "
+            "(the level the user selected in this chat still takes priority)"
+        )
+    if mentor_context.get("data_basis") == "profile":
+        lines.append("- Note: no performance history yet; this comes from the user's profile only.")
+    return "\n".join(lines)
 
 
 # Module-level singleton, matching the project's existing pattern.

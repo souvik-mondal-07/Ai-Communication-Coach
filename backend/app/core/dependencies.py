@@ -31,6 +31,10 @@ from app.services.communication.evaluation_service import EvaluationService, eva
 from app.services.history.history_service import HistoryService, history_service
 from app.services.interview.interview_service import InterviewService, interview_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
+from app.services.personalization.personalization_service import (
+    PersonalizationService,
+    personalization_service,
+)
 from app.services.pressure.pressure_service import PressureService, pressure_service
 from app.services.progress.progress_service import ProgressService, progress_service
 from app.services.voice.voice_service import VoiceService, voice_service
@@ -176,3 +180,8 @@ def get_voice_conversation_service() -> VoiceConversationService:
 def get_history_service() -> HistoryService:
     """FastAPI dependency for the History & Activity Center service singleton."""
     return history_service
+
+
+def get_personalization_service() -> PersonalizationService:
+    """FastAPI dependency for the adaptive personalization service singleton (Step 16)."""
+    return personalization_service

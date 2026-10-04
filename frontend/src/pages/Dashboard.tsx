@@ -1,6 +1,7 @@
 import { Bot, ShieldHalf, Mic, TrendingUp, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { LearningFocusCard } from "@/features/personalization/LearningFocusCard";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -44,6 +45,8 @@ export default function Dashboard() {
           practice, and communication skills as those features come online.
         </p>
       </section>
+
+      <LearningFocusCard />
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {STATS.map(({ label, value, icon: Icon }) => (

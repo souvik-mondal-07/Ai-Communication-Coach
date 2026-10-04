@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ShieldHalf } from "lucide-react";
 import { ChatInput } from "@/features/mentor/ChatInput";
 import { LevelSelector } from "@/features/mentor/LevelSelector";
@@ -6,6 +6,7 @@ import { MessageBubble } from "@/features/mentor/MessageBubble";
 import { MENTOR_EXAMPLE_PROMPTS } from "@/features/mentor/mentorTypes";
 import { ModeSelector } from "@/features/mentor/ModeSelector";
 import { useChat } from "@/hooks/useChat";
+import { getPersonalizationProfile } from "@/services/personalizationService";
 
 export function MentorChat() {
   const {
@@ -21,6 +22,22 @@ export function MentorChat() {
   } = useChat();
 
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
+  const [personalized, setPersonalized] = useState<string | null>(null);
+
+  // Small "Personalized for you" hint; silently absent if the lookup fails.
+  useEffect(() => {
+    let active = true;
+    getPersonalizationProfile()
+      .then((p) => {
+        if (!active) return;
+        const focus = p.current_focus?.topic;
+        setPersonalized(`${p.user_level.charAt(0).toUpperCase()}${p.user_level.slice(1)}${focus ? ` • ${focus} focus` : ""}`);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     scrollAnchorRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,6 +59,9 @@ export function MentorChat() {
           AI Cybersecurity Mentor
         </h2>
         <p className="text-xs text-text-muted">Learn • Practice • Troubleshoot</p>
+        {personalized && (
+          <p className="mt-1 text-[11px] text-signal">Personalized for you · {personalized}</p>
+        )}
       </div>
 
       {/* Messages */}

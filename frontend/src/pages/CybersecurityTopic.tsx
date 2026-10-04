@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { TopicDetail } from "@/features/cybersecurity/TopicDetail";
 import type { TopicDetail as TopicDetailType } from "@/features/cybersecurity/cybersecurityTypes";
 import { getTopic } from "@/services/cybersecurityService";
@@ -8,6 +8,14 @@ import { getApiErrorMessage } from "@/utils/apiError";
 
 export default function CybersecurityTopic() {
   const { slug } = useParams<{ slug: string }>();
+  // Step 16: a personalized recommendation may suggest a difficulty. Anything
+  // other than a known level is ignored, so the default behaviour is unchanged.
+  const [searchParams] = useSearchParams();
+  const suggested = searchParams.get("difficulty");
+  const suggestedDifficulty =
+    suggested === "beginner" || suggested === "intermediate" || suggested === "advanced"
+      ? suggested
+      : undefined;
   const navigate = useNavigate();
   const startPractice = usePracticeStore((s) => s.start);
 
@@ -42,7 +50,7 @@ export default function CybersecurityTopic() {
     if (!slug) return;
     setIsStartingPractice(true);
     try {
-      const sessionId = await startPractice(slug);
+      const sessionId = await startPractice(slug, suggestedDifficulty);
       navigate(`/cybersecurity/practice/${sessionId}`);
     } catch {
       setError("Unable to generate practice questions. Please try again.");
