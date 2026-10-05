@@ -24,6 +24,7 @@ from pymongo import DESCENDING
 from pymongo.database import Database
 
 from app.db.collections import Collections
+from app.services.cybersecurity.practice_results import session_category_entries
 
 # --- Documented thresholds ---------------------------------------------------
 # Deliberately the same thresholds `PracticeService`/`InterviewEvaluationService`
@@ -110,22 +111,39 @@ def get_practice_skill_breakdown(db: Database, *, user_id: str) -> list[dict]:
     Per-category performance from completed `practice_sessions` -- the
     primary signal for cybersecurity skill areas (see spec section 8).
     """
-    pipeline = [
-        {"$match": {"user_id": ObjectId(user_id), "status": "completed"}},
+    # Grouped in Python (not a Mongo $group) so a Step 17 session that spans
+    # several categories credits each category with its own score. Step 5
+    # sessions contribute exactly one entry, so their results are unchanged.
+    grouped: dict[str, dict] = {}
+    for doc in db[Collections.PRACTICE_SESSIONS].find(
+        {"user_id": ObjectId(user_id), "status": "completed"},
+        {"category": 1, "score": 1, "topic_slug": 1, "completed_at": 1, "category_results": 1,
+         "questions_answered": 1, "correct_answers": 1},
+    ):
+        for entry in session_category_entries(doc):
+            g = grouped.setdefault(
+                entry["category"], {"scores": [], "successful": 0, "last": None}
+            )
+            g["scores"].append(entry["score"])
+            if entry["score"] >= STRONG_SCORE_THRESHOLD:
+                g["successful"] += 1
+            completed = doc.get("completed_at")
+            if completed is not None:
+                # Compare timezone-aware, but hand back the stored value untouched
+                # (what the old `$max` returned).
+                key = completed if completed.tzinfo else completed.replace(tzinfo=timezone.utc)
+                if g["last"] is None or key > g["last"][0]:
+                    g["last"] = (key, completed)
+    rows = [
         {
-            "$group": {
-                "_id": "$category",
-                "average_score": {"$avg": "$score"},
-                "attempts": {"$sum": 1},
-                "successful_attempts": {
-                    "$sum": {"$cond": [{"$gte": ["$score", STRONG_SCORE_THRESHOLD]}, 1, 0]}
-                },
-                "last_practiced_at": {"$max": "$completed_at"},
-            }
-        },
-        {"$sort": {"_id": 1}},
+            "_id": category,
+            "average_score": sum(g["scores"]) / len(g["scores"]),
+            "attempts": len(g["scores"]),
+            "successful_attempts": g["successful"],
+            "last_practiced_at": g["last"][1] if g["last"] else None,
+        }
+        for category, g in sorted(grouped.items())
     ]
-    rows = list(db[Collections.PRACTICE_SESSIONS].aggregate(pipeline))
     breakdown = []
     for row in rows:
         average_score = round(row["average_score"] or 0)

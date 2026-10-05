@@ -12,6 +12,7 @@ const Register = lazy(() => import("@/pages/auth/Register"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Mentor = lazy(() => import("@/pages/Mentor"));
 const Cybersecurity = lazy(() => import("@/pages/Cybersecurity"));
+const Practice = lazy(() => import("@/pages/Practice"));
 const CybersecurityTopic = lazy(() => import("@/pages/CybersecurityTopic"));
 const CybersecurityPractice = lazy(() => import("@/pages/CybersecurityPractice"));
 const CTF = lazy(() => import("@/pages/CTF"));
@@ -75,7 +76,7 @@ export default function App() {
           <Route path="/voice-conversation" element={<VoiceConversation />} />
           <Route path="/voice-conversation/:sessionId" element={<VoiceConversationSessionPage />} />
 
-          <Route path="/practice" element={<Navigate to="/cybersecurity" replace />} />
+          <Route path="/practice" element={<Practice />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/history" element={<History />} />
           <Route path="/history/:type/:id" element={<HistoryDetail />} />

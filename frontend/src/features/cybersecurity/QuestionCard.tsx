@@ -1,36 +1,44 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { PublicQuestion } from "@/features/cybersecurity/cybersecurityTypes";
+import type { QuestionType } from "@/features/cybersecurity/cybersecurityTypes";
+import { MAX_ANSWER_LENGTH } from "@/features/cybersecurity/practice/practiceUtils";
 
 interface QuestionCardProps {
-  question: PublicQuestion;
+  question: { question: string; type: QuestionType; options: string[] | null };
+  /** Controlled answer text (the store keeps it, so a timer expiry can still save a draft). */
+  value: string;
+  onChange: (value: string) => void;
   onSubmit: (answer: string) => Promise<void>;
   isSubmitting: boolean;
 }
 
-export function QuestionCard({ question, onSubmit, isSubmitting }: QuestionCardProps) {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [shortAnswer, setShortAnswer] = useState("");
+const PLACEHOLDERS: Record<QuestionType, string> = {
+  multiple_choice: "",
+  short_answer: "Write your answer here...",
+  scenario: "Describe what you would investigate, in order, and why...",
+  troubleshooting: "Walk through your investigation: what you check first, which commands/tools, and why...",
+  command: "Type the command (and a short note on what it does)...",
+};
 
-  const answer = question.type === "multiple_choice" ? selectedOption : shortAnswer;
-  const canSubmit = !!answer && answer.trim().length > 0 && !isSubmitting;
+export function QuestionCard({ question, value, onChange, onSubmit, isSubmitting }: QuestionCardProps) {
+  const isChoice = question.type === "multiple_choice" && !!question.options;
+  const canSubmit = value.trim().length > 0 && value.length <= MAX_ANSWER_LENGTH && !isSubmitting;
 
   async function handleSubmit() {
-    if (!canSubmit || !answer) return;
-    await onSubmit(answer);
+    if (!canSubmit) return;
+    await onSubmit(value);
   }
 
   return (
     <div className="space-y-4">
-      <p className="text-base font-medium leading-relaxed text-text-primary">
+      <p className="whitespace-pre-wrap text-base font-medium leading-relaxed text-text-primary">
         {question.question}
       </p>
 
-      {question.type === "multiple_choice" && question.options ? (
+      {isChoice ? (
         <div className="space-y-2" role="radiogroup" aria-label="Answer options">
-          {question.options.map((option, idx) => {
+          {question.options!.map((option, idx) => {
             const letter = String.fromCharCode(65 + idx);
-            const isSelected = selectedOption === option;
+            const isSelected = value === option;
             return (
               <button
                 key={option}
@@ -38,7 +46,7 @@ export function QuestionCard({ question, onSubmit, isSubmitting }: QuestionCardP
                 role="radio"
                 aria-checked={isSelected}
                 disabled={isSubmitting}
-                onClick={() => setSelectedOption(option)}
+                onClick={() => onChange(option)}
                 className={`flex w-full items-center gap-3 rounded-[var(--radius-panel)] border px-3.5 py-2.5 text-left text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
                   isSelected
                     ? "border-signal bg-signal/10 text-text-primary"
@@ -47,9 +55,7 @@ export function QuestionCard({ question, onSubmit, isSubmitting }: QuestionCardP
               >
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-medium ${
-                    isSelected
-                      ? "border-signal bg-signal text-[#08120f]"
-                      : "border-border-strong text-text-muted"
+                    isSelected ? "border-signal bg-signal text-[#08120f]" : "border-border-strong text-text-muted"
                   }`}
                 >
                   {letter}
@@ -60,20 +66,30 @@ export function QuestionCard({ question, onSubmit, isSubmitting }: QuestionCardP
           })}
         </div>
       ) : (
-        <textarea
-          value={shortAnswer}
-          onChange={(e) => setShortAnswer(e.target.value)}
-          disabled={isSubmitting}
-          rows={4}
-          placeholder="Write your answer here..."
-          aria-label="Your answer"
-          className="w-full resize-none rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted disabled:cursor-not-allowed disabled:opacity-60"
-        />
+        <div>
+          <textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={isSubmitting}
+            rows={question.type === "command" ? 3 : 6}
+            maxLength={MAX_ANSWER_LENGTH}
+            placeholder={PLACEHOLDERS[question.type]}
+            aria-label="Your answer"
+            spellCheck={question.type !== "command"}
+            className={`w-full resize-y rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted disabled:cursor-not-allowed disabled:opacity-60 ${
+              question.type === "command" ? "font-mono" : ""
+            }`}
+          />
+          <p className="mt-1 text-right text-[11px] text-text-muted">
+            {value.length}/{MAX_ANSWER_LENGTH}
+          </p>
+        </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3">
+        {isSubmitting && <span className="text-xs text-text-muted">Evaluating…</span>}
         <Button onClick={() => void handleSubmit()} disabled={!canSubmit}>
-          {isSubmitting ? "Submitting…" : "Submit"}
+          {isSubmitting ? "Evaluating…" : "Submit Answer"}
         </Button>
       </div>
     </div>

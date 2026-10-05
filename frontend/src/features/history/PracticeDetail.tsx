@@ -13,6 +13,10 @@ export interface PracticeQuestionDetail {
   missing_points?: string[];
   ideal_answer?: string | null;
   explanation?: string | null;
+  // Step 17 sessions
+  hints_used?: number;
+  revealed?: boolean;
+  ideal_steps?: string[] | null;
 }
 
 export interface PracticeDetailData {
@@ -27,6 +31,11 @@ export interface PracticeDetailData {
   weak_areas: string[];
   recommendations: string[];
   questions: PracticeQuestionDetail[];
+  // Step 17 sessions
+  mode?: string | null;
+  hints_used?: number | null;
+  strong_areas?: string[];
+  needs_work?: string[];
 }
 
 function Stat({ label, value }: { label: string; value: string | number | null | undefined }) {
@@ -48,6 +57,7 @@ export function PracticeDetail({ data }: { data: PracticeDetailData }) {
           <Stat label="Questions" value={data.question_count} />
           <Stat label="Answered" value={data.questions_answered} />
           <Stat label="Correct" value={data.correct_answers} />
+          <Stat label="Hints used" value={data.hints_used} />
         </CardContent>
       </Card>
 

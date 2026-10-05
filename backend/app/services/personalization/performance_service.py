@@ -22,6 +22,7 @@ from bson import ObjectId
 from pymongo.database import Database
 
 from app.db.collections import Collections
+from app.services.cybersecurity.practice_results import session_category_entries
 from app.services.progress import aggregation_service as agg
 
 # Minimum completed practice sessions needed before a trend is reported.
@@ -80,12 +81,16 @@ def _practice_rows(db: Database, user_id: str) -> dict[str, dict]:
     docs = db[Collections.PRACTICE_SESSIONS].find(
         {"user_id": ObjectId(user_id), "status": "completed", "score": {"$ne": None}},
         {"category": 1, "score": 1, "correct_answers": 1, "questions_answered": 1,
-         "difficulty": 1, "completed_at": 1},
+         "difficulty": 1, "completed_at": 1, "topic_slug": 1, "category_results": 1},
     )
+    # Step 17: a session spanning several categories credits each category with
+    # the score for its own questions (single-category sessions are unchanged).
     by_cat: dict[str, list[dict]] = {}
     for doc in docs:
-        if doc.get("category"):
-            by_cat.setdefault(doc["category"], []).append(doc)
+        for entry in session_category_entries(doc):
+            by_cat.setdefault(entry["category"], []).append(
+                {**entry, "difficulty": doc.get("difficulty"), "completed_at": doc.get("completed_at")}
+            )
 
     rows: dict[str, dict] = {}
     for category, sessions in by_cat.items():

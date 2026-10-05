@@ -600,6 +600,9 @@ def _practice_detail(session: dict) -> dict:
             "type": q.get("type"),
             "options": q.get("options"),
             "answered": record is not None,
+            # Step 17 sessions only (None for Step 5): where the question sat and how much help was used.
+            "topic_title": q.get("topic_title"),
+            "difficulty": q.get("difficulty"),
         }
         if record is not None:
             item.update(
@@ -610,6 +613,10 @@ def _practice_detail(session: dict) -> dict:
                 missing_points=record.get("missing_points", []),
                 ideal_answer=q.get("ideal_answer"),
                 explanation=q.get("explanation"),
+                ideal_steps=q.get("ideal_steps"),
+                strengths=record.get("strengths", []),
+                hints_used=record.get("hints_used", 0),
+                revealed=bool(record.get("revealed")),
             )
         questions.append(item)
 
@@ -629,6 +636,14 @@ def _practice_detail(session: dict) -> dict:
         "weak_areas": session.get("weak_areas", []),
         "recommendations": session.get("recommendations", []),
         "questions": questions,
+        # Step 17 sessions only.
+        "mode": session.get("mode"),
+        "categories": session.get("categories") or [],
+        "difficulty_mode": session.get("difficulty_mode"),
+        "hints_used": session.get("hints_used_total"),
+        "strong_areas": session.get("strong_areas") or [],
+        "needs_work": session.get("needs_work") or [],
+        "recommended_next": session.get("recommended_next"),
     }
 
 

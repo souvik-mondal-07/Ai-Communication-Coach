@@ -14,6 +14,7 @@ training composure under pressure, and tracking how you improve over time.
 | **Authentication** | Register / login with Argon2-hashed passwords and JWT access tokens. |
 | **AI Mentor** | Chat in four modes (learn, explain, practice, troubleshoot) at three levels. |
 | **Cybersecurity** | Topic library plus AI-generated practice sessions with scoring and history. |
+| **Advanced practice** | Personalized, topic, random, weakness, scenario, troubleshooting and interview-style modes; multiple-choice, short-answer, scenario, troubleshooting and command questions; progressive hints (3 + explanation, small score penalty); adaptive difficulty (Step 16, one level at a time); optional timer; per-dimension AI evaluation with a model approach; session summary with a Step 16 "what next". Questions are generated one at a time, so opening the page, requesting hints or loading a session never calls Gemini. |
 | **CTF & Labs** | Guidance-only mentor with staged hints (hint 1 → 3 → solution). |
 | **Communication coach** | Scenario-based role-play with evaluation and feedback. |
 | **Voice** | Local speech-to-text (faster-whisper), optional text-to-speech, speaking analysis (pace, fillers, pauses). |
@@ -123,7 +124,7 @@ All routes are under `/api/v1`, return `{success, message, data}` (errors:
 | --- | --- |
 | `auth` | `POST /register`, `POST /login`, `GET /me` |
 | `mentor` | `POST /chat` |
-| `cybersecurity` | `GET /topics`, `GET /topics/{slug}`, `POST /practice/start`, `POST /practice/{id}/answer`, `POST /practice/{id}/complete`, `GET /practice/history` |
+| `cybersecurity` | `GET /topics`, `GET /topics/{slug}`, `POST /practice/start`, `POST /practice/{id}/answer`, `POST /practice/{id}/complete`, `GET /practice/history`; advanced practice (Step 17): `GET /practice/config`, `POST /practice/sessions`, `GET /practice/{id}`, `POST /practice/{id}/hint`, `POST /practice/{id}/next` |
 | `ctf` | `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/chat`, `GET /sessions/{id}/hint`, `POST /sessions/{id}/complete` |
 | `communication` | `GET /scenarios`, `GET /scenarios/{slug}`, `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/message`, `POST /sessions/{id}/complete` |
 | `voice` | `POST /transcribe`, `POST /synthesize` |

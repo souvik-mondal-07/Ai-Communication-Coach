@@ -16,6 +16,7 @@ from bson import ObjectId
 from pymongo.database import Database
 
 from app.db.collections import Collections
+from app.services.cybersecurity.practice_results import session_category_entries
 from app.services.personalization.performance_service import topic_key
 from app.services.progress.aggregation_service import MIN_ATTEMPTS
 
@@ -113,6 +114,11 @@ def _interest_categories(profile: dict) -> dict[str, str]:
     return matches
 
 
+def interest_categories(profile: dict) -> dict[str, str]:
+    """Public alias of the interest/goal/career -> category matcher (reused by Step 17 practice)."""
+    return _interest_categories(profile)
+
+
 def _pick_topic_slug(db: Database, *, user_id: str, category: str, difficulty: str) -> dict | None:
     """The catalogue topic to open next: unpracticed first, nearest to the target difficulty."""
     topics = list(
@@ -122,12 +128,15 @@ def _pick_topic_slug(db: Database, *, user_id: str, category: str, difficulty: s
     )
     if not topics:
         return None
-    done = {
-        d["topic_slug"]
-        for d in db[Collections.PRACTICE_SESSIONS].find(
-            {"user_id": ObjectId(user_id), "status": "completed", "category": category}, {"topic_slug": 1}
-        )
-    }
+    # Step 17: sessions spanning several categories record which topics they covered
+    # per category (`category_results`), so those count as practiced too.
+    done: set[str] = set()
+    for d in db[Collections.PRACTICE_SESSIONS].find(
+        {"user_id": ObjectId(user_id), "status": "completed"}, {"topic_slug": 1, "category": 1, "category_results": 1}
+    ):
+        for entry in session_category_entries(d):
+            if entry["category"] == category:
+                done.update(entry["topic_slugs"])
     target = LEVELS.index(difficulty)
 
     def rank(t: dict) -> tuple:

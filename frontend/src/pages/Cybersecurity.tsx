@@ -89,6 +89,19 @@ export default function Cybersecurity() {
         </p>
       </div>
 
+      <div className="flex flex-col gap-2 rounded-[var(--radius-panel)] border border-border bg-surface px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-text-secondary">
+          Scenarios, troubleshooting, hints and adaptive difficulty — personalized to you.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/practice")}
+          className="shrink-0 text-sm font-medium text-signal hover:underline"
+        >
+          Open Cybersecurity Practice →
+        </button>
+      </div>
+
       <TopicFilters
         search={search}
         onSearchChange={setSearch}

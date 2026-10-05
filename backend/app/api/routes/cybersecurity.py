@@ -3,9 +3,14 @@ Cybersecurity learning & practice routes.
 
     GET  /api/v1/cybersecurity/topics
     GET  /api/v1/cybersecurity/topics/{slug}
-    POST /api/v1/cybersecurity/practice/start
-    POST /api/v1/cybersecurity/practice/{session_id}/answer
-    POST /api/v1/cybersecurity/practice/{session_id}/complete
+    POST /api/v1/cybersecurity/practice/start                       (Step 5: one topic)
+    GET  /api/v1/cybersecurity/practice/config                      (Step 17: modes, categories, limits)
+    POST /api/v1/cybersecurity/practice/sessions                    (Step 17: advanced session)
+    GET  /api/v1/cybersecurity/practice/{session_id}                (Step 17: state / resume / summary)
+    POST /api/v1/cybersecurity/practice/{session_id}/hint           (Step 17: progressive hints)
+    POST /api/v1/cybersecurity/practice/{session_id}/next           (Step 17: next question)
+    POST /api/v1/cybersecurity/practice/{session_id}/answer         (extended for Step 17 sessions)
+    POST /api/v1/cybersecurity/practice/{session_id}/complete       (extended for Step 17 sessions)
     GET  /api/v1/cybersecurity/practice/history
     GET  /api/v1/cybersecurity/progress
 
@@ -26,13 +31,23 @@ from app.core.dependencies import (
     get_practice_service,
 )
 from app.models.user import UserDocument
-from app.schemas.cybersecurity import AnswerSubmitRequest, PracticeStartRequest
+from app.schemas.cybersecurity import (
+    AnswerSubmitRequest,
+    HintRequest,
+    PracticeSessionCreate,
+    PracticeStartRequest,
+)
 from app.services.cybersecurity.learning_service import LearningService
 from app.services.cybersecurity.practice_service import (
+    AnswerAlreadySubmittedError,
     AnswerEvaluationError,
+    HintLimitError,
+    InvalidPracticeConfigError,
     PracticeGenerationError,
     PracticeService,
     QuestionNotFoundError,
+    QuestionNotReadyError,
+    SessionClosedError,
     SessionForbiddenError,
     SessionNotFoundError,
     TopicNotFoundError,
@@ -62,6 +77,12 @@ _EVALUATION_FAILED = {
     "error_code": "AI_SERVICE_UNAVAILABLE",
 }
 _UNEXPECTED = {"message": "An unexpected error occurred.", "error_code": "INTERNAL_SERVER_ERROR"}
+_ALREADY_ANSWERED = {
+    "message": "This question has already been answered.",
+    "error_code": "ANSWER_ALREADY_SUBMITTED",
+}
+_SESSION_CLOSED = {"message": "This practice session is already complete.", "error_code": "SESSION_CLOSED"}
+_SESSION_EXPIRED = {"message": "Time is up. Your answers were saved.", "error_code": "SESSION_EXPIRED"}
 
 
 # --- Topics --------------------------------------------------------------
@@ -150,6 +171,13 @@ async def submit_answer(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=_SESSION_FORBIDDEN)
     except QuestionNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=_QUESTION_NOT_FOUND)
+    except AnswerAlreadySubmittedError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=_ALREADY_ANSWERED)
+    except SessionClosedError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=_SESSION_EXPIRED if exc.expired else _SESSION_CLOSED,
+        )
     except AnswerEvaluationError:
         logger.error("Answer evaluation failed user_id=%s session_id=%s", user_id, session_id)
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=_EVALUATION_FAILED)
@@ -157,16 +185,7 @@ async def submit_answer(
         logger.error("Unexpected error submitting answer user_id=%s", user_id, exc_info=True)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=_UNEXPECTED)
 
-    return success_response(
-        message="Answer submitted",
-        data={
-            "score": result.score,
-            "correct": result.correct,
-            "feedback": result.feedback,
-            "ideal_answer": result.ideal_answer,
-            "missing_points": result.missing_points,
-        },
-    )
+    return success_response(message="Answer submitted", data=result.to_public_dict())
 
 
 @router.post("/practice/{session_id}/complete")
@@ -211,3 +230,142 @@ def get_progress(
 ) -> dict:
     result = service.get_progress(db, user_id=str(current_user["_id"]))
     return success_response(message="Progress retrieved", data=result)
+
+
+# --- Step 17: advanced practice engine ---------------------------------------------
+
+
+def _conflict(message: str, code: str) -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_409_CONFLICT, detail={"message": message, "error_code": code}
+    )
+
+
+@router.get("/practice/config")
+def get_practice_config(
+    db: Database = Depends(get_db),
+    current_user: UserDocument = Depends(get_current_user),
+    service: PracticeService = Depends(get_practice_service),
+) -> dict:
+    """What the practice page can offer. Reads the topic catalogue only -- never calls the AI."""
+    return success_response(message="Practice configuration retrieved", data=service.get_config(db))
+
+
+@router.post("/practice/sessions")
+async def start_advanced_practice(
+    payload: PracticeSessionCreate,
+    db: Database = Depends(get_db),
+    current_user: UserDocument = Depends(get_current_user),
+    service: PracticeService = Depends(get_practice_service),
+) -> dict:
+    user_id = str(current_user["_id"])
+    try:
+        result = await service.start_advanced_session(
+            db,
+            user_id=user_id,
+            mode=payload.mode,
+            category=payload.category,
+            topic_slug=payload.topic_slug,
+            difficulty=payload.difficulty,
+            question_type=payload.question_type,
+            question_count=payload.question_count,
+            time_limit_minutes=payload.time_limit_minutes,
+        )
+    except InvalidPracticeConfigError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"message": str(exc), "error_code": "INVALID_PRACTICE_CONFIG"},
+        )
+    except PracticeGenerationError:
+        logger.error("Advanced practice generation failed user_id=%s", user_id)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=_GENERATION_FAILED)
+    except Exception:
+        logger.error("Unexpected error starting advanced practice user_id=%s", user_id, exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=_UNEXPECTED)
+
+    logger.info(
+        "Advanced practice started user_id=%s mode=%s categories=%s questions=%d",
+        user_id, payload.mode, result.get("categories"), result["question_count"],
+    )
+    return success_response(message="Practice session started", data=result)
+
+
+@router.get("/practice/{session_id}")
+def get_practice_session(
+    session_id: str,
+    db: Database = Depends(get_db),
+    current_user: UserDocument = Depends(get_current_user),
+    service: PracticeService = Depends(get_practice_service),
+) -> dict:
+    """Current state of one of the caller's sessions (resume after refresh, or the final summary)."""
+    try:
+        result = service.get_session(db, user_id=str(current_user["_id"]), session_id=session_id)
+    except SessionNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=_SESSION_NOT_FOUND)
+    except SessionForbiddenError:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=_SESSION_FORBIDDEN)
+    return success_response(message="Practice session retrieved", data=result)
+
+
+@router.post("/practice/{session_id}/hint")
+def request_practice_hint(
+    session_id: str,
+    payload: HintRequest,
+    db: Database = Depends(get_db),
+    current_user: UserDocument = Depends(get_current_user),
+    service: PracticeService = Depends(get_practice_service),
+) -> dict:
+    try:
+        result = service.request_hint(
+            db,
+            user_id=str(current_user["_id"]),
+            session_id=session_id,
+            question_id=payload.question_id,
+            reveal=payload.reveal,
+        )
+    except SessionNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=_SESSION_NOT_FOUND)
+    except SessionForbiddenError:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=_SESSION_FORBIDDEN)
+    except QuestionNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=_QUESTION_NOT_FOUND)
+    except AnswerAlreadySubmittedError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=_ALREADY_ANSWERED)
+    except SessionClosedError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=_SESSION_EXPIRED if exc.expired else _SESSION_CLOSED,
+        )
+    except HintLimitError as exc:
+        raise _conflict(str(exc), exc.code)
+    return success_response(message="Hint retrieved", data=result)
+
+
+@router.post("/practice/{session_id}/next")
+async def next_practice_question(
+    session_id: str,
+    db: Database = Depends(get_db),
+    current_user: UserDocument = Depends(get_current_user),
+    service: PracticeService = Depends(get_practice_service),
+) -> dict:
+    user_id = str(current_user["_id"])
+    try:
+        result = await service.next_question(db, user_id=user_id, session_id=session_id)
+    except SessionNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=_SESSION_NOT_FOUND)
+    except SessionForbiddenError:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=_SESSION_FORBIDDEN)
+    except SessionClosedError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=_SESSION_EXPIRED if exc.expired else _SESSION_CLOSED,
+        )
+    except QuestionNotReadyError as exc:
+        raise _conflict(str(exc), exc.code)
+    except PracticeGenerationError:
+        logger.error("Next-question generation failed user_id=%s session_id=%s", user_id, session_id)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=_GENERATION_FAILED)
+    except Exception:
+        logger.error("Unexpected error loading next question user_id=%s", user_id, exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=_UNEXPECTED)
+    return success_response(message="Next question ready", data=result)

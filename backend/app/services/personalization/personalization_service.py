@@ -40,6 +40,11 @@ def clear_cache() -> None:
     _mentor_cache.clear()
 
 
+def invalidate_user(user_id: str) -> None:
+    """Drop one user's cached mentor context (e.g. right after they finish a practice session)."""
+    _mentor_cache.pop(user_id, None)
+
+
 def _clean(text: str | None, limit: int = MAX_CONTEXT_TEXT) -> str:
     """User-authored text going into an AI prompt: single line, bounded."""
     return " ".join((text or "").split())[:limit]

@@ -12,16 +12,15 @@ trusted or returned to a client.
 
 from __future__ import annotations
 
-import json
-import re
+import random
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 
 from bson import ObjectId
 from bson.errors import InvalidId
 from pydantic import BaseModel, Field, ValidationError
-from pymongo import ASCENDING, DESCENDING
+from pymongo import DESCENDING
 from pymongo.database import Database
 
 from app.db.collections import Collections
@@ -33,7 +32,29 @@ from app.services.ai.prompts import (
     build_answer_evaluation_prompt,
     build_question_generation_prompt,
 )
+from app.services.cybersecurity.advanced_practice import AdvancedPracticeMixin
 from app.services.cybersecurity.learning_service import LearningService, learning_service
+from app.services.cybersecurity.practice_engine import parse_json_object as _parse_json_object
+from app.services.cybersecurity.practice_results import session_category_entries
+from app.services.cybersecurity.practice_types import (  # noqa: F401 - re-exported for existing imports
+    AnswerAlreadySubmittedError,
+    AnswerEvaluationError,
+    AnswerResult,
+    HintLimitError,
+    InvalidPracticeConfigError,
+    PracticeError,
+    PracticeGenerationError,
+    QuestionNotFoundError,
+    QuestionNotReadyError,
+    SessionClosedError,
+    SessionForbiddenError,
+    SessionNotFoundError,
+    TopicNotFoundError,
+)
+from app.services.personalization.personalization_service import (
+    PersonalizationService,
+    personalization_service,
+)
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -45,37 +66,6 @@ STRONG_THRESHOLD = 80
 
 MAX_GENERATION_ATTEMPTS = 2
 DEFAULT_QUESTION_TYPES = ["multiple_choice", "short_answer"]
-
-
-# --- Errors ------------------------------------------------------------------
-
-
-class PracticeError(Exception):
-    """Base class for all practice-service-level errors."""
-
-
-class TopicNotFoundError(PracticeError):
-    pass
-
-
-class PracticeGenerationError(PracticeError):
-    """Gemini failed, or never returned validatable question data."""
-
-
-class SessionNotFoundError(PracticeError):
-    pass
-
-
-class SessionForbiddenError(PracticeError):
-    """The session exists but doesn't belong to the requesting user."""
-
-
-class QuestionNotFoundError(PracticeError):
-    pass
-
-
-class AnswerEvaluationError(PracticeError):
-    """Gemini failed, or never returned validatable evaluation data."""
 
 
 # --- Internal schemas for validating AI-generated JSON ------------------------
@@ -97,22 +87,6 @@ class _GeneratedEvaluation(BaseModel):
     correct: bool
     feedback: str = Field(min_length=1, max_length=2000)
     missing_points: list[str] = Field(default_factory=list)
-
-
-def _parse_json_object(text: str) -> dict:
-    """
-    Parse a JSON object out of a model response, defensively stripping
-    markdown code fences if the model added them despite instructions not to.
-    """
-    cleaned = text.strip()
-    fence_match = re.match(r"^```(?:json)?\s*(.*?)\s*```$", cleaned, re.DOTALL)
-    if fence_match:
-        cleaned = fence_match.group(1).strip()
-
-    parsed = json.loads(cleaned)  # raises ValueError (json.JSONDecodeError) on bad input
-    if not isinstance(parsed, dict):
-        raise ValueError("Expected a JSON object")
-    return parsed
 
 
 def _validate_generated_question(data: dict, *, expected_type: str) -> _GeneratedQuestion:
@@ -159,25 +133,27 @@ class PracticeQuestion:
         }
 
 
-@dataclass(frozen=True)
-class AnswerResult:
-    score: int
-    correct: bool
-    feedback: str
-    ideal_answer: str | None
-    missing_points: list[str] = field(default_factory=list)
+class PracticeService(AdvancedPracticeMixin):
+    """
+    Cybersecurity practice orchestration: generation, scoring, persistence.
 
-
-class PracticeService:
-    """Cybersecurity practice orchestration: generation, scoring, persistence."""
+    Step 5 sessions (one topic, all questions generated up front) are handled here;
+    Step 17 sessions (modes, hints, adaptive difficulty, timer, lazy question
+    generation) are handled by `AdvancedPracticeMixin` and share the same
+    `practice_sessions` collection, ownership checks, progress and history.
+    """
 
     def __init__(
         self,
         ai_service_: AIService = ai_service,
         learning_service_: LearningService = learning_service,
+        personalization_service_: PersonalizationService = personalization_service,
+        rng: random.Random | None = None,
     ) -> None:
         self._ai_service = ai_service_
         self._learning_service = learning_service_
+        self._personalization = personalization_service_
+        self._rng = rng or random.Random()
 
     def ensure_indexes(self, db: Database) -> None:
         """Create required indexes. Idempotent — safe to call on every startup."""
@@ -187,6 +163,8 @@ class PracticeService:
         collection.create_index("topic_slug")
         # History listing: the caller's sessions, newest first.
         collection.create_index([("user_id", 1), ("started_at", -1)])
+        # Step 17: "my in-progress / completed sessions" lookups and the progress scans.
+        collection.create_index([("user_id", 1), ("status", 1)])
 
     # --- Question generation -------------------------------------------------
 
@@ -344,6 +322,11 @@ class PracticeService:
         if question is None:
             raise QuestionNotFoundError(question_id)
 
+        if session.get("mode"):  # Step 17 session
+            return await self._submit_advanced_answer(
+                db, session=session, question=question, answer=answer
+            )
+
         if question["type"] == "multiple_choice":
             correct_answer = (question.get("correct_answer") or "").strip().lower()
             is_correct = answer.strip().lower() == correct_answer
@@ -417,6 +400,9 @@ class PracticeService:
 
     def complete_session(self, db: Database, *, user_id: str, session_id: str) -> dict:
         session = self._get_owned_session(db, session_id=session_id, user_id=user_id)
+
+        if session.get("mode"):  # Step 17 session
+            return self._complete_advanced_session(db, session=session)
 
         # Idempotent: completing an already-completed session just returns
         # the previously computed result rather than recomputing/erroring.
@@ -497,6 +483,7 @@ class PracticeService:
                 "status": doc["status"],
                 "score": doc.get("score"),
                 "questions_answered": doc.get("questions_answered") or len(doc.get("answers", {})),
+                "mode": doc.get("mode"),
                 "started_at": doc["started_at"].isoformat(),
                 "completed_at": doc["completed_at"].isoformat() if doc.get("completed_at") else None,
             }
@@ -510,18 +497,20 @@ class PracticeService:
         Basic per-category progress computed from completed sessions —
         not the full progress dashboard (that's a later step).
         """
-        pipeline = [
-            {"$match": {"user_id": ObjectId(user_id), "status": "completed"}},
-            {
-                "$group": {
-                    "_id": "$category",
-                    "average_score": {"$avg": "$score"},
-                    "attempts": {"$sum": 1},
-                }
-            },
-            {"$sort": {"_id": ASCENDING}},
+        # Grouped here (not in a Mongo $group) so a multi-category Step 17 session credits
+        # each category with its own score; Step 5 sessions contribute one entry each.
+        grouped: dict[str, list[int]] = {}
+        for doc in db[Collections.PRACTICE_SESSIONS].find(
+            {"user_id": ObjectId(user_id), "status": "completed"},
+            {"category": 1, "score": 1, "topic_slug": 1, "category_results": 1,
+             "questions_answered": 1, "correct_answers": 1},
+        ):
+            for entry in session_category_entries(doc):
+                grouped.setdefault(entry["category"], []).append(entry["score"])
+        rows = [
+            {"_id": name, "average_score": sum(scores) / len(scores), "attempts": len(scores)}
+            for name, scores in sorted(grouped.items())
         ]
-        rows = list(db[Collections.PRACTICE_SESSIONS].aggregate(pipeline))
 
         categories = []
         weak_categories = []
