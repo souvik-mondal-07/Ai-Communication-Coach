@@ -19,6 +19,7 @@ from app.core.security import TokenError, decode_access_token
 from app.db import mongodb
 from app.models.user import UserDocument
 from app.services.ai.ai_service import AIService, ai_service
+from app.services.analytics.analytics_service import AnalyticsService, analytics_service
 from app.services.auth import auth_service
 from app.services.cybersecurity.ctf_service import CtfService, ctf_service
 from app.services.cybersecurity.learning_service import LearningService, learning_service
@@ -185,3 +186,8 @@ def get_history_service() -> HistoryService:
 def get_personalization_service() -> PersonalizationService:
     """FastAPI dependency for the adaptive personalization service singleton (Step 16)."""
     return personalization_service
+
+
+def get_analytics_service() -> AnalyticsService:
+    """FastAPI dependency for the interview & communication analytics service (Step 18)."""
+    return analytics_service

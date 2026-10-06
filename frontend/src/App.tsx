@@ -28,6 +28,7 @@ const VoiceConversationSessionPage = lazy(() => import("@/pages/VoiceConversatio
 const History = lazy(() => import("@/pages/History"));
 const HistoryDetail = lazy(() => import("@/pages/HistoryDetail"));
 const Progress = lazy(() => import("@/pages/Progress"));
+const Analytics = lazy(() => import("@/pages/Analytics"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
@@ -78,6 +79,7 @@ export default function App() {
 
           <Route path="/practice" element={<Practice />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/history" element={<History />} />
           <Route path="/history/:type/:id" element={<HistoryDetail />} />
           <Route path="/profile" element={<Profile />} />
