@@ -544,6 +544,42 @@ class HistoryService:
             items=items, page=page, limit=limit, total=total, has_next=offset + len(items) < total
         )
 
+    # --- Completed activity (Step 19) ------------------------------------------------------
+
+    def list_completed(
+        self,
+        db: Database,
+        *,
+        user_id: str,
+        since: datetime | None = None,
+        until: datetime | None = None,
+        limit: int = 2_000,
+    ) -> list[HistoryActivity]:
+        """
+        Finished activities (any source) whose *completion* time is in ``[since, until)``,
+        oldest first. Used by daily practice for "minutes practiced today" and streaks, so
+        both are derived from real sessions rather than counters kept in a second place.
+        Scoped by ``user_id`` (from the JWT); each source is bounded by ``limit``.
+        """
+        uid = ObjectId(user_id)
+        out: list[HistoryActivity] = []
+        for source in _SOURCES:
+            field = "ended_at" if source.type == "voice_conversation" else "completed_at"
+            query: dict = {"user_id": uid, "status": "completed"}
+            bounds: dict = {}
+            if since:
+                bounds["$gte"] = _naive_utc(since)
+            if until:
+                bounds["$lt"] = _naive_utc(until)
+            query[field] = bounds or {"$ne": None}
+            projection = {**source.projection, field: 1, "status": 1}
+            for doc in db[source.collection].find(query, projection).sort(field, ASCENDING).limit(limit):
+                activity = source.normalize(doc)
+                if activity.status == "completed" and activity.completed_at is not None:
+                    out.append(activity)
+        out.sort(key=lambda a: (a.completed_at, a.id))
+        return out
+
     # --- Detail ----------------------------------------------------------------------------
 
     def get_detail(

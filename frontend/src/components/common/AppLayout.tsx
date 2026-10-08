@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "@/components/common/Sidebar";
 import { Header } from "@/components/common/Header";
+import { useReminderSync } from "@/hooks/useReminderSync";
 import { useAuthStore } from "@/store/authStore";
 import { useProfileStore } from "@/store/profileStore";
 import { NAV_ITEMS } from "@/utils/constants";
@@ -21,6 +22,8 @@ export function AppLayout() {
   useEffect(() => {
     if (userId) void loadProfile();
   }, [userId, loadProfile]);
+
+  useReminderSync(userId);
 
   return (
     <div className="min-h-screen bg-base">

@@ -27,3 +27,7 @@ class Collections(StrEnum):
     RECOMMENDATIONS = "recommendations"
     PERSONAL_PROFILES = "personal_profiles"
     UPLOADED_DOCUMENTS = "uploaded_documents"
+    # Step 19
+    NOTIFICATIONS = "notifications"
+    DAILY_PRACTICE = "daily_practice"
+    PRACTICE_STREAKS = "practice_streaks"

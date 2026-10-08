@@ -26,9 +26,12 @@ python-multipart==0.0.32
 # Local speech-to-text. Imported lazily: the app still starts (and text mode
 # still works) if the model can't be loaded.
 faster-whisper==1.2.1
-av==15.1.0
 # Async HTTP client for cloud text-to-speech providers (also used by TestClient)
 httpx==0.28.1
+
+# IANA timezone database for zoneinfo. Windows (and slim containers) ship none, and daily
+# practice / streaks / reminders need real user timezones.
+tzdata>=2024.1
 
 # --- Testing (test-only; mongomock avoids requiring a live MongoDB in CI) ---
 pytest==8.3.4

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { LogOut, Menu, Settings, UserCircle2, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useAuth } from "@/hooks/useAuth";
 
 interface HeaderProps {
@@ -34,6 +35,8 @@ export function Header({ title }: HeaderProps) {
         <h1 className="text-base font-semibold text-text-primary">{title}</h1>
       </div>
 
+      <div className="flex items-center gap-1">
+      <NotificationBell />
       <div className="relative">
         <button
           type="button"
@@ -86,6 +89,7 @@ export function Header({ title }: HeaderProps) {
             </div>
           </>
         )}
+      </div>
       </div>
     </header>
   );

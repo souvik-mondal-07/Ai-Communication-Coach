@@ -17,9 +17,11 @@ from app.api.routes import (
     ctf,
     cybersecurity,
     health,
+    daily_practice,
     history,
     interview,
     mentor,
+    notifications,
     personalization,
     pressure,
     progress,
@@ -44,5 +46,7 @@ api_router.include_router(voice.router)
 api_router.include_router(progress.router)
 api_router.include_router(voice_conversation.router)
 api_router.include_router(history.router)
+api_router.include_router(notifications.router)
+api_router.include_router(daily_practice.router)
 api_router.include_router(personalization.router)
 api_router.include_router(analytics.router)

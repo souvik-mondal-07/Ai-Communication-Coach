@@ -29,7 +29,10 @@ from app.services.communication.communication_service import (
     communication_service,
 )
 from app.services.communication.evaluation_service import EvaluationService, evaluation_service
+from app.services.daily_practice.daily_practice_service import DailyPracticeService, daily_practice_service
 from app.services.history.history_service import HistoryService, history_service
+from app.services.notifications.notification_service import NotificationService, notification_service
+from app.services.notifications.reminder_service import ReminderService, reminder_service
 from app.services.interview.interview_service import InterviewService, interview_service
 from app.services.mentor.mentor_service import MentorService, mentor_service
 from app.services.personalization.personalization_service import (
@@ -191,3 +194,16 @@ def get_personalization_service() -> PersonalizationService:
 def get_analytics_service() -> AnalyticsService:
     """FastAPI dependency for the interview & communication analytics service (Step 18)."""
     return analytics_service
+
+
+def get_notification_service() -> NotificationService:
+    """FastAPI dependency for the notification service singleton (Step 19)."""
+    return notification_service
+
+
+def get_reminder_service() -> ReminderService:
+    return reminder_service
+
+
+def get_daily_practice_service() -> DailyPracticeService:
+    return daily_practice_service

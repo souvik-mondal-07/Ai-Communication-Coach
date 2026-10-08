@@ -12,6 +12,8 @@ export const NAV_ITEMS = [
   { label: "Interview", path: "/interview" },
   { label: "Pressure Training", path: "/pressure-training" },
   { label: "Practice", path: "/practice" },
+  { label: "Daily Practice", path: "/daily-practice" },
+  { label: "Notifications", path: "/notifications" },
   { label: "Progress", path: "/progress" },
   { label: "History", path: "/history" },
   { label: "Profile", path: "/profile" },

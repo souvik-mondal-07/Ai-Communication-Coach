@@ -47,6 +47,13 @@ def fake_db():
     communication_service.ensure_indexes(db)
     communication_service.ensure_seeded(db)
     progress_service.ensure_indexes(db)
+    from app.services.daily_practice.daily_practice_service import daily_practice_service
+    from app.services.daily_practice.streak import streak_service
+    from app.services.notifications.notification_service import notification_service
+
+    notification_service.ensure_indexes(db)
+    daily_practice_service.ensure_indexes(db)
+    streak_service.ensure_indexes(db)
     return db
 
 

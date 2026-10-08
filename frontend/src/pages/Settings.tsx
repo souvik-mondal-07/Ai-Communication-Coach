@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AccountSecurity } from "@/features/profile/AccountSecurity";
+import { NotificationPreferences, PracticePreferences } from "@/features/profile/PracticeSettings";
 import { ProfileLoadState } from "@/features/profile/ProfileLoadState";
 import {
   AiPreferences,
@@ -15,6 +16,7 @@ const TABS = [
   { id: "ai", label: "AI Preferences" },
   { id: "learning", label: "Learning" },
   { id: "interview", label: "Interview" },
+  { id: "practice", label: "Practice & Reminders" },
   { id: "security", label: "Account Security" },
 ] as const;
 
@@ -57,6 +59,12 @@ export default function Settings() {
         {tab === "ai" && <AiPreferences prefs={prefs} />}
         {tab === "learning" && <LearningPreferences prefs={prefs} />}
         {tab === "interview" && <InterviewPreferences prefs={prefs} />}
+        {tab === "practice" && (
+          <div className="space-y-6">
+            <PracticePreferences prefs={prefs} />
+            <NotificationPreferences prefs={prefs} />
+          </div>
+        )}
         {tab === "security" && <AccountSecurity email={profile.email} />}
       </div>
     </div>

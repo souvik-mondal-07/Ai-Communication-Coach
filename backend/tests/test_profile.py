@@ -46,6 +46,17 @@ class TestGetProfile:
             "learning_style": "mixed",
             "interview_focus": [],
             "theme": "system",
+            # Step 19 defaults: users created earlier get these without a migration.
+            "daily_practice_enabled": True,
+            "daily_practice_minutes": 15,
+            "preferred_practice_time": "18:00",
+            "preferred_timezone": None,
+            "practice_days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+            "reminders_enabled": True,
+            "interview_reminders_enabled": True,
+            "communication_reminders_enabled": True,
+            "cybersecurity_reminders_enabled": True,
+            "browser_notifications_enabled": False,
         }
         assert user["completion"]["percentage"] == 14  # only the name is filled in
 
@@ -215,13 +226,14 @@ class TestPreferences:
         )
         assert response.status_code == 200
         prefs = client.get(PREFS, headers=headers).json()["data"]["preferences"]
-        assert prefs == {
+        assert {k: prefs[k] for k in ("response_style", "difficulty", "learning_style", "interview_focus", "theme")} == {
             "response_style": "technical",
             "difficulty": "adaptive",
             "learning_style": "hands_on",
             "interview_focus": ["soc", "blue_team"],
             "theme": "light",
         }
+        assert prefs["daily_practice_minutes"] == 15  # Step 19 settings untouched by this patch
         assert _stored(fake_db, "profile-user@example.com")["preferences"]["theme"] == "light"
 
     def test_partial_patch_keeps_other_preferences(self, client):

@@ -31,6 +31,8 @@ const Progress = lazy(() => import("@/pages/Progress"));
 const Analytics = lazy(() => import("@/pages/Analytics"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Settings = lazy(() => import("@/pages/Settings"));
+const DailyPractice = lazy(() => import("@/pages/DailyPractice"));
+const Notifications = lazy(() => import("@/pages/Notifications"));
 
 export default function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -78,6 +80,8 @@ export default function App() {
           <Route path="/voice-conversation/:sessionId" element={<VoiceConversationSessionPage />} />
 
           <Route path="/practice" element={<Practice />} />
+          <Route path="/daily-practice" element={<DailyPractice />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/history" element={<History />} />

@@ -111,12 +111,38 @@ export interface ProfileData {
   custom_learning_goals: string[];
 }
 
+export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+
+export const WEEKDAYS: readonly { value: Weekday; label: string }[] = [
+  { value: "mon", label: "Mon" },
+  { value: "tue", label: "Tue" },
+  { value: "wed", label: "Wed" },
+  { value: "thu", label: "Thu" },
+  { value: "fri", label: "Fri" },
+  { value: "sat", label: "Sat" },
+  { value: "sun", label: "Sun" },
+];
+
+/** Daily practice lengths offered in Settings (the API accepts any whole number of minutes from 5 to 120). */
+export const PRACTICE_MINUTE_OPTIONS = [5, 10, 15, 20, 30, 45, 60] as const;
+
 export interface UserPreferences {
   response_style: ResponseStyle;
   difficulty: LearningDifficulty;
   learning_style: LearningStyle;
   interview_focus: InterviewFocus[];
   theme: ThemePreference;
+  // Step 19 -- practice & notification preferences
+  daily_practice_enabled: boolean;
+  daily_practice_minutes: number;
+  preferred_practice_time: string; // "HH:MM", 24-hour, in preferred_timezone
+  preferred_timezone: string | null; // IANA name; null until chosen
+  practice_days: Weekday[];
+  reminders_enabled: boolean;
+  interview_reminders_enabled: boolean;
+  communication_reminders_enabled: boolean;
+  cybersecurity_reminders_enabled: boolean;
+  browser_notifications_enabled: boolean;
 }
 
 export interface CompletionItem {

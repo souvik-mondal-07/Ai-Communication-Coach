@@ -10,9 +10,11 @@ rather than silently ignored.
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from enum import StrEnum
-from typing import Annotated
+from typing import Annotated, Literal
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
@@ -107,6 +109,30 @@ CustomGoal = Annotated[str, StringConstraints(strip_whitespace=True, min_length=
 
 MAX_CUSTOM_GOALS = 5
 
+# --- Step 19: practice & notification preferences -------------------------------------
+WeekdayName = Literal["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+ALL_WEEKDAYS: tuple[str, ...] = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+MIN_PRACTICE_MINUTES = 5
+MAX_PRACTICE_MINUTES = 120
+DEFAULT_PRACTICE_TIME = "18:00"
+_TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+
+
+def validate_time_of_day(value: str) -> str:
+    if not _TIME_RE.match(value):
+        raise ValueError("Time must be in 24-hour HH:MM format.")
+    return value
+
+
+def validate_timezone(value: str) -> str:
+    if value == "UTC":  # always valid, even on machines with no IANA database
+        return value
+    try:
+        ZoneInfo(value)
+    except (ZoneInfoNotFoundError, ValueError, OSError) as exc:
+        raise ValueError("Unknown timezone. Use an IANA name such as 'Asia/Kolkata'.") from exc
+    return value
+
 
 def _dedupe(values: list) -> list:
     """Drop duplicates while keeping the order the user chose."""
@@ -119,6 +145,7 @@ class _DedupeMixin(BaseModel):
         "learning_goals",
         "custom_learning_goals",
         "interview_focus",
+        "practice_days",
         check_fields=False,
         mode="after",
     )
@@ -149,6 +176,27 @@ class UserPreferences(_DedupeMixin):
     learning_style: LearningStyle = LearningStyle.MIXED
     interview_focus: list[InterviewFocus] = Field(default_factory=list, max_length=len(InterviewFocus))
     theme: Theme = Theme.SYSTEM
+    # Step 19 -- every field has a default so users created before Step 19 stay valid.
+    daily_practice_enabled: bool = True
+    daily_practice_minutes: int = Field(default=15, ge=MIN_PRACTICE_MINUTES, le=MAX_PRACTICE_MINUTES)
+    preferred_practice_time: str = DEFAULT_PRACTICE_TIME
+    preferred_timezone: str | None = None  # IANA name; None = not chosen yet (UTC is used)
+    practice_days: list[WeekdayName] = Field(default_factory=lambda: list(ALL_WEEKDAYS), max_length=7)
+    reminders_enabled: bool = True
+    interview_reminders_enabled: bool = True
+    communication_reminders_enabled: bool = True
+    cybersecurity_reminders_enabled: bool = True
+    browser_notifications_enabled: bool = False
+
+    @field_validator("preferred_practice_time")
+    @classmethod
+    def _check_time(cls, value: str) -> str:
+        return validate_time_of_day(value)
+
+    @field_validator("preferred_timezone")
+    @classmethod
+    def _check_tz(cls, value: str | None) -> str | None:
+        return validate_timezone(value) if value is not None else None
 
 
 # ------------------------------------------------------------------ update bodies
@@ -177,6 +225,26 @@ class UserPreferencesUpdate(_DedupeMixin):
     learning_style: LearningStyle | None = None
     interview_focus: list[InterviewFocus] | None = Field(default=None, max_length=len(InterviewFocus))
     theme: Theme | None = None
+    daily_practice_enabled: bool | None = None
+    daily_practice_minutes: int | None = Field(default=None, ge=MIN_PRACTICE_MINUTES, le=MAX_PRACTICE_MINUTES)
+    preferred_practice_time: str | None = None
+    preferred_timezone: str | None = None
+    practice_days: list[WeekdayName] | None = Field(default=None, min_length=1, max_length=7)
+    reminders_enabled: bool | None = None
+    interview_reminders_enabled: bool | None = None
+    communication_reminders_enabled: bool | None = None
+    cybersecurity_reminders_enabled: bool | None = None
+    browser_notifications_enabled: bool | None = None
+
+    @field_validator("preferred_practice_time")
+    @classmethod
+    def _check_time(cls, value: str | None) -> str | None:
+        return validate_time_of_day(value) if value is not None else None
+
+    @field_validator("preferred_timezone")
+    @classmethod
+    def _check_tz(cls, value: str | None) -> str | None:
+        return validate_timezone(value) if value is not None else None
 
 
 class ChangePasswordRequest(BaseModel):

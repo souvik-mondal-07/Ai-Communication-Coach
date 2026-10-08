@@ -73,6 +73,16 @@ async def lifespan(_: FastAPI):
             voice_conversation_module.voice_conversation_service.ensure_indexes(db)
         except Exception:  # noqa: BLE001
             logger.warning("Could not ensure voice conversation indexes", exc_info=True)
+        try:
+            from app.services.daily_practice.daily_practice_service import daily_practice_service
+            from app.services.daily_practice.streak import streak_service
+            from app.services.notifications.notification_service import notification_service
+
+            notification_service.ensure_indexes(db)
+            daily_practice_service.ensure_indexes(db)
+            streak_service.ensure_indexes(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("Could not ensure notification / daily practice indexes", exc_info=True)
     yield
     mongodb.disconnect()
     logger.info("Shutdown complete")

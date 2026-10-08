@@ -1,6 +1,7 @@
 import { Bot, ShieldHalf, Mic, TrendingUp, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { DailyPracticeCard } from "@/components/dashboard/DailyPracticeCard";
 import { LearningFocusCard } from "@/features/personalization/LearningFocusCard";
 import {
   ResponsiveContainer,
@@ -45,6 +46,8 @@ export default function Dashboard() {
           practice, and communication skills as those features come online.
         </p>
       </section>
+
+      <DailyPracticeCard />
 
       <LearningFocusCard />
 
