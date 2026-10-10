@@ -77,6 +77,23 @@ def _unauthorized(message: str) -> HTTPException:
     )
 
 
+def _token_version_is_current(payload: dict, user: UserDocument) -> bool:
+    """
+    A token is only valid for the user's current `token_version`. Changing the password bumps
+    the version, which invalidates every token issued before it — an exact integer comparison,
+    so it cannot be fooled by two events falling in the same second.
+
+    Tokens issued before this claim existed carry no `tv` and count as version 0, which is the
+    version of any account that has never changed its password. The user's own version comes from
+    `auth_service.effective_token_version`, which also covers records from the earlier
+    timestamp-based build.
+    """
+    claimed = payload.get("tv", 0)
+    if isinstance(claimed, bool) or not isinstance(claimed, int):
+        return False
+    return claimed == auth_service.effective_token_version(user)
+
+
 def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
     db: Database = Depends(get_db),
@@ -105,6 +122,9 @@ def get_current_user(
 
     if not user.get("is_active", True):
         raise _unauthorized("This account has been deactivated.")
+
+    if not _token_version_is_current(payload, user):
+        raise _unauthorized("Your session is no longer valid. Please sign in again.")
 
     return user
 

@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { setStoredToken } from "@/services/tokenStorage";
 import type {
   ChangePasswordPayload,
   PreferencesUpdate,
@@ -38,6 +39,17 @@ export async function updatePreferences(payload: PreferencesUpdate): Promise<Use
   return data.data.preferences;
 }
 
-export async function changePassword(payload: ChangePasswordPayload): Promise<void> {
-  await api.post("/users/me/change-password", payload);
+/**
+ * Changing the password invalidates every token issued before the change, so the backend
+ * returns a fresh one for this device. It is stored immediately (the request interceptor
+ * reads it from storage), which keeps the user signed in here while any other session —
+ * or a stolen token — stops working. Resolves to the new token so callers can sync state.
+ */
+export async function changePassword(payload: ChangePasswordPayload): Promise<string | null> {
+  const { data } = await api.post<ApiEnvelope<{ access_token?: string }>>("/users/me/change-password", payload);
+  const token = data.data?.access_token ?? null;
+  if (token) {
+    setStoredToken(token);
+  }
+  return token;
 }

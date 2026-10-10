@@ -4,6 +4,7 @@ import { SectionCard } from "@/features/profile/SectionCard";
 import { StatusMessage, type Flash } from "@/features/profile/StatusMessage";
 import { inputClass, labelClass } from "@/features/profile/formStyles";
 import { changePassword } from "@/services/profileService";
+import { useAuthStore } from "@/store/authStore";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { MIN_PASSWORD_LENGTH } from "@/utils/validators";
 
@@ -46,7 +47,10 @@ function ChangePasswordForm() {
     setIsSaving(true);
     setFlash(null);
     try {
-      await changePassword({ current_password: current, new_password: next, confirm_new_password: confirm });
+      const freshToken = await changePassword({ current_password: current, new_password: next, confirm_new_password: confirm });
+      if (freshToken) {
+        useAuthStore.setState({ accessToken: freshToken });
+      }
       // Don't keep passwords in state any longer than needed.
       setCurrent("");
       setNext("");

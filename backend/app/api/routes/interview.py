@@ -98,7 +98,7 @@ async def start_session(
 
 @router.get("/sessions")
 def list_sessions(
-    page: int = Query(default=1, ge=1),
+    page: int = Query(default=1, ge=1, le=100_000),
     limit: int = Query(default=10, ge=1, le=MAX_HISTORY_LIMIT),
     db: Database = Depends(get_db),
     current_user: UserDocument = Depends(get_current_user),

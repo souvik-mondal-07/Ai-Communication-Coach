@@ -239,14 +239,28 @@ class CtfService:
 
         now = datetime.now(timezone.utc)
         hint_entry = {"level": level, "content": result.text, "requested_at": now}
-        db[Collections.CTF_SESSIONS].update_one(
-            {"_id": session["_id"]},
+        # The "not recorded yet" check above happened before the (slow) AI call, so an
+        # overlapping request for the same level may have stored it meanwhile. Making the
+        # write itself conditional keeps the check and the write atomic: only one request can
+        # record a level, so hint_history never gets duplicates and hints_used is counted once.
+        recorded = db[Collections.CTF_SESSIONS].update_one(
+            {"_id": session["_id"], "hint_history.level": {"$ne": level}},
             {
                 "$push": {"hint_history": hint_entry},
                 "$inc": {"hints_used": 1},
                 "$set": {"updated_at": now},
             },
         )
+        if recorded.modified_count == 0:
+            # Lost the race: return what the winning request persisted.
+            latest = self._get_owned_session(db, session_id=session_id, user_id=user_id)
+            winner = next((h for h in latest.get("hint_history", []) if h["level"] == level), None)
+            if winner is not None:
+                return {
+                    "level": level,
+                    "content": winner["content"],
+                    "hints_used": latest.get("hints_used", 0),
+                }
 
         return {
             "level": level,

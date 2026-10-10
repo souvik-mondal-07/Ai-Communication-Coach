@@ -91,6 +91,7 @@ export function CtfWorkspace({
               value={flag}
               onChange={(e) => setFlag(e.target.value)}
               placeholder="Flag (optional, for your own tracking)"
+              aria-label="Flag (optional)"
               className="flex-1 rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted"
             />
             <Button

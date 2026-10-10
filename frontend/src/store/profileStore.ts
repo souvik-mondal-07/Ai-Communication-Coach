@@ -13,6 +13,8 @@ interface ProfileState {
   /** Rejects on failure; the caller decides which message to show. */
   saveProfile: (update: ProfileUpdate) => Promise<void>;
   savePreferences: (update: PreferencesUpdate) => Promise<void>;
+  /** Forget the loaded profile (used when the signed-in user changes). */
+  reset: () => void;
 }
 
 /**
@@ -24,6 +26,8 @@ export const useProfileStore = create<ProfileState>((set) => ({
   profile: null,
   isLoading: false,
   loadError: false,
+
+  reset: () => set({ profile: null, isLoading: false, loadError: false }),
 
   loadProfile: async () => {
     set({ isLoading: true, loadError: false });

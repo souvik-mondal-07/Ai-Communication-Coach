@@ -18,7 +18,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pymongo.database import Database
 
 from app.core.dependencies import get_current_user, get_db
-from app.core.security import verify_password
+from app.core.security import create_access_token, verify_password
 from app.models.user import UserDocument
 from app.schemas.auth import PASSWORD_MIN_LENGTH
 from app.schemas.user import (
@@ -111,7 +111,17 @@ def change_password(
             "New password must be different from the current password.", "PASSWORD_UNCHANGED"
         )
 
-    auth_service.update_password(db, current_user["_id"], payload.new_password)
+    new_token_version = auth_service.update_password(db, current_user["_id"], payload.new_password)
     # Log the event only — never the passwords or the hash.
     logger.info("Password changed for user: %s", str(current_user["_id"]))
-    return success_response(message="Password changed successfully")
+    # Every previously issued token is now invalid; this fresh one keeps the current
+    # device signed in so changing a password doesn't log the user out of their own session.
+    return success_response(
+        message="Password changed successfully",
+        data={
+            "access_token": create_access_token(
+                subject=str(current_user["_id"]), token_version=new_token_version
+            ),
+            "token_type": "bearer",
+        },
+    )

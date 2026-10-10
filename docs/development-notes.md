@@ -57,7 +57,7 @@ ai-cybersec-mentor/
 ├── backend/     # FastAPI app
 ├── data/        # Static learning/interview/communication content (seeded later)
 ├── uploads/     # User-uploaded files (resumes, documents, audio)
-├── scripts/     # One-off setup/seed scripts (placeholders for now)
+├── scripts/     # download_whisper_model.py (the Step 1 seed/setup placeholders were removed)
 ```
 
 ## Running the frontend

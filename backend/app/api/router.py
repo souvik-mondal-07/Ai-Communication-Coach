@@ -9,6 +9,8 @@ in place before their endpoints are implemented.
 
 from fastapi import APIRouter
 
+from app.core.config import settings
+
 from app.api.routes import (
     ai,
     analytics,
@@ -35,7 +37,11 @@ api_router = APIRouter()
 api_router.include_router(health.router)
 api_router.include_router(auth.router)
 api_router.include_router(users.router)
-api_router.include_router(ai.router)
+# `/ai/chat` is the AI engine's development test endpoint (no feature uses it). It would
+# otherwise be an open, general-purpose Gemini proxy for any registered user, so it is
+# only mounted outside production.
+if not settings.is_production:
+    api_router.include_router(ai.router)
 api_router.include_router(mentor.router)
 api_router.include_router(cybersecurity.router)
 api_router.include_router(ctf.router)

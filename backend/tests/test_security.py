@@ -179,7 +179,10 @@ class TestJwt:
         payload = jwt.decode(
             create_access_token(uid), settings.jwt_secret_key, algorithms=["HS256"]
         )
-        assert set(payload) == {"sub", "iat", "exp"}
+        # `tv` is the user's integer token version (revokes tokens on password change); it is
+        # not personal data. The claim set stays an exact allow-list.
+        assert set(payload) == {"sub", "tv", "iat", "exp"}
+        assert payload["tv"] == 0 and isinstance(payload["tv"], int)
 
 
 # --- Cross-user access -----------------------------------------------------------

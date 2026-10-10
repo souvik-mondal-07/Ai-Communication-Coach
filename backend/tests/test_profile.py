@@ -325,9 +325,13 @@ class TestChangePassword:
         assert verify_password(self.NEW, stored)
 
     def test_user_stays_logged_in_after_changing_password(self, client):
+        # The old token is revoked by the change (see test_final_audit.py), so the session
+        # continues on the fresh token the endpoint returns for this device.
         headers = _headers(client)
-        self._change(client, headers)
-        assert client.get("/api/v1/auth/me", headers=headers).status_code == 200
+        response = self._change(client, headers)
+        fresh = {"Authorization": f"Bearer {response.json()['data']['access_token']}"}
+        assert client.get("/api/v1/auth/me", headers=fresh).status_code == 200
+        assert client.get("/api/v1/auth/me", headers=headers).status_code == 401
 
     def test_wrong_current_password(self, client):
         response = self._change(client, _headers(client), current="not-my-password")

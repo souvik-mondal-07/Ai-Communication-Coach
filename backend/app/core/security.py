@@ -40,12 +40,16 @@ class TokenError(Exception):
     """Raised when a JWT is missing, malformed, expired, or otherwise invalid."""
 
 
-def create_access_token(subject: str, expires_minutes: int | None = None) -> str:
+def create_access_token(
+    subject: str, expires_minutes: int | None = None, token_version: int = 0
+) -> str:
     """
     Create a signed JWT access token for the given subject (the user ID).
 
-    Only a stable identifier and expiration are embedded in the token —
-    never sensitive user data.
+    Only a stable identifier, an expiration and the user's `token_version` are embedded in
+    the token — never sensitive user data. `token_version` lets the server revoke every
+    outstanding token of a user at once (see `auth_service.update_password`) without
+    depending on clock precision.
     """
     minutes = (
         expires_minutes
@@ -55,6 +59,7 @@ def create_access_token(subject: str, expires_minutes: int | None = None) -> str
     now = datetime.now(timezone.utc)
     payload: dict[str, Any] = {
         "sub": subject,
+        "tv": token_version,
         "iat": now,
         "exp": now + timedelta(minutes=minutes),
     }

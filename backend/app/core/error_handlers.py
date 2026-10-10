@@ -13,6 +13,7 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from pymongo.errors import ConnectionFailure
 
 from app.utils.helpers import error_response
 from app.utils.logger import get_logger
@@ -55,6 +56,23 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=error_response("Invalid request data.", "VALIDATION_ERROR"),
+        )
+
+    @app.exception_handler(ConnectionFailure)
+    async def database_unavailable_handler(request: Request, exc: ConnectionFailure) -> JSONResponse:
+        # Covers server-selection timeouts, dropped connections and failovers (AutoReconnect,
+        # NetworkTimeout, NotPrimary...). A temporary outage is a 503, not an application bug,
+        # and the driver's message (hosts, topology) stays in the log only.
+        logger.error(
+            "Database unavailable on %s %s: %s", request.method, request.url.path, type(exc).__name__
+        )
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content=error_response(
+                "The service is temporarily unavailable. Please try again shortly.",
+                "SERVICE_UNAVAILABLE",
+            ),
+            headers={"Retry-After": "5"},
         )
 
     @app.exception_handler(Exception)

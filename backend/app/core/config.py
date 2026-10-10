@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     # --- API ---
     api_v1_prefix: str = "/api/v1"
 
+    # --- Request limits ---
+    # Hard ceiling for any non-audio request body (JSON etc.). Audio upload routes
+    # enforce their own, larger limit (VOICE_MAX_AUDIO_BYTES).
+    max_request_body_bytes: int = 1_048_576
+
     # --- CORS ---
     # Comma-separated list of allowed origins, configurable per environment.
     cors_allowed_origins: str = "http://localhost:5173"
@@ -99,6 +104,10 @@ class Settings(BaseSettings):
     )
 
     @property
+    def is_production(self) -> bool:
+        return self.app_env.strip().lower() in {"production", "prod"}
+
+    @property
     def filler_words_list(self) -> list[str] | None:
         """Configured filler-word override, or None to use the built-in list."""
         words = [w.strip().lower() for w in self.filler_words.split(",") if w.strip()]
@@ -109,15 +118,38 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.cors_allowed_origins.split(",") if origin.strip()]
 
 
+class ConfigurationError(RuntimeError):
+    """Raised at startup when the configuration is unsafe for the current environment."""
+
+
+MIN_PRODUCTION_JWT_SECRET_LENGTH = 32
+ALLOWED_JWT_ALGORITHMS = frozenset({"HS256", "HS384", "HS512"})  # symmetric only; never "none"
+
+
 @lru_cache
 def get_settings() -> Settings:
     """Cached settings instance — environment is read once per process."""
     resolved = Settings()
 
-    if not resolved.jwt_secret_key:
-        # Never run with an empty secret: fall back to a random, per-process
-        # secret so the app still starts in a fresh dev checkout, but make
-        # noise about it since tokens won't survive a restart with this.
+    if resolved.jwt_algorithm not in ALLOWED_JWT_ALGORITHMS:
+        raise ConfigurationError(
+            f"JWT_ALGORITHM must be one of {', '.join(sorted(ALLOWED_JWT_ALGORITHMS))}."
+        )
+
+    if resolved.is_production:
+        # Fail fast and clearly (the message never contains a secret value).
+        if len(resolved.jwt_secret_key) < MIN_PRODUCTION_JWT_SECRET_LENGTH:
+            raise ConfigurationError(
+                "JWT_SECRET_KEY must be set to a random value of at least "
+                f"{MIN_PRODUCTION_JWT_SECRET_LENGTH} characters when APP_ENV=production."
+            )
+        if "*" in resolved.cors_origins_list:
+            raise ConfigurationError(
+                "CORS_ALLOWED_ORIGINS must list explicit origins when APP_ENV=production."
+            )
+    elif not resolved.jwt_secret_key:
+        # Development convenience only: a random per-process secret so a fresh
+        # checkout still starts. Tokens won't survive a restart with this.
         resolved.jwt_secret_key = secrets.token_urlsafe(32)
         _bootstrap_logger.warning(
             "JWT_SECRET_KEY is not set — generated a temporary secret for this "

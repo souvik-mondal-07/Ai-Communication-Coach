@@ -40,6 +40,39 @@ The browser only ever talks to the backend. API keys, the JWT secret and all
 database access stay server-side. A single AI client (`app/services/ai`) is
 used by every module.
 
+## Project structure
+
+```text
+.
+├── backend/                 FastAPI app (Python 3.12)
+│   ├── app/
+│   │   ├── main.py          app factory, middleware, startup/shutdown, DB setup + retry
+│   │   ├── api/             router.py + routes/ (thin HTTP layer: auth, validation, status codes)
+│   │   ├── core/            config, JWT/password security, dependencies, error handlers, request limits
+│   │   ├── db/              MongoDB connection and collection names
+│   │   ├── models/          document shapes
+│   │   ├── schemas/         Pydantic request/response models (all input validation lives here)
+│   │   ├── services/        business logic, one package per feature:
+│   │   │                    ai, auth, mentor, cybersecurity, communication, interview, pressure,
+│   │   │                    voice, voice_conversation, progress, personalization, analytics,
+│   │   │                    history, daily_practice, notifications
+│   │   └── utils/           logging, helpers
+│   ├── tests/               pytest suite (mongomock; Gemini / Whisper / TTS mocked)
+│   └── requirements.txt
+├── frontend/                React + TypeScript + Vite
+│   └── src/
+│       ├── pages/           one component per route
+│       ├── features/        feature UI (mentor, cybersecurity, interview, analytics, ...)
+│       ├── components/      shared UI and route guards
+│       ├── hooks/           recording, audio playback, reminder sync, ...
+│       ├── services/        the only code that talks to the backend (axios)
+│       ├── store/           Zustand stores (+ sessionReset: clears per-user state on user change)
+│       └── types/, utils/, lib/
+├── scripts/                 download_whisper_model.py
+├── data/, uploads/          reserved folders (no code reads or writes them today)
+└── docs/                    per-step development notes
+```
+
 ## Tech stack (versions pinned in `requirements.txt` / `package.json`)
 
 **Backend:** Python 3.12, FastAPI 0.115.6, Pydantic 2.12.5, PyMongo 4.10.1,
@@ -64,8 +97,14 @@ sudo systemctl start mongod             # Linux (systemd)
 net start MongoDB                       # Windows (service)
 ```
 
+Database setup is automatic: on every start the backend creates its indexes and
+seeds the starter topic / scenario data idempotently (`$setOnInsert` upserts), so
+there is no separate setup or seed script to run.
+
 If MongoDB is down the backend still starts; `GET /api/v1/health` reports
-`"database_connected": false` and data routes return `503`.
+`"database_connected": false` and data routes return `503`. The driver reconnects
+on its own, and index creation / seeding is retried every 15 s in the background,
+so the API recovers when MongoDB comes back without a restart.
 
 ### 2. Backend
 
@@ -99,13 +138,14 @@ Backend (`backend/.env`; copy from `.env.example`, which holds placeholders only
 
 | Variable | Purpose |
 | --- | --- |
-| `JWT_SECRET_KEY` | **Required for stable sessions.** Long random string, e.g. `python -c "import secrets; print(secrets.token_urlsafe(48))"`. If empty, a random per-process secret is generated and logins reset on every restart. |
+| `JWT_SECRET_KEY` | **Required in production** (`APP_ENV=production` refuses to start without at least 32 random characters). Generate with `python -c "import secrets; print(secrets.token_urlsafe(48))"`. In development, if empty, a random per-process secret is generated and logins reset on every restart. |
 | `GEMINI_API_KEY` | Gemini key. Without it AI features return a safe `503`. |
 | `GEMINI_MODEL`, `GEMINI_TIMEOUT_SECONDS` | Model name and request timeout (default 60s). |
 | `MONGODB_URI`, `MONGODB_DATABASE` | Database connection. |
-| `CORS_ALLOWED_ORIGINS` | Comma-separated frontend origins (no wildcard). |
-| `APP_ENV`, `DEBUG` | Set `DEBUG=false` outside development (controls log verbosity). |
-| `JWT_ALGORITHM`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | Token settings (HS256, 60 min). |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated frontend origins (a wildcard is refused in production). |
+| `MAX_REQUEST_BODY_BYTES` | Largest accepted request body for non-audio routes (default 1 MB; larger requests get `413`). |
+| `APP_ENV`, `DEBUG` | `APP_ENV=production` turns on the startup safety checks and does not mount the `/ai/chat` development test endpoint, and disables `/docs`, `/redoc` and `/openapi.json`. Set `DEBUG=false` outside development (controls log verbosity). |
+| `JWT_ALGORITHM`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | Token settings (HS256/384/512 only, 60 min). |
 | `WHISPER_MODEL`, `WHISPER_DEVICE`, `WHISPER_COMPUTE_TYPE`, `WHISPER_LANGUAGE` | Local speech-to-text. |
 | `VOICE_MAX_AUDIO_BYTES`, `VOICE_MAX_AUDIO_SECONDS`, `VOICE_TEMP_DIR` | Upload limits (10 MB / 300 s by default). |
 | `VOICE_MAX_RECORDING_SECONDS`, `VOICE_CONVERSATION_MAX_TURNS`, `VOICE_CONVERSATION_MAX_SESSION_TURNS`, `VOICE_AUDIO_URL_TTL_SECONDS`, `VOICE_AUTO_PLAY` | Voice conversation limits (120 s per answer, 20 exchanges of history sent to Gemini, 40 answers per session, 120 s audio-clip lifetime). |
@@ -216,20 +256,36 @@ npm run lint
 protected route requires auth, JWT edge cases, cross-user access, secret
 leakage, input limits, upload validation, CORS and error handling.
 `test_e2e_journey.py` walks one user through the API end to end.
+`test_final_audit.py` covers the final hardening pass: production config checks,
+token revocation on password change, request-size limits, database outages and
+recovery, and cross-user / data-isolation checks across every feature.
+
+Frontend unit tests: `npm test` (Vitest).
 
 ## Security
 
-- Passwords: Argon2 hashes; never stored in plaintext, logged or returned.
-- JWT: secret from the environment, expiry enforced, `sub` is the only identity
+- Passwords: Argon2 hashes; never stored in plaintext, logged or returned. Login
+  does the same hashing work for unknown emails, so response time doesn't reveal
+  which emails are registered.
+- JWT: secret from the environment (production refuses to start without a strong
+  one), explicit HMAC algorithm, expiry enforced, `sub` is the only identity
   used – user ids are never taken from request bodies or query strings.
+  Each user has a `token_version` that is embedded in every token and bumped (atomically,
+  with the new hash) on password change, so every earlier token is rejected — an exact
+  comparison, not a timestamp one. The response carries a fresh token so the current
+  device stays signed in.
+- On the client, all per-user state (conversations, practice, notifications,
+  profile…) is cleared whenever the signed-in user logs out, expires, or changes.
 - Ownership: every session/progress query is scoped to the authenticated user;
   another user's resource returns `403`/`404`.
-- Input limits on all AI-facing schemas (message length, history size,
-  pagination bounds, TTS text length); audio upload size and type checked
+- Input limits on all AI-facing schemas (message length, history size and total
+  prompt-history size, pagination bounds, TTS text length); request bodies above
+  `MAX_REQUEST_BODY_BYTES` are rejected before parsing; audio upload size and type checked
   (magic bytes, not the claimed MIME type or filename).
 - Audio is written to a private temp file only while transcribing and always
   deleted (`try/finally`); recordings are never stored.
 - Errors are generic JSON; tracebacks and internals go only to server logs.
+  A database outage is a clean `503` with `Retry-After`.
   Framework debug mode is disabled so a `DEBUG=true` config cannot leak them.
 - CORS is an explicit origin allow-list. `.env` files are git-ignored.
 - No code path executes shell commands or AI output; the CTF mentor cannot
@@ -242,13 +298,18 @@ leakage, input limits, upload validation, CORS and error handling.
 - Speech-to-text needs `faster-whisper` and a local model (download on first
   use; CPU works but is slower). Spoken replies need a configured TTS provider.
 - Voice input needs browser microphone permission (HTTPS or `localhost`).
-- Access tokens are stored in `localStorage` and there is no server-side
-  logout/revocation: logout discards the token client-side and it expires
-  after `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`.
-- No rate limiting beyond request/input size limits.
+- Access tokens are stored in `localStorage`. Logout discards the token
+  client-side only (there is no server-side token denylist), so a token copied
+  before logout stays valid until it expires (`JWT_ACCESS_TOKEN_EXPIRE_MINUTES`) or the
+  password is changed.
+- No login/API rate limiting beyond request/input size limits and Argon2's cost —
+  put a reverse proxy or WAF in front for brute-force protection.
+- A resource owned by another user returns `403` while a non-existent one returns
+  `404`, so an ID's existence can be inferred (no data is exposed).
+- Spoken-reply audio is cached in process memory, so run a single backend worker.
 - No automatic exploitation, and no HackTheBox / TryHackMe integration.
-- Tests use `mongomock`; behaviour against a real MongoDB has not been
-  covered by the automated suite.
+- Tests use `mongomock`; behaviour against a real MongoDB (index builds, TTL
+  expiry, very large `skip` values) is not covered by the automated suite.
 - The `uploads/` folder is reserved; no resume/document upload feature exists.
 
 Earlier per-step build notes are kept in [`docs/development-notes.md`](docs/development-notes.md).

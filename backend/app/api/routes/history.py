@@ -44,7 +44,7 @@ def list_history(
     start_date: datetime | None = Query(default=None, description="Inclusive, ISO 8601."),
     end_date: datetime | None = Query(default=None, description="Inclusive, ISO 8601."),
     sort: SortOrder = Query(default="newest"),
-    page: int = Query(default=1, ge=1),
+    page: int = Query(default=1, ge=1, le=100_000),
     limit: int = Query(default=20, ge=1, le=MAX_LIMIT),
     db: Database = Depends(get_db),
     current_user: UserDocument = Depends(get_current_user),

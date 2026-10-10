@@ -31,3 +31,9 @@ class UserDocument(TypedDict):
     # The display name stays in the existing top-level `name` field.
     profile: NotRequired[dict[str, Any]]
     preferences: NotRequired[dict[str, Any]]
+    # Incremented on password change; access tokens carry the version they were issued for
+    # and are rejected once it no longer matches (absent = 0).
+    token_version: NotRequired[int]
+    # Legacy: written by an earlier build that revoked tokens by timestamp. No longer written;
+    # only read, to migrate such accounts to `token_version` (auth_service.effective_token_version).
+    password_changed_at: NotRequired[datetime | None]

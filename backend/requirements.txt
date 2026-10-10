@@ -26,6 +26,9 @@ python-multipart==0.0.32
 # Local speech-to-text. Imported lazily: the app still starts (and text mode
 # still works) if the model can't be loaded.
 faster-whisper==1.2.1
+# faster-whisper 1.2.1 decodes audio through PyAV and calls av.open(metadata_errors=...), which
+# PyAV 19 no longer accepts — every transcription would fail. Verified working: 16.1, 17.1, 18.0, 18.1.
+av>=16.1,<19
 # Async HTTP client for cloud text-to-speech providers (also used by TestClient)
 httpx==0.28.1
 

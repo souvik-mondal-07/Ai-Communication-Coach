@@ -64,7 +64,9 @@ def login(payload: LoginRequest, db: Database = Depends(get_db)) -> dict:
         # password is wrong, or the account is inactive.
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=_INVALID_CREDENTIALS)
 
-    access_token = create_access_token(subject=str(user["_id"]))
+    access_token = create_access_token(
+        subject=str(user["_id"]), token_version=auth_service.effective_token_version(user)
+    )
     logger.info("User logged in: %s", str(user["_id"]))
 
     return success_response(

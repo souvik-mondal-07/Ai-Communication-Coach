@@ -28,6 +28,10 @@ Role = Literal["user", "assistant"]
 
 # Reasonable ceiling so one request can't balloon into an enormous prompt.
 MAX_HISTORY_MESSAGES = 40
+# ...and on total size: 40 messages of up to 10,000 characters each would still be a very
+# large (and costly) prompt. The oldest turns are dropped first; the newest message is
+# always kept.
+MAX_HISTORY_CHARS = 60_000
 
 
 class AIServiceError(Exception):
@@ -63,6 +67,19 @@ def _to_gemini_role(role: Role) -> str:
     return "model" if role == "assistant" else "user"
 
 
+def _trim_to_budget(turns: list[ConversationTurn]) -> list[ConversationTurn]:
+    """Keep the most recent turns whose combined length fits MAX_HISTORY_CHARS."""
+    kept: list[ConversationTurn] = []
+    total = 0
+    for turn in reversed(turns):
+        total += len(turn.content)
+        if total > MAX_HISTORY_CHARS and kept:
+            break
+        kept.append(turn)
+    kept.reverse()
+    return kept
+
+
 class AIService:
     """Provider-agnostic AI facade. Currently backed by Gemini."""
 
@@ -84,7 +101,7 @@ class AIService:
         on failure — callers should catch these, not provider-specific
         exceptions.
         """
-        turns = list(history or [])[-MAX_HISTORY_MESSAGES:]
+        turns = _trim_to_budget(list(history or [])[-MAX_HISTORY_MESSAGES:])
         messages = [
             GeminiMessage(role=_to_gemini_role(turn.role), text=turn.content)
             for turn in turns
