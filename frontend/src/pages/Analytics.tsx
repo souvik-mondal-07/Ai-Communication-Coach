@@ -13,6 +13,7 @@ import { RANGE_OPTIONS, type LoadState } from "@/features/analytics/analyticsUti
 import type {
   AnalyticsRange, CommunicationData, DomainsData, InsightsData, OverviewData, PressureData, SpeakingData, TrendsData,
 } from "@/types/analytics";
+import { PageHeader } from "@/components/ui/page-header";
 
 /**
  * Analytics page. Each section loads independently (one failing endpoint never blanks
@@ -48,13 +49,11 @@ export default function AnalyticsPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-2xl font-semibold text-text-primary">
-            <BarChart3 size={22} className="text-signal" aria-hidden="true" /> Analytics
-          </h1>
-          <p className="text-sm text-text-secondary">How you are improving as a cybersecurity candidate and communicator.</p>
-        </div>
+      <PageHeader
+        icon={BarChart3}
+        title="Analytics"
+        description="How you are improving as a cybersecurity candidate and communicator."
+        actions={
         <div role="group" aria-label="Date range" className="flex gap-1">
           {RANGE_OPTIONS.map((o) => (
             <button
@@ -70,7 +69,8 @@ export default function AnalyticsPage() {
             </button>
           ))}
         </div>
-      </header>
+        }
+      />
 
       <DataBanner meta={meta} />
 
@@ -81,7 +81,7 @@ export default function AnalyticsPage() {
         </div>
       ) : overview.status === "loading" ? (
         <div role="status" aria-label="Loading overview" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => <div key={i} aria-hidden="true" className="h-24 animate-pulse rounded-[var(--radius-panel)] bg-surface-raised" />)}
+          {[0, 1, 2, 3].map((i) => <div key={i} aria-hidden="true" className="skeleton h-24 rounded-[var(--radius-panel)]" />)}
         </div>
       ) : (
         <OverviewSection data={overview.data} />

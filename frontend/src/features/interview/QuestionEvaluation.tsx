@@ -31,7 +31,7 @@ export function QuestionEvaluation({ record }: QuestionEvaluationProps) {
         </p>
         {record.improved_answer && (
           <div className="rounded-[var(--radius-panel)] border border-signal/30 bg-signal/5 px-3 py-2">
-            <p className="text-xs font-medium text-signal">Improved Answer</p>
+            <p className="text-xs font-medium text-success">Improved Answer</p>
             <p className="mt-1 text-text-secondary">{record.improved_answer}</p>
           </div>
         )}

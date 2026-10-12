@@ -11,7 +11,7 @@ const BULLET: Record<string, string> = {
 };
 
 const COLOR: Record<string, string> = {
-  positive: "text-signal",
+  positive: "text-success",
   negative: "text-warn",
   neutral: "text-text-secondary",
 };

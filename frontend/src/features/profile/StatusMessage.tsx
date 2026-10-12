@@ -19,9 +19,9 @@ export function StatusMessage({ flash, onDismiss }: { flash: Flash | null; onDis
     <p
       role={flash.type === "error" ? "alert" : "status"}
       className={cn(
-        "rounded-[var(--radius-panel)] border px-3 py-2 text-sm",
+        "animate-fade-in rounded-[var(--radius-panel)] border px-3 py-2 text-sm",
         flash.type === "success"
-          ? "border-signal/40 bg-signal/10 text-signal"
+          ? "border-success/40 bg-success/10 text-success"
           : "border-danger/40 bg-danger/10 text-danger"
       )}
     >

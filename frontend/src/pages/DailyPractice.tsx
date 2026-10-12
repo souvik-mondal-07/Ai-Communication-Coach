@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ProgressBar } from "@/components/ui/progress";
 import { Link, useNavigate } from "react-router-dom";
 import { StreakCard } from "@/components/dashboard/StreakCard";
 import { goalPercent } from "@/components/dashboard/dailyPracticeUtils";
@@ -8,6 +9,7 @@ import { DailySummaryCard } from "@/features/dailyPractice/DailySummaryCard";
 import { DailyTaskList } from "@/features/dailyPractice/DailyTaskList";
 import { useDailyPracticeStore } from "@/store/dailyPracticeStore";
 import type { DailyTask } from "@/types/dailyPractice";
+import { PageHeader } from "@/components/ui/page-header";
 
 /**
  * Today's practice. This page only orchestrates: each task is started through the existing
@@ -49,10 +51,7 @@ export default function DailyPractice() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold text-text-primary">Today's Practice</h2>
-        <p className="mt-1 text-sm text-text-secondary">{data.date} · your personalized daily routine</p>
-      </div>
+      <PageHeader title="Today's Practice" description={`${data.date} · your personalized daily routine`} />
 
       {!data.enabled && (
         <Card>
@@ -82,16 +81,11 @@ export default function DailyPractice() {
                   {data.goal.minutes_done} / {data.goal.goal_minutes} min
                 </span>
               </div>
-              <div
-                className="h-2 overflow-hidden rounded-full bg-surface-raised"
-                role="progressbar"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={goalPercent(data.goal.minutes_done, data.goal.goal_minutes)}
-                aria-label="Daily practice progress"
-              >
-                <div className="h-full bg-signal" style={{ width: `${goalPercent(data.goal.minutes_done, data.goal.goal_minutes)}%` }} />
-              </div>
+              <ProgressBar
+                value={goalPercent(data.goal.minutes_done, data.goal.goal_minutes)}
+                label="Daily practice progress"
+                tone="brand"
+              />
               <p className="text-xs text-text-muted">
                 {data.goal.tasks_done} of {data.goal.tasks_total} tasks done. Minutes count any practice you finish today.
               </p>

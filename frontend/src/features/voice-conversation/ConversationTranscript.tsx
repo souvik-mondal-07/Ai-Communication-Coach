@@ -47,7 +47,7 @@ export function ConversationTranscript({ messages, pending = null }: Conversatio
                 isUser ? "border-signal/40 bg-signal/10 text-text-primary" : "border-border bg-surface-raised text-text-primary"
               )}
             >
-              <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-text-muted">{isUser ? "You" : "AI mentor"}</p>
+              <p className="mb-1 text-[11px] font-medium text-text-muted">{isUser ? "You" : "AI mentor"}</p>
               <p className="whitespace-pre-wrap break-words">{message.text}</p>
               {isUser && message.voice_analysis?.speaking_rate_wpm != null && (
                 <p className="mt-1.5 text-[11px] text-text-muted">
@@ -61,7 +61,7 @@ export function ConversationTranscript({ messages, pending = null }: Conversatio
       {pending && (
         <li className="flex justify-end" aria-live="polite">
           <div className="max-w-[92%] rounded-[var(--radius-panel)] border border-dashed border-signal/40 px-3.5 py-2.5 text-sm leading-relaxed text-text-primary sm:max-w-[80%]">
-            <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-text-muted">You</p>
+            <p className="mb-1 text-[11px] font-medium text-text-muted">You</p>
             {pending.transcript ? <p className="whitespace-pre-wrap break-words">{pending.transcript}</p> : null}
             <p className={cn("text-xs text-text-muted", pending.transcript && "mt-1.5")}>{PENDING_NOTE[pending.phase]}</p>
           </div>

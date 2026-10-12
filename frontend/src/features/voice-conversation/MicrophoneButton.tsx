@@ -56,7 +56,7 @@ export function MicrophoneButton({ state, onStart, onStop, disabledReason }: Mic
           "relative flex h-20 w-20 items-center justify-center rounded-full border-2 transition-colors",
           "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-signal/50 focus-visible:ring-offset-2 focus-visible:ring-offset-base",
           "disabled:cursor-not-allowed",
-          state === "start" && "border-signal bg-signal text-[#08120f] hover:bg-signal/90",
+          state === "start" && "border-signal bg-signal text-on-signal hover:bg-signal/90",
           state === "listening" && "border-danger bg-danger text-white hover:bg-danger/90",
           isBusy && "border-border-strong bg-surface-raised text-text-secondary",
           state === "disabled" && "border-border bg-surface text-text-muted"

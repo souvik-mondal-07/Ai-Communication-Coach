@@ -12,8 +12,8 @@ function Bar({ label, score, detail }: { label: string; score: number | null; de
           {detail} · <span className="text-text-primary">{formatScore(score, "%")}</span>
         </span>
       </div>
-      <div className="h-2 rounded-full bg-surface-raised" role="progressbar" aria-label={`${label} score`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? undefined}>
-        <div className="h-2 rounded-full" style={{ width: `${score ?? 0}%`, background: bandColor(score) }} />
+      <div className="h-2 overflow-hidden rounded-full bg-surface-raised" role="progressbar" aria-label={`${label} score`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? undefined}>
+        <div className="h-2 origin-left animate-bar-grow rounded-full" style={{ width: `${score ?? 0}%`, background: bandColor(score) }} />
       </div>
     </li>
   );

@@ -65,7 +65,7 @@ export function CtfSessionForm({ onSubmit, onCancel }: CtfSessionFormProps) {
           <select
             value={platform}
             onChange={(e) => setPlatform(e.target.value as Platform)}
-            className="w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary"
+            className="w-full rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
           >
             {PLATFORMS.map((p) => (
               <option key={p} value={p}>
@@ -80,7 +80,7 @@ export function CtfSessionForm({ onSubmit, onCancel }: CtfSessionFormProps) {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as ChallengeCategory)}
-            className="w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary"
+            className="w-full rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
           >
             {CATEGORY_OPTIONS.map(([value, label]) => (
               <option key={value} value={value}>
@@ -95,7 +95,7 @@ export function CtfSessionForm({ onSubmit, onCancel }: CtfSessionFormProps) {
           <select
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value as CtfDifficulty)}
-            className="w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary"
+            className="w-full rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
           >
             {Object.entries(DIFFICULTY_LABELS).map(([value, label]) => (
               <option key={value} value={value}>
@@ -115,7 +115,7 @@ export function CtfSessionForm({ onSubmit, onCancel }: CtfSessionFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Login Bypass"
-          className="w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted"
+          className="w-full rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         />
       </label>
 
@@ -128,7 +128,7 @@ export function CtfSessionForm({ onSubmit, onCancel }: CtfSessionFormProps) {
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           placeholder="What have you found so far? e.g. I found port 80 open and the website has a login page."
-          className="w-full resize-none rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted"
+          className="w-full resize-none rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         />
       </label>
 
@@ -141,7 +141,7 @@ export function CtfSessionForm({ onSubmit, onCancel }: CtfSessionFormProps) {
           onChange={(e) => setUserNotes(e.target.value)}
           rows={2}
           placeholder="e.g. I checked the page source and found..."
-          className="w-full resize-none rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted"
+          className="w-full resize-none rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         />
       </label>
 

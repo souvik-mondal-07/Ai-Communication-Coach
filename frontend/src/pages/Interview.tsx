@@ -11,6 +11,7 @@ import {
   type InterviewConfig,
   type InterviewSummary,
 } from "@/types/interview";
+import { PageHeader } from "@/components/ui/page-header";
 
 const STATUS_LABELS: Record<InterviewSummary["status"], string> = {
   in_progress: "In progress",
@@ -87,13 +88,10 @@ export default function Interview() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="font-display text-xl font-semibold text-text-primary">Interview</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Practise a realistic cybersecurity job interview. The interviewer asks the questions, follows up on
-          your answers, and you get detailed technical and communication feedback at the end.
-        </p>
-      </div>
+      <PageHeader
+        title="Interview"
+        description="Practise a realistic cybersecurity job interview. The interviewer asks the questions, follows up on your answers, and you get detailed technical and communication feedback at the end."
+      />
 
       <InterviewSetup onStart={handleStart} isStarting={isStarting} error={error} initial={preset} />
 

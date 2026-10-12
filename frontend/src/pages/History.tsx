@@ -13,6 +13,7 @@ import {
 } from "@/features/history/historyMeta";
 import * as historyService from "@/services/historyService";
 import type { HistoryFilters, HistoryListResponse, HistorySummary } from "@/types/history";
+import { PageHeader } from "@/components/ui/page-header";
 
 const SEARCH_DEBOUNCE_MS = 350;
 
@@ -85,12 +86,7 @@ export default function History() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6">
-      <header>
-        <h1 className="font-display text-xl font-semibold text-text-primary">History &amp; Activity</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Everything you've practiced, in one place. Open any session to review it.
-        </p>
-      </header>
+      <PageHeader title="History & Activity" description="Everything you've practiced, in one place. Open any session to review it." />
 
       {summary && summary.total > 0 && <SummaryTiles summary={summary} />}
       {summaryFailed && !summary && (

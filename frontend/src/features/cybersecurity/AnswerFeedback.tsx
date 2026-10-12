@@ -43,7 +43,7 @@ export function AnswerFeedback({ result, isLastQuestion, onNext, isBusy = false 
       <div className="flex items-center gap-2">
         <span
           className={`flex h-8 w-8 items-center justify-center rounded-[var(--radius-panel)] ${
-            result.correct ? "bg-signal/15 text-signal" : "bg-danger/15 text-danger"
+            result.correct ? "bg-success/15 text-success" : "bg-danger/15 text-danger"
           }`}
         >
           {result.correct ? <Check size={16} /> : <X size={16} />}
@@ -69,7 +69,7 @@ export function AnswerFeedback({ result, isLastQuestion, onNext, isBusy = false 
               </div>
               <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-border">
                 <div
-                  className="h-full rounded-full bg-signal"
+                  className="h-full origin-left animate-bar-grow rounded-full bg-signal"
                   style={{ width: `${result.dimension_scores![key]}%` }}
                 />
               </div>

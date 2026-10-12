@@ -6,6 +6,7 @@ import type { Difficulty, TopicSummary } from "@/features/cybersecurity/cybersec
 import { getTopics } from "@/services/cybersecurityService";
 import { usePracticeStore } from "@/store/practiceStore";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function Cybersecurity() {
   const navigate = useNavigate();
@@ -80,14 +81,7 @@ export default function Cybersecurity() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-xl font-semibold text-text-primary">
-          Cybersecurity Learning
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Browse topics, learn the concepts, then practice what you've learned.
-        </p>
-      </div>
+      <PageHeader title="Cybersecurity Learning" description="Browse topics, learn the concepts, then practice what you've learned." />
 
       <div className="flex flex-col gap-2 rounded-[var(--radius-panel)] border border-border bg-surface px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-text-secondary">

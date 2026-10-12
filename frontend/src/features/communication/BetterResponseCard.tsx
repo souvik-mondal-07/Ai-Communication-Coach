@@ -16,7 +16,7 @@ export function BetterResponseCard({ response }: BetterResponseCardProps) {
         <ArrowDown size={14} />
       </div>
       <div>
-        <p className="mb-1 text-[11px] font-medium text-signal">Improved Response</p>
+        <p className="mb-1 text-[11px] font-medium text-success">Improved Response</p>
         <p className="text-sm text-text-primary">"{response.improved}"</p>
       </div>
       {response.why && (

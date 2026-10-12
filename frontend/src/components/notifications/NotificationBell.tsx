@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Bell } from "lucide-react";
 import { NotificationBadge } from "@/components/notifications/NotificationBadge";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
+import { useDismiss } from "@/hooks/useDismiss";
 import { useNotificationActions } from "@/components/notifications/useNotificationActions";
 import { useNotificationStore } from "@/store/notificationStore";
 
@@ -10,6 +11,12 @@ export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const { unreadCount, recent, isLoading, error, loadRecent, markRead, markAllRead, remove } = useNotificationStore();
   const { open } = useNotificationActions(() => setIsOpen(false));
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+  useDismiss(wrapRef, isOpen, close);
 
   function toggle() {
     const next = !isOpen;
@@ -18,11 +25,12 @@ export function NotificationBell() {
   }
 
   return (
-    <div className="relative">
+    <div ref={wrapRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         onClick={toggle}
-        className="relative rounded-[var(--radius-panel)] p-2 text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+        className="relative rounded-[var(--radius-panel)] p-2 text-text-secondary transition-colors hover:bg-surface-raised hover:text-text-primary"
         aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
@@ -33,7 +41,6 @@ export function NotificationBell() {
 
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} aria-hidden="true" />
           <NotificationPanel
             items={recent}
             unreadCount={unreadCount}

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import type { TrendsData } from "@/types/analytics";
+import { chartColors, chartTooltipStyle } from "@/utils/chartTheme";
 import { Empty } from "./AnalyticsStates";
 import { buildChartRows, DIRECTION_LABEL, formatPeriod, hasChartData } from "./analyticsUtils";
 
@@ -10,10 +12,11 @@ const GROUPS = {
   structure: { label: "Structure & clarity", keys: ["structure", "clarity"], max: 100 },
 } as const;
 type GroupKey = keyof typeof GROUPS;
-const COLORS = ["#35d0ba", "#7d8cf0", "#f5a623", "#e5484d"];
+const COLORS = [chartColors.success, chartColors.signal, chartColors.warn, chartColors.danger];
 
 export function TrendsSection({ data }: { data: TrendsData }) {
   const [group, setGroup] = useState<GroupKey>("performance");
+  const reduceMotion = usePrefersReducedMotion();
   const g = GROUPS[group];
   const keys = [...g.keys];
   const rows = buildChartRows(data.series, keys);
@@ -43,12 +46,12 @@ export function TrendsSection({ data }: { data: TrendsData }) {
         <div className="h-64" role="img" aria-label={`${g.label} trend chart by ${data.granularity}`}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={rows} margin={{ top: 8, right: 12, bottom: 0, left: -16 }}>
-              <CartesianGrid stroke="#232c3a" vertical={false} />
-              <XAxis dataKey="period" tickFormatter={formatPeriod} stroke="#6c7889" fontSize={11} tickLine={false} />
-              <YAxis stroke="#6c7889" fontSize={11} tickLine={false} domain={g.max ? [0, g.max] : ["auto", "auto"]} />
+              <CartesianGrid stroke={chartColors.grid} vertical={false} />
+              <XAxis dataKey="period" tickFormatter={formatPeriod} stroke={chartColors.muted} fontSize={11} tickLine={false} />
+              <YAxis stroke={chartColors.muted} fontSize={11} tickLine={false} domain={g.max ? [0, g.max] : ["auto", "auto"]} />
               <Tooltip
                 labelFormatter={(l) => formatPeriod(String(l))}
-                contentStyle={{ background: "#19212c", border: "1px solid #2f3b4d", borderRadius: 6, fontSize: 12 }}
+                contentStyle={chartTooltipStyle}
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               {keys.map((k, i) => (
@@ -61,6 +64,8 @@ export function TrendsSection({ data }: { data: TrendsData }) {
                   strokeWidth={2}
                   dot={{ r: 3 }}
                   connectNulls={false}
+                  isAnimationActive={!reduceMotion}
+                  animationDuration={700}
                 />
               ))}
             </LineChart>

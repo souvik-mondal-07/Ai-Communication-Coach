@@ -6,7 +6,7 @@ import type { HistoryActivity } from "@/types/history";
 import { formatElapsed, STATUS_LABELS, TYPE_META } from "@/features/history/historyMeta";
 
 const STATUS_STYLE: Record<HistoryActivity["status"], string> = {
-  completed: "text-signal",
+  completed: "text-success",
   in_progress: "text-warn",
   abandoned: "text-text-muted",
 };
@@ -28,7 +28,7 @@ export function ActivityCard({ activity }: { activity: HistoryActivity }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">{activity.type_label}</p>
+        <p className="text-[11px] font-medium text-text-muted">{activity.type_label}</p>
         <p className="truncate text-sm font-semibold text-text-primary">{activity.title}</p>
         {activity.description && <p className="truncate text-xs text-text-secondary">{activity.description}</p>}
         <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-text-muted">

@@ -1,13 +1,13 @@
 import type { CtfBreakdownRow, SkillBreakdownRow } from "@/types/progress";
 
 function barColor(status: SkillBreakdownRow["status"]): string {
-  if (status === "strong") return "bg-signal";
+  if (status === "strong") return "bg-success";
   if (status === "weak") return "bg-danger";
   return "bg-warn";
 }
 
 function scoreTextColor(status: SkillBreakdownRow["status"]): string {
-  if (status === "strong") return "text-signal";
+  if (status === "strong") return "text-success";
   if (status === "weak") return "text-danger";
   return "text-warn";
 }
@@ -34,7 +34,7 @@ export function SkillOverview({ skills }: { skills: SkillBreakdownRow[] }) {
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-raised">
             <div
-              className={`h-full rounded-full ${barColor(skill.status)}`}
+              className={`h-full origin-left animate-bar-grow rounded-full ${barColor(skill.status)}`}
               style={{ width: `${Math.max(4, skill.average_score)}%` }}
             />
           </div>

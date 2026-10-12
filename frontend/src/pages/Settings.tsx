@@ -8,6 +8,7 @@ import {
   InterviewPreferences,
   LearningPreferences,
 } from "@/features/profile/SettingsSections";
+import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/utils";
 import { useProfileStore } from "@/store/profileStore";
 
@@ -31,6 +32,7 @@ export default function Settings() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      <PageHeader title="Settings" description="Appearance, AI preferences, learning, reminders and account security." />
       {/* Scrolls inside its own box on narrow screens so the page never overflows. */}
       <div role="tablist" aria-label="Settings sections" className="flex gap-1 overflow-x-auto border-b border-border">
         {TABS.map((t) => (
@@ -43,7 +45,7 @@ export default function Settings() {
             aria-controls={`panel-${t.id}`}
             onClick={() => setTab(t.id)}
             className={cn(
-              "-mb-px shrink-0 border-b-2 px-3 py-2.5 text-sm transition-colors",
+              "-mb-px shrink-0 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
               tab === t.id
                 ? "border-signal text-signal"
                 : "border-transparent text-text-secondary hover:text-text-primary"

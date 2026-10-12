@@ -52,12 +52,12 @@ describe("analyticsUtils", () => {
   });
 
   it("maps change labels and scores to tones/colours", () => {
-    expect(changeToneClass("Improving")).toBe("text-signal");
+    expect(changeToneClass("Improving")).toBe("text-success");
     expect(changeToneClass("Needs attention")).toBe("text-danger");
     expect(changeToneClass(null)).toBe("text-text-muted");
-    expect(bandColor(null)).toBe("#6c7889");
-    expect(bandColor(80)).toBe("#35d0ba");
-    expect(bandColor(59)).toBe("#e5484d");
-    expect(bandColor(70)).toBe("#f5a623");
+    expect(bandColor(null)).toBe("var(--color-text-muted)");
+    expect(bandColor(80)).toBe("var(--color-success)");
+    expect(bandColor(59)).toBe("var(--color-danger)");
+    expect(bandColor(70)).toBe("var(--color-warn)");
   });
 });

@@ -25,7 +25,7 @@ function CodeBlock({ className, children }: { className?: string; children?: Rea
   }
 
   return (
-    <div className="group relative my-2 overflow-hidden rounded-[var(--radius-panel)] border border-border bg-base">
+    <div className="group relative my-2 overflow-hidden rounded-[var(--radius-panel)] border border-border bg-base/70">
       <div className="flex items-center justify-between border-b border-border px-3 py-1.5">
         <span className="text-[11px] text-text-muted">{language ?? "code"}</span>
         <button
@@ -49,11 +49,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
-    <div className={cn("flex gap-3", isUser && "flex-row-reverse")}>
+    <div className={cn("flex animate-message-in gap-3", isUser && "flex-row-reverse")}>
       <div
         className={cn(
           "flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-panel)]",
-          isUser ? "bg-surface-raised text-text-secondary" : "bg-signal/15 text-signal"
+          isUser ? "bg-surface-raised text-text-secondary" : "bg-brand text-white"
         )}
         aria-hidden="true"
       >
@@ -65,8 +65,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           className={cn(
             "rounded-[var(--radius-panel)] px-3.5 py-2.5 text-sm leading-relaxed",
             isUser
-              ? "bg-signal/10 text-text-primary"
-              : "border border-border bg-surface text-text-primary"
+              ? "border border-signal/20 bg-signal/10 text-text-primary"
+              : "border border-border bg-surface-raised/50 text-text-primary"
           )}
         >
           {isUser ? (

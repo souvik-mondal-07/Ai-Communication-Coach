@@ -80,7 +80,7 @@ export function PracticeDetail({ data }: { data: PracticeDetailData }) {
                       <span className="text-text-muted">Your answer: </span>
                       {q.answer}
                     </p>
-                    <p className={q.correct ? "text-signal" : "text-warn"}>
+                    <p className={q.correct ? "text-success" : "text-warn"}>
                       {q.correct ? "Correct" : "Needs work"}
                       {q.score != null ? ` · ${q.score}/100` : ""}
                     </p>

@@ -13,6 +13,7 @@ import type {
 } from "@/features/communication/communicationTypes";
 import * as communicationService from "@/services/communicationService";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function Communication() {
   const navigate = useNavigate();
@@ -71,15 +72,10 @@ export default function Communication() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-xl font-semibold text-text-primary">
-          Real-Life Communication Coach
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Practice realistic conversations by typing or speaking, then get concrete feedback on
-          your communication.
-        </p>
-      </div>
+      <PageHeader
+        title="Real-Life Communication Coach"
+        description="Practice realistic conversations by typing or speaking, then get concrete feedback on your communication."
+      />
 
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm text-text-secondary">Practice with:</span>

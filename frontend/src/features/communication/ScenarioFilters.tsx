@@ -25,13 +25,13 @@ export function ScenarioFilters({
   onDifficultyChange,
 }: ScenarioFiltersProps) {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
       <label className="flex items-center gap-2 text-xs text-text-secondary">
         Category
         <select
           value={category}
           onChange={(e) => onCategoryChange(e.target.value as Category | "all")}
-          className="rounded-[var(--radius-panel)] border border-border bg-surface-raised px-2 py-2 text-sm text-text-primary"
+          className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         >
           <option value="all">All</option>
           {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
@@ -47,7 +47,7 @@ export function ScenarioFilters({
         <select
           value={mode}
           onChange={(e) => onModeChange(e.target.value as Mode | "all")}
-          className="rounded-[var(--radius-panel)] border border-border bg-surface-raised px-2 py-2 text-sm text-text-primary"
+          className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         >
           <option value="all">All</option>
           {Object.entries(MODE_LABELS).map(([value, label]) => (
@@ -63,7 +63,7 @@ export function ScenarioFilters({
         <select
           value={difficulty}
           onChange={(e) => onDifficultyChange(e.target.value as Difficulty | "all")}
-          className="rounded-[var(--radius-panel)] border border-border bg-surface-raised px-2 py-2 text-sm text-text-primary"
+          className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         >
           <option value="all">All</option>
           {Object.entries(DIFFICULTY_LABELS).map(([value, label]) => (

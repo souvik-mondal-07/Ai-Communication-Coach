@@ -1,3 +1,5 @@
+import { ProgressBar } from "@/components/ui/progress";
+
 interface InterviewProgressProps {
   current: number;
   total: number;
@@ -14,16 +16,7 @@ export function InterviewProgress({ current, total }: InterviewProgressProps) {
         </span>
         <span>{percent}%</span>
       </div>
-      <div
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={percent}
-        aria-label="Interview progress"
-        className="h-1.5 overflow-hidden rounded-full bg-surface-raised"
-      >
-        <div className="h-full rounded-full bg-signal transition-all" style={{ width: `${percent}%` }} />
-      </div>
+      <ProgressBar value={percent} label="Interview progress" className="h-1.5" />
     </div>
   );
 }

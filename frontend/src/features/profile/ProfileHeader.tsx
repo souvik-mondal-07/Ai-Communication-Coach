@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { ProgressBar } from "@/components/ui/progress";
 import { EXPERIENCE_LEVELS, type UserProfile } from "@/types/profile";
 
 function initialsOf(name: string): string {
@@ -24,7 +25,7 @@ export function ProfileHeader({ user }: { user: UserProfile }) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="truncate font-display text-xl font-semibold text-text-primary">{user.full_name}</h2>
+          <h1 className="truncate font-display text-xl font-semibold text-text-primary">{user.full_name}</h1>
           <p className="truncate text-sm text-text-secondary">{user.email}</p>
           <p className="mt-1 text-sm text-text-muted">
             {user.profile.career_goal || "Add your career goal"}
@@ -37,16 +38,7 @@ export function ProfileHeader({ user }: { user: UserProfile }) {
             <span>Profile completion</span>
             <span className="font-medium text-text-primary">{pct}%</span>
           </div>
-          <div
-            role="progressbar"
-            aria-valuenow={pct}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="Profile completion"
-            className="h-2 overflow-hidden rounded-full bg-surface-raised"
-          >
-            <div className="h-full rounded-full bg-signal transition-all" style={{ width: `${pct}%` }} />
-          </div>
+          <ProgressBar value={pct} label="Profile completion" tone="brand" />
         </div>
       </CardContent>
     </Card>

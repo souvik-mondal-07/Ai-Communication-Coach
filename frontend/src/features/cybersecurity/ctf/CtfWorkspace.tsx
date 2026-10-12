@@ -92,7 +92,7 @@ export function CtfWorkspace({
               onChange={(e) => setFlag(e.target.value)}
               placeholder="Flag (optional, for your own tracking)"
               aria-label="Flag (optional)"
-              className="flex-1 rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted"
+              className="flex-1 rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
             />
             <Button
               onClick={() => void onComplete(flag.trim() || undefined)}

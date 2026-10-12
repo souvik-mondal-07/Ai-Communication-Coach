@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Target } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getPersonalizationProfile } from "@/services/personalizationService";
 import type { PersonalizationProfile } from "@/types/personalization";
 
@@ -10,7 +12,7 @@ const EMPTY_TEXT = "None identified yet";
 function TopicList({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">{title}</p>
+      <p className="text-[11px] font-medium text-text-muted">{title}</p>
       <p className="mt-1 text-sm text-text-secondary">{items.length ? items.join(", ") : EMPTY_TEXT}</p>
     </div>
   );
@@ -42,14 +44,20 @@ export function LearningFocusCard() {
         </div>
 
         {failed && <p className="text-sm text-text-muted">Personalization is unavailable right now.</p>}
-        {!data && !failed && <p className="text-sm text-text-muted">Loading your focus…</p>}
+        {!data && !failed && (
+          <div role="status" className="space-y-3">
+            <span className="sr-only">Loading your focus…</span>
+            <Skeleton className="h-24 w-full rounded-[var(--radius-panel)]" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+        )}
 
         {data && (
           <>
             {data.message && <p className="text-sm text-text-secondary">{data.message}</p>}
 
             {data.current_focus && top ? (
-              <div className="rounded-[var(--radius-panel)] border border-border bg-surface-raised p-4">
+              <div className="rounded-[var(--radius-panel)] border border-border bg-surface-raised/60 p-4">
                 <p className="text-[11px] text-text-muted">
                   {data.current_focus.basis === "performance" ? "Based on your recent performance" : "Based on your profile"}
                 </p>
@@ -65,7 +73,7 @@ export function LearningFocusCard() {
                 </ul>
                 <Link
                   to={top.route}
-                  className="mt-4 inline-flex rounded-[var(--radius-panel)] bg-signal px-3 py-1.5 text-xs font-medium text-canvas hover:opacity-90"
+                  className={`mt-4 ${buttonVariants({ size: "sm" })}`}
                 >
                   {top.type === "practice" ? "Start practice" : "Open"}
                 </Link>

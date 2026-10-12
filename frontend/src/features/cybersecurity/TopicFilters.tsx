@@ -33,7 +33,7 @@ export function TopicFilters({
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search topics..."
           aria-label="Search topics"
-          className="w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted"
+          className="w-full rounded-[var(--radius-panel)] border border-border-input bg-base/60 py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         />
       </div>
 
@@ -43,7 +43,7 @@ export function TopicFilters({
           value={category}
           onChange={(e) => onCategoryChange(e.target.value)}
           aria-label="Filter by category"
-          className="rounded-[var(--radius-panel)] border border-border bg-surface-raised px-2 py-2 text-sm text-text-primary"
+          className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         >
           <option value="all">All</option>
           {categories.map((cat) => (
@@ -60,7 +60,7 @@ export function TopicFilters({
           value={difficulty}
           onChange={(e) => onDifficultyChange(e.target.value as Difficulty | "all")}
           aria-label="Filter by difficulty"
-          className="rounded-[var(--radius-panel)] border border-border bg-surface-raised px-2 py-2 text-sm text-text-primary"
+          className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         >
           <option value="all">All</option>
           {Object.entries(DIFFICULTY_LABELS).map(([value, label]) => (

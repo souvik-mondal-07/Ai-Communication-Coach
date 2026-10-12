@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
 import type { AppNotification } from "@/types/notification";
 
@@ -22,7 +23,7 @@ export function NotificationPanel(props: NotificationPanelProps) {
     <div
       role="dialog"
       aria-label="Notifications"
-      className="absolute right-0 z-20 mt-2 w-[min(22rem,calc(100vw-2rem))] rounded-[var(--radius-panel)] border border-border bg-surface shadow-lg"
+      className="glass absolute right-0 z-20 mt-2 w-[min(22rem,calc(100vw-2rem))] origin-top-right animate-pop-in rounded-[var(--radius-card)] border border-border-strong shadow-pop"
     >
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <p className="text-sm font-semibold text-text-primary">Notifications</p>
@@ -37,7 +38,13 @@ export function NotificationPanel(props: NotificationPanelProps) {
       </div>
 
       <div className="max-h-96 overflow-y-auto p-2">
-        {isLoading && items.length === 0 && <p className="px-2 py-6 text-center text-sm text-text-muted">Loading…</p>}
+        {isLoading && items.length === 0 && (
+          <div role="status" className="space-y-2 px-1 py-2">
+            <span className="sr-only">Loading…</span>
+            <Skeleton className="h-16 w-full rounded-[var(--radius-panel)]" />
+            <Skeleton className="h-16 w-full rounded-[var(--radius-panel)]" />
+          </div>
+        )}
         {error && (
           <div role="alert" className="px-2 py-4 text-center text-sm text-danger">
             {error}{" "}

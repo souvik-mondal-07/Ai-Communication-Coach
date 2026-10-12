@@ -7,6 +7,7 @@ import { useNotificationStore } from "@/store/notificationStore";
 import { NOTIFICATION_TYPES, type AppNotification, type NotificationPage, type NotificationType, type ReadFilter } from "@/types/notification";
 import { typeLabel } from "@/components/notifications/notificationFormat";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { PageHeader } from "@/components/ui/page-header";
 
 const FILTERS: { value: ReadFilter; label: string }[] = [
   { value: "all", label: "All" },
@@ -55,17 +56,15 @@ export default function Notifications() {
   const items = data?.items ?? [];
   return (
     <div className="mx-auto max-w-3xl space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="font-display text-xl font-semibold text-text-primary">Notifications</h2>
-          <p className="mt-1 text-sm text-text-secondary">
-            {data ? `${data.unread_count} unread` : "Your practice reminders and progress updates."}
-          </p>
-        </div>
-        <Button variant="secondary" size="sm" disabled={!data || data.unread_count === 0} onClick={() => void run(notificationService.markAllRead)}>
-          Mark all as read
-        </Button>
-      </div>
+      <PageHeader
+        title="Notifications"
+        description={data ? `${data.unread_count} unread` : "Your practice reminders and progress updates."}
+        actions={
+          <Button variant="secondary" size="sm" disabled={!data || data.unread_count === 0} onClick={() => void run(notificationService.markAllRead)}>
+            Mark all as read
+          </Button>
+        }
+      />
 
       <div className="flex flex-wrap items-center gap-2">
         <div role="radiogroup" aria-label="Filter by read state" className="flex gap-1">
@@ -87,7 +86,7 @@ export default function Notifications() {
           id="notification-type"
           value={type}
           onChange={(e) => { setType(e.target.value as NotificationType | ""); setPage(1); }}
-          className="rounded-[var(--radius-panel)] border border-border bg-base px-2 py-1 text-xs text-text-primary"
+          className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-1 text-xs text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         >
           <option value="">All types</option>
           {NOTIFICATION_TYPES.map((t) => (

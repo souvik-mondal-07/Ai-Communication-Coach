@@ -96,7 +96,7 @@ export default function HistoryDetail() {
       {back}
 
       <header className="space-y-1">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">{activity.type_label}</p>
+        <p className="text-[11px] font-medium text-text-muted">{activity.type_label}</p>
         <h1 className="font-display text-xl font-semibold text-text-primary">{activity.title}</h1>
         {activity.description && <p className="text-sm text-text-secondary">{activity.description}</p>}
         <p className="text-xs text-text-muted">{facts.join(" · ")}</p>
@@ -104,7 +104,7 @@ export default function HistoryDetail() {
           <div className="pt-2">
             <Link
               to={`${meta.sessionPath}/${activity.id}`}
-              className="inline-flex h-9 items-center rounded-[var(--radius-panel)] bg-signal px-4 text-sm font-medium text-[#08120f] hover:bg-signal/90"
+              className="inline-flex h-9 items-center rounded-[var(--radius-panel)] bg-signal px-4 text-sm font-medium text-on-signal hover:bg-signal/90"
             >
               Continue this session
             </Link>

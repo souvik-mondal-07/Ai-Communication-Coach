@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProfileStore } from "@/store/profileStore";
 
@@ -17,5 +18,11 @@ export function ProfileLoadState() {
       </Card>
     );
   }
-  return <p role="status" className="py-10 text-center text-sm text-text-muted">Loading your profile...</p>;
+  return (
+    <div role="status" className="mx-auto max-w-5xl space-y-4">
+      <span className="sr-only">Loading your profile...</span>
+      <Skeleton className="h-28 w-full rounded-[var(--radius-card)]" />
+      <Skeleton className="h-64 w-full rounded-[var(--radius-card)]" />
+    </div>
+  );
 }

@@ -61,14 +61,14 @@ export function ChatInput({ onSubmit, disabled }: ChatInputProps) {
         disabled={isBusy}
         rows={1}
         placeholder="Ask your cybersecurity question... (Enter to send, Shift+Enter for a new line)"
-        className="max-h-[200px] flex-1 resize-none rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted disabled:cursor-not-allowed disabled:opacity-60"
+        className="max-h-[200px] flex-1 resize-none rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted disabled:cursor-not-allowed disabled:opacity-60 transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
       />
       <button
         type="button"
         onClick={() => void handleSubmit()}
         disabled={!canSubmit}
         aria-label="Send message"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-panel)] bg-signal text-[#08120f] transition-colors hover:bg-signal/90 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-panel)] bg-signal text-on-signal transition-[background-color,transform,box-shadow] hover:bg-signal/90 hover:shadow-glow active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
       >
         <SendHorizontal size={16} />
       </button>

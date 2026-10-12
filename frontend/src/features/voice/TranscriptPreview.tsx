@@ -36,7 +36,7 @@ export function TranscriptPreview({ transcript, onSend, onDiscard, isSending }: 
             onChange={(e) => setText(e.target.value)}
             rows={4}
             disabled={isSending}
-            className="w-full resize-y rounded-[var(--radius-panel)] border border-border bg-surface px-3 py-2 text-sm text-text-primary"
+            className="w-full resize-y rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
           />
         </>
       ) : (

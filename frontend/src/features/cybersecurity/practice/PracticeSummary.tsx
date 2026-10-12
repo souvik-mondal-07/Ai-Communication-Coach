@@ -87,7 +87,7 @@ export function PracticeSummary({ summary, onPracticeAgain, onBack, onOpenRecomm
             )}
           </div>
 
-          <Areas title="Strong areas" items={summary.strong_areas ?? []} tone="text-signal" />
+          <Areas title="Strong areas" items={summary.strong_areas ?? []} tone="text-success" />
           <Areas title="Needs work" items={summary.needs_work ?? []} tone="text-warn" />
           {(summary.unanswered ?? 0) > 0 && (
             <p className="text-xs text-text-muted">{summary.unanswered} question(s) were not answered.</p>

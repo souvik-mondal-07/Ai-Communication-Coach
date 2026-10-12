@@ -55,7 +55,7 @@ export function QuestionCard({ question, value, onChange, onSubmit, isSubmitting
               >
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-medium ${
-                    isSelected ? "border-signal bg-signal text-[#08120f]" : "border-border-strong text-text-muted"
+                    isSelected ? "border-signal bg-signal text-on-signal" : "border-border-strong text-text-muted"
                   }`}
                 >
                   {letter}
@@ -76,7 +76,7 @@ export function QuestionCard({ question, value, onChange, onSubmit, isSubmitting
             placeholder={PLACEHOLDERS[question.type]}
             aria-label="Your answer"
             spellCheck={question.type !== "command"}
-            className={`w-full resize-y rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted disabled:cursor-not-allowed disabled:opacity-60 ${
+            className={`w-full resize-y rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 disabled:cursor-not-allowed disabled:opacity-60 ${
               question.type === "command" ? "font-mono" : ""
             }`}
           />

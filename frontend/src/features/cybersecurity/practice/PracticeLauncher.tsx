@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { fieldClass } from "@/components/ui/input";
 import {
   PRACTICE_DIFFICULTY_LABELS,
   QUESTION_TYPE_LABELS,
@@ -13,9 +14,6 @@ import {
 import { getPracticeConfig } from "@/services/cybersecurityService";
 import { usePracticeStore } from "@/store/practiceStore";
 import { getApiErrorMessage } from "@/utils/apiError";
-
-const fieldClass =
-  "w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary disabled:opacity-60";
 
 export function PracticeLauncher() {
   const navigate = useNavigate();

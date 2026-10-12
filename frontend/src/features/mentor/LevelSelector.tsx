@@ -14,7 +14,7 @@ export function LevelSelector({ value, onChange, disabled }: LevelSelectorProps)
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value as MentorLevel)}
-        className="rounded-[var(--radius-panel)] border border-border bg-surface-raised px-2 py-1.5 text-sm text-text-primary disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-2 py-1.5 text-sm text-text-primary disabled:cursor-not-allowed disabled:opacity-60 transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
         aria-label="Mentor level"
       >
         {MENTOR_LEVELS.map((level) => (

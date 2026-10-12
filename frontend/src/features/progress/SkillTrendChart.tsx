@@ -1,5 +1,7 @@
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import type { TrendSeries } from "@/types/progress";
+import { chartColors, chartLabelStyle, chartTooltipStyle } from "@/utils/chartTheme";
 
 const TREND_LABEL: Record<TrendSeries["trend"], string> = {
   improving: "Improving",
@@ -9,14 +11,15 @@ const TREND_LABEL: Record<TrendSeries["trend"], string> = {
 };
 
 const TREND_COLOR: Record<TrendSeries["trend"], string> = {
-  improving: "#35d0ba",
-  stable: "#e0a530",
-  declining: "#e05a4b",
-  insufficient_data: "#6c7889",
+  improving: chartColors.success,
+  stable: chartColors.warn,
+  declining: chartColors.danger,
+  insufficient_data: chartColors.muted,
 };
 
 export function SkillTrendChart({ title, series }: { title: string; series: TrendSeries }) {
   const color = TREND_COLOR[series.trend];
+  const reduceMotion = usePrefersReducedMotion();
 
   if (series.trend === "insufficient_data" || series.points.length < 2) {
     return (
@@ -36,7 +39,7 @@ export function SkillTrendChart({ title, series }: { title: string; series: Tren
     <div>
       <div className="mb-2 flex items-center justify-between">
         <h4 className="text-xs font-medium text-text-secondary">{title}</h4>
-        <span className="text-[11px]" style={{ color }}>
+        <span className="text-[11px] font-medium" style={{ color }}>
           {TREND_LABEL[series.trend]}
         </span>
       </div>
@@ -49,16 +52,11 @@ export function SkillTrendChart({ title, series }: { title: string; series: Tren
                 <stop offset="100%" stopColor={color} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="period" stroke="#6c7889" tickLine={false} axisLine={false} fontSize={11} />
+            <XAxis dataKey="period" stroke={chartColors.muted} tickLine={false} axisLine={false} fontSize={11} />
             <YAxis hide domain={[0, 100]} />
             <Tooltip
-              contentStyle={{
-                background: "#19212c",
-                border: "1px solid #2f3b4d",
-                borderRadius: 6,
-                fontSize: 12,
-              }}
-              labelStyle={{ color: "#e6e9ee" }}
+              contentStyle={chartTooltipStyle}
+              labelStyle={chartLabelStyle}
             />
             <Area
               type="monotone"
@@ -66,6 +64,8 @@ export function SkillTrendChart({ title, series }: { title: string; series: Tren
               stroke={color}
               strokeWidth={2}
               fill={`url(#trend-${title})`}
+              isAnimationActive={!reduceMotion}
+              animationDuration={700}
             />
           </AreaChart>
         </ResponsiveContainer>

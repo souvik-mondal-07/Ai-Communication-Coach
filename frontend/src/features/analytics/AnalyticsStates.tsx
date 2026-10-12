@@ -5,7 +5,7 @@ import type { AnalyticsMeta } from "@/types/analytics";
 import type { LoadState } from "./analyticsUtils";
 
 export function Skeleton({ className = "h-24" }: { className?: string }) {
-  return <div aria-hidden="true" className={`animate-pulse rounded-[var(--radius-panel)] bg-surface-raised ${className}`} />;
+  return <div aria-hidden="true" className={`skeleton rounded-[var(--radius-panel)] ${className}`} />;
 }
 
 /** A titled card whose body shows a skeleton while loading, a retryable error, or the data. */

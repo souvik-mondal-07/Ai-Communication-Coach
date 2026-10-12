@@ -8,6 +8,7 @@ import { CtfSessionList } from "@/features/cybersecurity/ctf/CtfSessionList";
 import type { CtfSessionSummary } from "@/features/cybersecurity/ctf/ctfTypes";
 import * as ctfService from "@/services/ctfService";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function CTF() {
   const navigate = useNavigate();
@@ -42,23 +43,18 @@ export default function CTF() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-xl font-semibold text-text-primary">
-            CTF &amp; Lab Mentor
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            AI guidance for CTFs and lab challenges you're already working on — it never scans,
-            attacks, or accesses anything itself.
-          </p>
-        </div>
-        {!showForm && (
-          <Button onClick={() => setShowForm(true)} className="gap-1.5">
-            <Plus size={15} />
-            New Challenge
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="CTF & Lab Mentor"
+        description="AI guidance for CTFs and lab challenges you're already working on — it never scans, attacks, or accesses anything itself."
+        actions={
+          !showForm && (
+            <Button onClick={() => setShowForm(true)} className="gap-1.5">
+              <Plus size={15} aria-hidden="true" />
+              New Challenge
+            </Button>
+          )
+        }
+      />
 
       {showForm && (
         <Card>

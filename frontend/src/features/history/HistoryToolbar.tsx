@@ -4,7 +4,7 @@ import type { DateRangePreset, HistoryFilters, HistorySort, HistorySummary } fro
 import { isInvalidCustomRange, RANGE_LABELS, TYPE_META } from "@/features/history/historyMeta";
 
 const field =
-  "h-9 rounded-[var(--radius-panel)] border border-border bg-surface px-3 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal";
+  "h-9 rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 text-sm text-text-primary transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30";
 
 interface Props {
   filters: HistoryFilters;

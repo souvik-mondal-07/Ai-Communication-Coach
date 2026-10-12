@@ -22,8 +22,8 @@ export function CommunicationSection({ data }: { data: CommunicationData }) {
               <span className="capitalize text-text-primary">{d.key}</span>
               <span className="text-text-secondary">{d.score}</span>
             </div>
-            <div className="h-2 rounded-full bg-surface-raised" role="progressbar" aria-label={`${d.key} score`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={d.score}>
-              <div className="h-2 rounded-full" style={{ width: `${d.score}%`, background: bandColor(d.score) }} />
+            <div className="h-2 overflow-hidden rounded-full bg-surface-raised" role="progressbar" aria-label={`${d.key} score`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={d.score}>
+              <div className="h-2 origin-left animate-bar-grow rounded-full" style={{ width: `${d.score}%`, background: bandColor(d.score) }} />
             </div>
           </li>
         ))}

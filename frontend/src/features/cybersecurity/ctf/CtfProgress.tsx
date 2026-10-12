@@ -6,7 +6,7 @@ interface CtfProgressProps {
 
 const STATUS_STYLES: Record<string, string> = {
   in_progress: "text-warn border-warn/30 bg-warn/10",
-  completed: "text-signal border-signal/30 bg-signal/10",
+  completed: "text-success border-success/30 bg-success/10",
   abandoned: "text-text-muted border-border bg-surface-raised",
 };
 

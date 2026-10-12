@@ -1,22 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import type { Recommendation, RecommendationType } from "@/types/progress";
-
-const TYPE_ROUTE: Record<RecommendationType, string> = {
-  practice: "/cybersecurity",
-  ctf: "/ctf",
-  communication: "/communication",
-  interview: "/interview",
-  pressure: "/pressure-training",
-};
-
-const TYPE_ACTION_LABEL: Record<RecommendationType, string> = {
-  practice: "Start Practice",
-  ctf: "Start CTF",
-  communication: "Start Communication",
-  interview: "Start Interview",
-  pressure: "Start Pressure Training",
-};
+import { TYPE_ACTION_LABEL, TYPE_ROUTE } from "@/features/progress/recommendationRoutes";
+import type { Recommendation } from "@/types/progress";
 
 const PRIORITY_COLOR: Record<Recommendation["priority"], string> = {
   high: "text-danger",
@@ -48,7 +33,7 @@ export function RecommendationsCard({ recommendations, onComplete, completingId 
               <p className="text-sm font-medium text-text-primary">{rec.area}</p>
               <p className="mt-0.5 text-xs text-text-secondary">{rec.reason}</p>
             </div>
-            <span className={`shrink-0 text-[11px] font-medium uppercase ${PRIORITY_COLOR[rec.priority]}`}>
+            <span className={`shrink-0 text-[11px] font-medium ${PRIORITY_COLOR[rec.priority]}`}>
               {rec.priority}
             </span>
           </div>

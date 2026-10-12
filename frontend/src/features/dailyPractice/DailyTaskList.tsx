@@ -53,7 +53,7 @@ export function DailyTaskList({ tasks, busy, onOpen }: Props) {
                 type="button"
                 disabled={busy}
                 onClick={() => onOpen(task)}
-                className="shrink-0 rounded-[var(--radius-panel)] bg-signal px-3 py-1.5 text-xs font-medium text-[#08120f] hover:opacity-90 disabled:opacity-60"
+                className="shrink-0 rounded-[var(--radius-panel)] bg-signal px-3 py-1.5 text-xs font-medium text-on-signal hover:opacity-90 disabled:opacity-60"
               >
                 {taskActionLabel(task)}
               </button>

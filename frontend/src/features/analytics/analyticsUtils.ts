@@ -28,7 +28,7 @@ export const CHANGE_TONE: Record<Exclude<ChangeLabel, null>, "good" | "neutral" 
 };
 
 export const TONE_CLASS = {
-  good: "text-signal",
+  good: "text-success",
   neutral: "text-text-secondary",
   warn: "text-warn",
   bad: "text-danger",
@@ -46,10 +46,10 @@ export const DIRECTION_LABEL: Record<Direction, string> = {
 };
 
 export function bandColor(score: number | null): string {
-  if (score === null) return "#6c7889";
-  if (score >= 75) return "#35d0ba";
-  if (score < 60) return "#e5484d";
-  return "#f5a623";
+  if (score === null) return "var(--color-text-muted)";
+  if (score >= 75) return "var(--color-success)";
+  if (score < 60) return "var(--color-danger)";
+  return "var(--color-warn)";
 }
 
 export interface ChartRow {

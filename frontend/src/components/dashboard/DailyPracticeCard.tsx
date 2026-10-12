@@ -3,7 +3,11 @@ import { CalendarCheck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { goalPercent } from "@/components/dashboard/dailyPracticeUtils";
 import { StreakBadge } from "@/components/dashboard/StreakCard";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent } from "@/components/ui/card";
+import { ProgressRing } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useDailyPracticeStore } from "@/store/dailyPracticeStore";
 import type { DailyPracticeState } from "@/types/dailyPractice";
 
@@ -19,6 +23,7 @@ interface ViewProps {
 
 /** Presentational card: every number comes from the daily-practice API response. */
 export function DailyPracticeCardView({ data, isLoading, error, isActing = false, actionError, onStart, onRetry }: ViewProps) {
+  const pct = data?.goal ? goalPercent(data.goal.minutes_done, data.goal.goal_minutes) : 0;
   return (
     <Card>
       <CardContent className="space-y-4 py-5">
@@ -31,9 +36,15 @@ export function DailyPracticeCardView({ data, isLoading, error, isActing = false
         </div>
 
         {isLoading && !data && (
-          <p className="text-sm text-text-muted" aria-label="Loading today's practice">
-            Loading today's practice…
-          </p>
+          <div role="status" className="flex items-center gap-4">
+            <span className="sr-only">Loading today's practice…</span>
+            <Skeleton className="h-24 w-24 shrink-0 rounded-full" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-8 w-28 rounded-[var(--radius-panel)]" />
+            </div>
+          </div>
         )}
         {error && !data && (
           <div role="alert" className="text-sm text-danger">
@@ -61,52 +72,34 @@ export function DailyPracticeCardView({ data, isLoading, error, isActing = false
 
         {data?.plan && data.goal && (
           <>
-            <div>
-              <div className="flex items-baseline justify-between text-xs text-text-secondary">
-                <span>{data.goal.goal_minutes} min goal</span>
-                <span>
+            <div className="flex items-center gap-4">
+              <ProgressRing value={pct} size={96} stroke={9} label="Daily practice progress">
+                <span className="font-display text-xl font-semibold tabular-nums text-text-primary">{pct}%</span>
+              </ProgressRing>
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="text-xs text-text-secondary">{data.goal.goal_minutes} min goal</p>
+                <p className="text-xs text-text-secondary">
                   Progress: {data.goal.minutes_done} / {data.goal.goal_minutes} min
-                </span>
+                </p>
+                <p className="text-[11px] text-text-muted">
+                  {data.goal.tasks_done} of {data.goal.tasks_total} tasks done
+                </p>
               </div>
-              <div
-                className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-raised"
-                role="progressbar"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={goalPercent(data.goal.minutes_done, data.goal.goal_minutes)}
-                aria-label="Daily practice progress"
-              >
-                <div
-                  className="h-full bg-signal"
-                  style={{ width: `${goalPercent(data.goal.minutes_done, data.goal.goal_minutes)}%` }}
-                />
-              </div>
-              <p className="mt-1 text-[11px] text-text-muted">
-                {data.goal.tasks_done} of {data.goal.tasks_total} tasks done
-              </p>
             </div>
 
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">Recommended</p>
+              <p className="text-[11px] font-medium text-text-muted">Recommended</p>
               <p className="mt-0.5 text-sm text-text-primary">{data.plan.focus.title}</p>
             </div>
 
             {data.plan.status === "completed" ? (
-              <Link
-                to="/daily-practice"
-                className="inline-flex rounded-[var(--radius-panel)] border border-border px-3 py-1.5 text-xs font-medium text-text-primary hover:border-border-strong"
-              >
+              <Link to="/daily-practice" className={buttonVariants({ variant: "secondary", size: "sm" })}>
                 View today's summary
               </Link>
             ) : (
-              <button
-                type="button"
-                onClick={onStart}
-                disabled={isActing}
-                className="inline-flex rounded-[var(--radius-panel)] bg-signal px-3 py-1.5 text-xs font-medium text-[#08120f] hover:opacity-90 disabled:opacity-60"
-              >
+              <Button size="sm" onClick={onStart} loading={isActing}>
                 {isActing ? "Starting…" : data.plan.status === "in_progress" ? "Continue Practice" : "Start Practice"}
-              </button>
+              </Button>
             )}
             {actionError && (
               <p role="alert" className="text-xs text-danger">

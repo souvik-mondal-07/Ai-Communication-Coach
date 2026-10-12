@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import * as progressService from "@/services/progressService";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { CtfActivityOverview, SkillOverview } from "@/features/progress/SkillOverview";
@@ -17,6 +19,7 @@ import type {
   SkillsResponse,
   TrendsResponse,
 } from "@/types/progress";
+import { PageHeader } from "@/components/ui/page-header";
 
 type Section<T> =
   | { status: "loading" }
@@ -48,10 +51,16 @@ function SectionBody<T>({
   render: (data: T) => React.ReactNode;
 }) {
   if (section.status === "loading") {
-    return <p className="text-sm text-text-muted">Loading…</p>;
+    return (
+      <div role="status" className="space-y-2">
+        <span className="sr-only">Loading…</span>
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-20 w-full rounded-[var(--radius-panel)]" />
+      </div>
+    );
   }
   if (section.status === "error") {
-    return <p className="text-sm text-danger">{section.message}</p>;
+    return <ErrorState message={section.message} />;
   }
   return <>{render(section.data)}</>;
 }
@@ -126,24 +135,20 @@ export default function ProgressPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="flex items-center gap-2 font-display text-xl font-semibold text-text-primary">
-            <TrendingUp size={20} className="text-signal" />
-            Progress
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Track strengths, weaknesses, and improvement over time across every skill area.
-          </p>
-        </div>
-        <div className="text-right">
-          <Button variant="secondary" size="sm" onClick={handleRecalculate} disabled={isRecalculating}>
-            <RefreshCw size={14} className={isRecalculating ? "animate-spin" : ""} />
-            {isRecalculating ? "Recalculating…" : "Recalculate"}
-          </Button>
-          {recalcError && <p className="mt-1 text-xs text-danger">{recalcError}</p>}
-        </div>
-      </div>
+      <PageHeader
+        icon={TrendingUp}
+        title="Progress"
+        description="Track strengths, weaknesses, and improvement over time across every skill area."
+        actions={
+          <div className="text-right">
+            <Button variant="secondary" size="sm" onClick={handleRecalculate} loading={isRecalculating}>
+              {!isRecalculating && <RefreshCw size={14} aria-hidden="true" />}
+              {isRecalculating ? "Recalculating…" : "Recalculate"}
+            </Button>
+            {recalcError && <p role="alert" className="mt-1 text-xs text-danger">{recalcError}</p>}
+          </div>
+        }
+      />
 
       {overview.status === "ready" && !overview.data.has_activity && (
         <Card>

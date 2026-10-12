@@ -82,7 +82,7 @@ export function PressureAnswer({ inputMode, onInputModeChange, isSubmitting, onS
             maxLength={MAX_ANSWER_LENGTH}
             disabled={isSubmitting || timedOut}
             placeholder={timedOut ? "Time's up — submitting…" : "Type your answer…"}
-            className="w-full resize-y rounded-[var(--radius-panel)] border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted disabled:opacity-60"
+            className="w-full resize-y rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted disabled:opacity-60 transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
           />
           <div className="flex items-center justify-between">
             <span className="text-[11px] text-text-muted">

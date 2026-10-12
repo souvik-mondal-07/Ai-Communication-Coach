@@ -147,7 +147,7 @@ export function ConversationSetup({ onStart, isStarting, error }: ConversationSe
               maxLength={120}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="e.g. SQL injection, incident response…"
-              className="w-full rounded-[var(--radius-panel)] border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+              className="w-full rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
             />
           </div>
         )}

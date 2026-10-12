@@ -27,7 +27,7 @@ const COPY: Record<VoiceUiState, Copy> = {
   transcribing: { text: "Transcribing...", emoji: "📝", tone: "text-text-secondary" },
   processing: { text: "Processing your answer...", emoji: "⚙️", tone: "text-text-secondary" },
   ai_speaking: { text: "AI is speaking...", emoji: "🔊", tone: "text-link" },
-  ready: { text: "Ready for your response", emoji: "🎙", tone: "text-signal" },
+  ready: { text: "Ready for your response", emoji: "🎙", tone: "text-success" },
   paused: { text: "Paused", icon: PauseCircle, tone: "text-warn" },
   error: { text: "Something went wrong", icon: AlertTriangle, tone: "text-danger" },
   completed: { text: "Conversation completed", icon: CheckCircle2, tone: "text-signal" },

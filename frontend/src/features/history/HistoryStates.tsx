@@ -1,6 +1,7 @@
 import { History as HistoryIcon, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent } from "@/components/ui/card";
 import type { HistoryActivityType } from "@/types/history";
 import { TYPE_META } from "@/features/history/historyMeta";
@@ -16,13 +17,13 @@ export function HistorySkeleton() {
         <div
           key={i}
           aria-hidden="true"
-          className="flex animate-pulse items-center gap-3 rounded-[var(--radius-panel)] border border-border bg-surface p-4"
+          className="flex items-center gap-3 rounded-[var(--radius-panel)] border border-border bg-surface p-4"
         >
-          <div className="h-10 w-10 rounded-[var(--radius-panel)] bg-surface-raised" />
+          <div className="skeleton h-10 w-10 rounded-[var(--radius-panel)]" />
           <div className="flex-1 space-y-2">
-            <div className="h-2.5 w-24 rounded bg-surface-raised" />
-            <div className="h-3.5 w-2/3 rounded bg-surface-raised" />
-            <div className="h-2.5 w-1/3 rounded bg-surface-raised" />
+            <div className="skeleton h-2.5 w-24 rounded" />
+            <div className="skeleton h-3.5 w-2/3 rounded" />
+            <div className="skeleton h-2.5 w-1/3 rounded" />
           </div>
         </div>
       ))}
@@ -78,7 +79,7 @@ export function HistoryEmpty({ type, filtered, onClearFilters }: EmptyProps) {
         </p>
         <Link
           to={meta ? meta.modulePath : "/cybersecurity"}
-          className="inline-flex h-9 items-center rounded-[var(--radius-panel)] bg-signal px-4 text-sm font-medium text-[#08120f] hover:bg-signal/90"
+          className={buttonVariants()}
         >
           {meta ? meta.empty.cta : "Start practicing"}
         </Link>

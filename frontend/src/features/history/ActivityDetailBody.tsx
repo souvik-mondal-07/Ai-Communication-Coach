@@ -145,7 +145,7 @@ function CtfBody({ session }: { session: CtfSessionDetail }) {
             <ul className="space-y-3 text-sm">
               {session.hints.map((h) => (
                 <li key={`${h.level}-${h.requested_at}`}>
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+                  <p className="text-[11px] font-medium text-text-muted">
                     {h.level.replace("_", " ")} · {formatDateTime(h.requested_at)}
                   </p>
                   <p className="whitespace-pre-wrap break-words text-text-secondary">{h.content}</p>
@@ -167,7 +167,7 @@ function CtfBody({ session }: { session: CtfSessionDetail }) {
             <ol className="space-y-3">
               {session.messages.map((m, i) => (
                 <li key={`${i}-${m.created_at}`} className="text-sm">
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+                  <p className="text-[11px] font-medium text-text-muted">
                     {m.role === "user" ? "You" : "AI mentor"} · {formatDateTime(m.created_at)}
                   </p>
                   <p className="whitespace-pre-wrap break-words text-text-primary">{m.content}</p>

@@ -59,7 +59,7 @@ export function NotificationItem({ notification: n, onOpen, onMarkRead, onDelete
         <button
           type="button"
           onClick={() => onOpen(n)}
-          className="mt-2 rounded-[var(--radius-panel)] bg-signal px-3 py-1 text-xs font-medium text-[#08120f] hover:opacity-90"
+          className="mt-2 rounded-[var(--radius-panel)] bg-signal px-3 py-1 text-xs font-medium text-on-signal hover:opacity-90"
         >
           {actionLabel(n.action.target)}
         </button>

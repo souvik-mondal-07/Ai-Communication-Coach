@@ -7,6 +7,7 @@ import * as pressureService from "@/services/pressureService";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { INTERVIEW_DIFFICULTY_LABELS } from "@/types/interview";
 import type { PressureConfig, PressureSummary } from "@/types/pressure";
+import { PageHeader } from "@/components/ui/page-header";
 
 const STATUS_LABELS: Record<PressureSummary["status"], string> = {
   in_progress: "In progress",
@@ -82,14 +83,10 @@ export default function PressureTraining() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="font-display text-xl font-semibold text-text-primary">Pressure Training</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Practice interview and communication situations under increasing pressure — time limits, unexpected
-          follow-ups, topic switches, and occasional interruptions. This is a training tool, not a diagnostic
-          one: it never assesses anxiety or any mental-health condition.
-        </p>
-      </div>
+      <PageHeader
+        title="Pressure Training"
+        description="Practice interview and communication situations under increasing pressure — time limits, unexpected follow-ups, topic switches, and occasional interruptions. This is a training tool, not a diagnostic one: it never assesses anxiety or any mental-health condition."
+      />
 
       <PressureSetup onStart={handleStart} isStarting={isStarting} error={error} />
 

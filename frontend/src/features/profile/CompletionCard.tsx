@@ -20,7 +20,7 @@ export function CompletionCard({ user }: { user: UserProfile }) {
           {items.map((item) => (
             <li key={item.key} className="flex items-center gap-2.5 text-sm">
               {item.done ? (
-                <Check size={16} className="shrink-0 text-signal" aria-label="Completed" />
+                <Check size={16} className="shrink-0 text-success" aria-label="Completed" />
               ) : (
                 <Circle size={16} className="shrink-0 text-text-muted" aria-label="Not completed" />
               )}

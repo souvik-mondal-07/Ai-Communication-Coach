@@ -6,6 +6,7 @@ import { ConversationSetup } from "@/features/voice-conversation/ConversationSet
 import { useVoiceConversationStore } from "@/store/voiceConversationStore";
 import { getApiErrorMessage } from "@/utils/apiError";
 import type { CreateVoiceConversationInput } from "@/types/voiceConversation";
+import { PageHeader } from "@/components/ui/page-header";
 
 /** Landing page: choose a conversation type, or resume a recent one. */
 export default function VoiceConversation() {
@@ -36,12 +37,7 @@ export default function VoiceConversation() {
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6">
-      <header className="space-y-1">
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Voice Conversation</h1>
-        <p className="text-sm text-text-secondary">
-          Talk with your AI mentor. It speaks, you answer out loud, and it responds. Turn by turn.
-        </p>
-      </header>
+      <PageHeader title="Voice Conversation" description="Talk with your AI mentor. It speaks, you answer out loud, and it responds. Turn by turn." />
 
       {config && !config.stt_available && (
         <p role="alert" className="rounded-[var(--radius-panel)] border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">

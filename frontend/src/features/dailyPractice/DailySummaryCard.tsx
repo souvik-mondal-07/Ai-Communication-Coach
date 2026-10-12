@@ -30,7 +30,7 @@ export function DailySummaryCard({ summary, partial }: { summary: DailySummary; 
         </dl>
         {summary.topics.length > 0 && (
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">Topics</p>
+            <p className="text-[11px] font-medium text-text-muted">Topics</p>
             <ul className="mt-1 list-disc space-y-0.5 pl-4 text-sm capitalize text-text-secondary">
               {summary.topics.map((t) => (
                 <li key={t}>{t}</li>
@@ -40,7 +40,7 @@ export function DailySummaryCard({ summary, partial }: { summary: DailySummary; 
         )}
         {summary.recommended_next && (
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">Recommended next</p>
+            <p className="text-[11px] font-medium text-text-muted">Recommended next</p>
             <p className="mt-0.5 text-sm text-text-primary">{summary.recommended_next}</p>
           </div>
         )}

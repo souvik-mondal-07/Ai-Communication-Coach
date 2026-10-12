@@ -55,7 +55,7 @@ export function SelfReport({ onSubmit, isSaving, savedValue }: SelfReportProps) 
             rows={2}
             maxLength={1000}
             placeholder="Optional notes…"
-            className="w-full resize-y rounded-[var(--radius-panel)] border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted"
+            className="w-full resize-y rounded-[var(--radius-panel)] border border-border-input bg-base/60 px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-[border-color,box-shadow] focus-visible:border-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/30 aria-[invalid=true]:border-danger"
           />
         </label>
         <Button
