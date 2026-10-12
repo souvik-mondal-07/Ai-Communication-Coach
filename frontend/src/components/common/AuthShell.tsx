@@ -1,4 +1,4 @@
-import { ShieldHalf } from "lucide-react";
+import { BrandMark } from "@/components/common/BrandMark";
 import type { ReactNode } from "react";
 import { APP_NAME } from "@/utils/constants";
 
@@ -9,9 +9,7 @@ export function AuthShell({ title, subtitle, children, footer }: { title: string
       <div aria-hidden="true" className="bg-grid pointer-events-none absolute inset-0" />
       <main className="relative w-full max-w-sm animate-rise-in">
         <div className="mb-6 flex items-center justify-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-card)] bg-brand text-white shadow-[0_10px_30px_-8px_rgb(91_141_255/0.7)]">
-            <ShieldHalf size={20} aria-hidden="true" />
-          </div>
+          <BrandMark size={44} />
           <span className="font-display text-base font-semibold text-text-primary">{APP_NAME}</span>
         </div>
         <div className="glass rounded-[var(--radius-card)] border border-border-strong/70 px-7 py-8 shadow-pop">

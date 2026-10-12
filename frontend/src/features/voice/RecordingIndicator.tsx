@@ -9,9 +9,7 @@ export function RecordingIndicator({ elapsedSeconds, maxSeconds }: RecordingIndi
   return (
     <div className="flex items-center gap-3" role="status" aria-live="polite">
       <span className="flex items-center gap-1.5 text-sm font-medium text-danger">
-        <span aria-hidden="true" className="animate-pulse">
-          🔴
-        </span>
+        <span aria-hidden="true" className="h-2.5 w-2.5 animate-pulse rounded-full bg-danger" />
         Recording...
       </span>
       <span className="font-mono text-sm tabular-nums text-text-primary">

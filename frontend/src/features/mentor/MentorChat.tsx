@@ -52,7 +52,7 @@ export function MentorChat() {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-8.5rem)] flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-surface shadow-card md:h-[calc(100dvh-7.5rem)]">
+    <div className="flex h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-surface shadow-card md:h-[calc(100dvh-8.5rem)]">
       {/* Header */}
       <div className="border-b border-border px-4 py-3.5 md:px-6">
         <h1 className="font-display text-base font-semibold text-text-primary">
@@ -105,16 +105,16 @@ export function MentorChat() {
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-3">
+    <div role="status" aria-label="Mentor is typing" className="animate-message-in flex items-center gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-panel)] bg-brand text-white">
         <ShieldHalf size={16} aria-hidden="true" />
       </div>
       <div className="flex items-center gap-1.5 rounded-[var(--radius-panel)] border border-border bg-surface px-3.5 py-2.5">
         <span className="text-sm text-text-muted">Mentor is thinking</span>
-        <span className="flex gap-0.5">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-text-muted [animation-delay:-0.3s]" />
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-text-muted [animation-delay:-0.15s]" />
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-text-muted" />
+        <span className="flex gap-1" aria-hidden="true">
+          <span className="h-1.5 w-1.5 animate-typing-dot rounded-full bg-signal" />
+          <span className="h-1.5 w-1.5 animate-typing-dot rounded-full bg-signal [animation-delay:150ms]" />
+          <span className="h-1.5 w-1.5 animate-typing-dot rounded-full bg-signal [animation-delay:300ms]" />
         </span>
       </div>
     </div>

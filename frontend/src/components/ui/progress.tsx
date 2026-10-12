@@ -14,7 +14,7 @@ interface ProgressBarProps {
   value: number;
   label: string;
   tone?: keyof typeof TONE;
-  /** Any CSS color (e.g. var(--color-success)); overrides `tone`. For score bands computed at runtime. */
+  /** Any CSS color or gradient (e.g. var(--color-success)); overrides `tone`. For score bands computed at runtime. */
   color?: string;
   className?: string;
 }
@@ -37,7 +37,7 @@ export function ProgressBar({ value, label, tone = "signal", color, className }:
     >
       <div
         className={cn("h-full origin-left animate-bar-grow rounded-full", color ? undefined : TONE[tone])}
-        style={{ width: `${pct}%`, ...(color ? { backgroundColor: color } : null) }}
+        style={{ width: `${pct}%`, ...(color ? { background: color } : null) }}
       />
     </div>
   );

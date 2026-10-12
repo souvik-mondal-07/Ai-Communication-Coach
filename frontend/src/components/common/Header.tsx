@@ -1,11 +1,11 @@
 import { type KeyboardEvent, useCallback, useRef, useState } from "react";
-import { ChevronRight, LogOut, Menu, Settings, UserRound } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { breadcrumbsFor } from "@/components/common/navigation";
+import { ChevronDown, LogOut, Menu, Settings, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { HeaderSearch } from "@/components/common/HeaderSearch";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useAuth } from "@/hooks/useAuth";
 import { useDismiss } from "@/hooks/useDismiss";
-import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/appStore";
 
 const MENU_ITEM =
@@ -14,33 +14,6 @@ const MENU_ITEM =
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   return ((parts[0]?.[0] ?? "?") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
-}
-
-function Breadcrumbs() {
-  const crumbs = breadcrumbsFor(useLocation().pathname);
-  return (
-    <nav aria-label="Breadcrumb" className="min-w-0">
-      <ol className="flex items-center gap-1.5 text-sm">
-        {crumbs.map((c, i) => {
-          const isLast = i === crumbs.length - 1;
-          return (
-            <li key={c.label} className={cn("flex min-w-0 items-center gap-1.5", !isLast && "hidden sm:flex")}>
-              {c.to && !isLast ? (
-                <Link to={c.to} className="rounded text-text-muted transition-colors hover:text-text-primary">
-                  {c.label}
-                </Link>
-              ) : (
-                <span aria-current="page" className="truncate font-medium text-text-primary">
-                  {c.label}
-                </span>
-              )}
-              {!isLast && <ChevronRight size={14} className="shrink-0 text-text-muted" aria-hidden="true" />}
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
-  );
 }
 
 export function Header() {
@@ -83,35 +56,42 @@ export function Header() {
   }
 
   return (
-    <header className="glass sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border px-4 md:px-8">
-      <div className="flex min-w-0 items-center gap-3">
+    <header className="glass sticky top-0 z-30 flex h-[68px] items-center justify-between gap-3 border-b border-border px-4 md:px-8">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <button
           type="button"
           onClick={openMobileSidebar}
           className="rounded-[var(--radius-panel)] p-1.5 text-text-secondary transition-colors hover:bg-surface-raised hover:text-text-primary md:hidden"
           aria-label="Open menu"
         >
-          <Menu size={20} />
+          <Menu size={22} />
         </button>
-        <Breadcrumbs />
+        <HeaderSearch />
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         <NotificationBell />
+        <ThemeToggle />
         <div ref={wrapRef} className="relative">
           <button
             ref={triggerRef}
             type="button"
             onClick={toggleMenu}
-            className="flex items-center gap-2 rounded-[var(--radius-panel)] px-1.5 py-1 text-text-secondary transition-colors hover:bg-surface-raised hover:text-text-primary"
+            className="flex items-center gap-3 rounded-[var(--radius-panel)] px-1.5 py-1 text-left transition-colors hover:bg-surface-raised"
             aria-label="Account menu"
             aria-haspopup="menu"
             aria-expanded={isMenuOpen}
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-[11px] font-semibold text-white" aria-hidden="true">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-semibold text-white ring-2 ring-border-strong" aria-hidden="true">
               {user ? initials(user.name) : "?"}
             </span>
-            {user && <span className="hidden max-w-32 truncate text-sm sm:inline">{user.name}</span>}
+            {user && (
+              <span className="hidden min-w-0 leading-tight lg:block">
+                <span className="block max-w-36 truncate text-sm font-medium text-text-primary">{user.name}</span>
+                <span className="block max-w-36 truncate text-xs text-text-muted">{user.email}</span>
+              </span>
+            )}
+            <ChevronDown size={16} className={`hidden text-text-muted transition-transform duration-200 sm:block ${isMenuOpen ? "rotate-180" : ""}`} aria-hidden="true" />
           </button>
 
           {isMenuOpen && (

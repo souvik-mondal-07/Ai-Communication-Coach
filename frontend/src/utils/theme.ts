@@ -8,7 +8,7 @@ import type { ThemePreference } from "@/types/profile";
  */
 
 const THEME_KEY = "theme_preference";
-const DEFAULT_THEME: ThemePreference = "system";
+const DEFAULT_THEME: ThemePreference = "dark";
 
 function isThemePreference(value: unknown): value is ThemePreference {
   return value === "light" || value === "dark" || value === "system";

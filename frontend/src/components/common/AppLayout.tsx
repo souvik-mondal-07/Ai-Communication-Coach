@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "@/components/common/Sidebar";
+import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { Header } from "@/components/common/Header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { documentTitleFor } from "@/components/common/navigation";
 import { useReminderSync } from "@/hooks/useReminderSync";
 import { useAuthStore } from "@/store/authStore";
@@ -59,13 +61,24 @@ export function AppLayout() {
       >
         Skip to content
       </a>
-      <div className="mx-auto flex max-w-[1600px]">
+      <div className="flex">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <Header />
-          <main id="main-content" ref={mainRef} tabIndex={-1} className="flex-1 px-4 py-6 focus:outline-none md:px-8 md:py-8">
+          <main id="main-content" ref={mainRef} tabIndex={-1} className="flex-1 px-4 py-5 focus:outline-none md:px-8 md:py-7">
             <div ref={pageRef}>
-              <Outlet />
+              <Breadcrumbs />
+              <Suspense
+                fallback={
+                  <div role="status" aria-label="Loading page" className="space-y-4">
+                    <Skeleton className="h-10 w-1/3 rounded-[var(--radius-panel)]" />
+                    <Skeleton className="h-48 w-full rounded-[var(--radius-card)]" />
+                    <Skeleton className="h-48 w-full rounded-[var(--radius-card)]" />
+                  </div>
+                }
+              >
+                <Outlet />
+              </Suspense>
             </div>
           </main>
         </div>

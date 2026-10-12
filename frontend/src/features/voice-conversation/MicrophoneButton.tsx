@@ -53,17 +53,21 @@ export function MicrophoneButton({ state, onStart, onStop, disabledReason }: Mic
         aria-pressed={state === "listening"}
         aria-busy={isBusy}
         className={cn(
-          "relative flex h-20 w-20 items-center justify-center rounded-full border-2 transition-colors",
+          "relative flex h-20 w-20 items-center justify-center rounded-full border-2 transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-95",
           "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-signal/50 focus-visible:ring-offset-2 focus-visible:ring-offset-base",
           "disabled:cursor-not-allowed",
           state === "start" && "border-signal bg-signal text-on-signal hover:bg-signal/90",
-          state === "listening" && "border-danger bg-danger text-white hover:bg-danger/90",
+          state === "listening" && "border-danger bg-danger text-white shadow-[0_0_28px_-4px_rgb(255_122_133/0.7)] hover:bg-danger/90",
           isBusy && "border-border-strong bg-surface-raised text-text-secondary",
           state === "disabled" && "border-border bg-surface text-text-muted"
         )}
       >
+        {/* Only rendered while the recorder is actually running. */}
         {state === "listening" && (
-          <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-full border-2 border-danger/60 motion-reduce:hidden" />
+          <>
+            <span aria-hidden="true" className="animate-mic-ring pointer-events-none absolute -inset-0.5 rounded-full border-2 border-danger/70 motion-reduce:hidden" />
+            <span aria-hidden="true" className="animate-mic-ring pointer-events-none absolute -inset-0.5 rounded-full border-2 border-danger/50 [animation-delay:800ms] motion-reduce:hidden" />
+          </>
         )}
         {state === "start" && <Mic size={30} aria-hidden="true" />}
         {state === "listening" && <Square size={26} fill="currentColor" aria-hidden="true" />}

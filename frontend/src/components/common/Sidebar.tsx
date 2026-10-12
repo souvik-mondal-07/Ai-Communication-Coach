@@ -1,30 +1,25 @@
 import { useEffect, useRef } from "react";
-import { ShieldHalf, X } from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
-import { NAV_SECTIONS } from "@/components/common/navigation";
+import { ArrowRight, Star, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { BrandMark } from "@/components/common/BrandMark";
+import { isNavItemActive, NAV_SECTIONS } from "@/components/common/navigation";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/appStore";
-import { useAuthStore } from "@/store/authStore";
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  return ((parts[0]?.[0] ?? "?") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
-}
+import { useNotificationStore } from "@/store/notificationStore";
 
 function SidebarContent({ closeButtonRef }: { closeButtonRef?: React.RefObject<HTMLButtonElement | null> }) {
   const closeMobileSidebar = useAppStore((s) => s.closeMobileSidebar);
-  const user = useAuthStore((s) => s.user);
+  const unread = useNotificationStore((s) => s.unreadCount);
+  const { pathname } = useLocation();
 
   return (
     <div className="flex h-full flex-col bg-surface">
-      <div className="flex items-center justify-between border-b border-border px-5 py-5">
-        <Link to="/dashboard" onClick={closeMobileSidebar} className="flex items-center gap-2.5 rounded-[var(--radius-panel)]">
-          <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-panel)] bg-brand text-white shadow-[0_6px_18px_-6px_rgb(91_141_255/0.7)]">
-            <ShieldHalf size={18} strokeWidth={2.25} aria-hidden="true" />
-          </div>
+      <div className="flex h-[68px] shrink-0 items-center justify-between border-b border-border px-5">
+        <Link to="/dashboard" onClick={closeMobileSidebar} className="flex items-center gap-3 rounded-[var(--radius-panel)]">
+          <BrandMark size={40} />
           <div className="leading-tight">
-            <p className="font-display text-sm font-semibold text-text-primary">Mentor</p>
-            <p className="text-[11px] text-text-muted">Cybersecurity &amp; Career</p>
+            <p className="whitespace-nowrap font-display text-[15.5px] font-semibold text-text-primary">AI CyberSec Mentor</p>
+            <p className="text-[11px] text-text-muted">Learn · Practice · Grow</p>
           </div>
         </Link>
         <button
@@ -38,54 +33,55 @@ function SidebarContent({ closeButtonRef }: { closeButtonRef?: React.RefObject<H
         </button>
       </div>
 
-      <nav aria-label="Main" className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
+      <nav aria-label="Main" className="flex-1 overflow-y-auto px-3.5 py-4">
         {NAV_SECTIONS.map((section, idx) => (
-          <div key={section.heading ?? `section-${idx}`}>
-            {section.heading && <p className="mb-2 px-3 text-[11px] font-medium text-text-muted">{section.heading}</p>}
-            <ul className="space-y-0.5">
-              {section.items.map(({ label, path, icon: Icon }) => (
+          <ul key={section.heading ?? `section-${idx}`} className="space-y-1">
+            {section.items.map((item) => {
+              const { label, path, icon: Icon } = item;
+              const active = isNavItemActive(item, pathname);
+              const count = item.badge === "notifications" ? unread : 0;
+              return (
                 <li key={path}>
-                  <NavLink
+                  <Link
                     to={path}
                     onClick={closeMobileSidebar}
-                    className={({ isActive }) =>
-                      cn(
-                        "relative flex items-center gap-3 rounded-[var(--radius-panel)] px-3 py-2 text-sm transition-colors duration-150",
-                        // Active indicator: a bar that grows in from the center.
-                        "before:absolute before:-left-3 before:top-1/2 before:h-5 before:w-[3px] before:-translate-y-1/2 before:rounded-r-full before:bg-signal before:transition-transform before:duration-200",
-                        isActive
-                          ? "bg-signal/10 font-medium text-signal before:scale-y-100"
-                          : "text-text-secondary before:scale-y-0 hover:bg-surface-raised hover:text-text-primary"
-                      )
-                    }
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "group flex items-center gap-3 rounded-[var(--radius-panel)] px-3.5 py-2 text-sm transition-[background-color,color,box-shadow,transform] duration-200",
+                      active
+                        ? "bg-nav-active font-medium text-white shadow-[0_8px_22px_-10px_rgb(47_107_255/0.9)]"
+                        : "text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+                    )}
                   >
-                    <Icon size={17} strokeWidth={2} aria-hidden="true" />
-                    {label}
-                  </NavLink>
+                    <Icon size={19} strokeWidth={1.75} aria-hidden="true" className={cn("shrink-0 transition-transform duration-200", !active && "group-hover:scale-110")} />
+                    <span className="min-w-0 flex-1 truncate">{label}</span>
+                    {count > 0 && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1.5 text-[11px] font-semibold text-on-danger" aria-label={`${count} unread`}>
+                        {count > 99 ? "99+" : count}
+                      </span>
+                    )}
+                  </Link>
                 </li>
-              ))}
-            </ul>
-          </div>
+              );
+            })}
+          </ul>
         ))}
       </nav>
 
-      {user && (
-        <div className="border-t border-border p-3">
+      <div className="hidden shrink-0 p-3.5 [@media(min-height:860px)]:block">
+        <div className="rounded-[var(--radius-card)] border border-[#2c3aa8]/60 bg-promo p-4 text-white shadow-[0_14px_34px_-18px_rgb(60_70_240/0.8)]">
+          <Star size={20} className="fill-[#ff8fd8] text-[#ff8fd8]" aria-hidden="true" />
+          <p className="mt-2 font-display text-[15px] font-semibold">Level Up Your Skills</p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-white/75">Stay consistent, build your skills, and achieve your goals with your AI mentor.</p>
           <Link
-            to="/profile"
+            to="/progress"
             onClick={closeMobileSidebar}
-            className="flex items-center gap-3 rounded-[var(--radius-panel)] px-2 py-2 transition-colors hover:bg-surface-raised"
+            className="mt-3 inline-flex h-9 items-center gap-2 rounded-[var(--radius-panel)] bg-cta px-4 text-sm font-medium text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98]"
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white" aria-hidden="true">
-              {initials(user.name)}
-            </span>
-            <span className="min-w-0 leading-tight">
-              <span className="block truncate text-sm text-text-primary">{user.name}</span>
-              <span className="block truncate text-[11px] text-text-muted">{user.email}</span>
-            </span>
+            View Progress <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -114,8 +110,8 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden w-60 shrink-0 border-r border-border md:block">
-        <div className="sticky top-0 h-dvh w-60">
+      <aside className="hidden w-[272px] shrink-0 border-r border-border md:block">
+        <div className="sticky top-0 h-dvh w-[272px]">
           <SidebarContent />
         </div>
       </aside>
@@ -133,7 +129,7 @@ export function Sidebar() {
         <aside
           aria-label="Navigation menu"
           className={cn(
-            "relative z-50 h-full w-64 border-r border-border shadow-pop transition-transform duration-250 ease-[var(--ease-out-quint)]",
+            "relative z-50 h-full w-72 border-r border-border shadow-pop transition-transform duration-250 ease-[var(--ease-out-quint)]",
             isOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
