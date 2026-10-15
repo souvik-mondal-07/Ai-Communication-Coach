@@ -39,6 +39,10 @@ PUBLIC_ROUTES = {
     ("GET", f"{API}/health"),
     ("POST", f"{API}/auth/register"),
     ("POST", f"{API}/auth/login"),
+    # Phase 22: public, read-only cybersecurity news (see tests/test_news_api.py for its own guarantees).
+    ("GET", f"{API}/news"),
+    ("GET", f"{API}/news/categories"),
+    ("GET", f"{API}/news/sources"),
 }
 
 

@@ -227,3 +227,10 @@ def get_reminder_service() -> ReminderService:
 
 def get_daily_practice_service() -> DailyPracticeService:
     return daily_practice_service
+
+
+def get_news_service():
+    """Public news service singleton; tests override it to inject a fake fetcher (no real network)."""
+    from app.services.news.news_service import news_service
+
+    return news_service

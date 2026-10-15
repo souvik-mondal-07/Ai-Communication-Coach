@@ -96,6 +96,23 @@ class Settings(BaseSettings):
     # Comma-separated override for the filler-word list. Empty = built-in list.
     filler_words: str = ""
 
+    # --- Public cybersecurity news (Phase 22) ---
+    # The list of sources is fixed in code (app/services/news/sources.py); it is deliberately
+    # not configurable from the environment, so no setting can turn the fetcher into an
+    # arbitrary-URL client. Settings below only tune *how* those sources are used.
+    news_enabled: bool = True
+    # Cached articles older than this are refreshed in the background on the next request.
+    news_refresh_interval_minutes: int = 30
+    # Articles published longer ago than this are not stored; stored ones expire after it.
+    news_retention_days: int = 45
+    news_fetch_timeout_seconds: float = 8.0
+    # Hard ceiling for one feed download (streamed; the rest is discarded).
+    news_max_feed_bytes: int = 3 * 1024 * 1024
+    # Comma-separated source ids to switch off (e.g. "bleepingcomputer,schneier").
+    news_disabled_sources: str = ""
+    # Optional. A free NVD key raises NVD's rate limit; it is sent only in a request header.
+    nvd_api_key: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -112,6 +129,10 @@ class Settings(BaseSettings):
         """Configured filler-word override, or None to use the built-in list."""
         words = [w.strip().lower() for w in self.filler_words.split(",") if w.strip()]
         return words or None
+
+    @property
+    def news_disabled_sources_set(self) -> frozenset[str]:
+        return frozenset(p.strip().lower() for p in self.news_disabled_sources.split(",") if p.strip())
 
     @property
     def cors_origins_list(self) -> list[str]:

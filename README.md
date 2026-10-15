@@ -313,3 +313,10 @@ Frontend unit tests: `npm test` (Vitest).
 - The `uploads/` folder is reserved; no resume/document upload feature exists.
 
 Earlier per-step build notes are kept in [`docs/development-notes.md`](docs/development-notes.md).
+
+
+## Public cybersecurity news (Phase 22)
+
+`/news` is open to everyone (no account). See [docs/PHASE22_PUBLIC_NEWS.md](docs/PHASE22_PUBLIC_NEWS.md) for sources,
+caching, security controls and the optional `NEWS_*` / `NVD_API_KEY` settings. To test every source live:
+`cd backend && python -m app.services.news.check_sources`.

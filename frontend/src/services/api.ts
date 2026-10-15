@@ -2,6 +2,13 @@ import axios from "axios";
 import { API_BASE_URL } from "@/utils/constants";
 import { clearStoredToken, getStoredToken } from "@/services/tokenStorage";
 
+declare module "axios" {
+  interface AxiosRequestConfig {
+    /** Public endpoints (e.g. the news feed) opt out of sending the bearer token. */
+    skipAuth?: boolean;
+  }
+}
+
 /**
  * Single Axios instance for the whole app. All feature services import this
  * instead of creating their own client, so base URL, headers, and
@@ -18,7 +25,7 @@ export const api = axios.create({
 // component ever handles the token directly.
 api.interceptors.request.use((config) => {
   const token = getStoredToken();
-  if (token) {
+  if (token && !config.skipAuth) {
     config.headers.set("Authorization", `Bearer ${token}`);
   }
   return config;

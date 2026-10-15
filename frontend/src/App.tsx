@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "@/components/common/AppLayout";
+import { NewsRouteLayout } from "@/components/common/NewsRouteLayout";
+import { RootRedirect } from "@/components/common/RootRedirect";
 import { FullScreenLoader } from "@/components/common/FullScreenLoader";
 import { ProtectedRoute } from "@/components/common/ProtectedRoute";
 import { PublicOnlyRoute } from "@/components/common/PublicOnlyRoute";
@@ -33,6 +35,7 @@ const Profile = lazy(() => import("@/pages/Profile"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const DailyPractice = lazy(() => import("@/pages/DailyPractice"));
 const Notifications = lazy(() => import("@/pages/Notifications"));
+const News = lazy(() => import("@/pages/News"));
 
 export default function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -57,6 +60,12 @@ export default function App() {
       <Route element={<PublicOnlyRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+      </Route>
+
+      {/* Public news — open to everyone. Deliberately outside ProtectedRoute and PublicOnlyRoute:
+          visitors get the public shell, signed-in users get the app shell, nobody is redirected. */}
+      <Route element={<NewsRouteLayout />}>
+        <Route path="/news" element={<News />} />
       </Route>
 
       {/* Application routes — redirect to /login if not authenticated */}
@@ -91,7 +100,7 @@ export default function App() {
         </Route>
       </Route>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<RootRedirect />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
     </Suspense>

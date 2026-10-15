@@ -1,3 +1,5 @@
+import { Newspaper } from "lucide-react";
+import { Link } from "react-router-dom";
 import { BrandMark } from "@/components/common/BrandMark";
 import type { ReactNode } from "react";
 import { APP_NAME } from "@/utils/constants";
@@ -18,6 +20,11 @@ export function AuthShell({ title, subtitle, children, footer }: { title: string
           {children}
         </div>
         <p className="mt-5 text-center text-sm text-text-secondary">{footer}</p>
+        <p className="mt-3 text-center text-sm">
+          <Link to="/news" className="inline-flex items-center gap-1.5 rounded-sm font-medium text-link hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal">
+            <Newspaper size={14} aria-hidden="true" /> Read cybersecurity news — no account needed
+          </Link>
+        </p>
       </main>
     </div>
   );

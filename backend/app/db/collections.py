@@ -31,3 +31,6 @@ class Collections(StrEnum):
     NOTIFICATIONS = "notifications"
     DAILY_PRACTICE = "daily_practice"
     PRACTICE_STREAKS = "practice_streaks"
+    # Phase 22 (public cybersecurity news cache)
+    NEWS_ARTICLES = "news_articles"
+    NEWS_SOURCE_STATE = "news_source_state"

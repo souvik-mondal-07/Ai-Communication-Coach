@@ -41,6 +41,7 @@ def _ensure_database_ready(db) -> bool:
     """
     from app.services.daily_practice.daily_practice_service import daily_practice_service
     from app.services.daily_practice.streak import streak_service
+    from app.services.news.news_service import news_service
     from app.services.notifications.notification_service import notification_service
 
     def learning() -> None:
@@ -68,6 +69,7 @@ def _ensure_database_ready(db) -> bool:
         ("progress indexes", lambda: progress_service_module.progress_service.ensure_indexes(db)),
         ("voice conversation indexes", lambda: voice_conversation_module.voice_conversation_service.ensure_indexes(db)),
         ("notification / daily practice indexes", daily_and_notifications),
+        ("news cache indexes", lambda: news_service.ensure_indexes(db)),
     )
     all_ok = True
     for label, step in steps:
@@ -111,9 +113,18 @@ async def lifespan(_: FastAPI):
         # email index and the others would never be created until a manual restart.
         logger.warning("Database not ready at startup; will retry every %ss", DB_SETUP_RETRY_SECONDS)
         retry_task = asyncio.create_task(_retry_database_setup())
+    warm_task: asyncio.Task | None = None
+    if settings.news_enabled and mongodb.is_connected():
+        # Warm the news cache once without delaying startup (never blocks, never raises).
+        from app.services.news.news_service import news_service
+
+        warm_task = asyncio.create_task(asyncio.to_thread(news_service.refresh_if_due, mongodb.get_database()))
     try:
         yield
     finally:
+        if warm_task is not None:
+            with contextlib.suppress(Exception):
+                await asyncio.wait_for(asyncio.shield(warm_task), timeout=0.1)
         if retry_task is not None:
             retry_task.cancel()
             with contextlib.suppress(asyncio.CancelledError):

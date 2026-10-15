@@ -13,6 +13,12 @@ describe("navigation", () => {
     expect(breadcrumbsFor("/notifications")).toEqual([{ label: "Notifications" }]);
   });
 
+  it("lists the public news page in the sidebar and titles it", () => {
+    expect(NAV_SECTIONS.flatMap((s) => s.items).some((i) => i.path === "/news" && i.label === "Cybersecurity News")).toBe(true);
+    expect(breadcrumbsFor("/news")).toEqual([{ label: "Cybersecurity News" }]);
+    expect(documentTitleFor("/news")).toBe("Cybersecurity News · AI Cybersecurity Mentor");
+  });
+
   it("builds a parent link plus current page for nested routes", () => {
     expect(breadcrumbsFor("/ctf/abc")).toEqual([{ label: "CTF & Labs", to: "/ctf" }, { label: "Session" }]);
     expect(breadcrumbsFor("/cybersecurity/practice/9")[1]).toEqual({ label: "Practice session" });

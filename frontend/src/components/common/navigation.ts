@@ -1,5 +1,5 @@
 import {
-  BrainCircuit, Bell, ChartColumn, Clock, Flag, House, MessageCircle, MessageSquare, Mic, Settings, Shield, UserRound, type LucideIcon,
+  BrainCircuit, Bell, ChartColumn, Clock, Flag, House, MessageCircle, MessageSquare, Mic, Newspaper, Settings, Shield, UserRound, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -29,6 +29,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: "Dashboard", path: "/dashboard", icon: House },
       { label: "AI Mentor", path: "/mentor", icon: MessageSquare },
       { label: "Cybersecurity Learning", path: "/cybersecurity", icon: Shield, title: "Cybersecurity" },
+      { label: "Cybersecurity News", path: "/news", icon: Newspaper, title: "Cybersecurity News" },
       { label: "CTF & Labs", path: "/ctf", icon: Flag },
       { label: "Communication Practice", path: "/communication", icon: MessageCircle, title: "Communication" },
       { label: "Interview Simulator", path: "/interview", icon: UserRound, title: "Interview" },

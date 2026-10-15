@@ -23,6 +23,7 @@ from app.api.routes import (
     history,
     interview,
     mentor,
+    news,
     notifications,
     personalization,
     pressure,
@@ -56,3 +57,6 @@ api_router.include_router(notifications.router)
 api_router.include_router(daily_practice.router)
 api_router.include_router(personalization.router)
 api_router.include_router(analytics.router)
+
+# Phase 22: public, unauthenticated, read-only cybersecurity news.
+api_router.include_router(news.router)

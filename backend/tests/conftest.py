@@ -36,6 +36,19 @@ def _no_real_mongodb(monkeypatch):
     monkeypatch.setattr(mongodb, "connect", lambda: None)
 
 
+@pytest.fixture(autouse=True)
+def _no_real_news_network(monkeypatch):
+    """Phase 22: the news refresher must never reach a real site from a test."""
+    from app.services.news import fetcher
+    from app.services.news.news_service import news_service
+
+    def _blocked(*_args, **_kwargs):
+        raise fetcher.FetchError("network_disabled_in_tests")
+
+    monkeypatch.setattr(news_service, "_fetch", _blocked)
+    monkeypatch.setattr(fetcher, "resolve_public_addresses", _blocked)
+
+
 @pytest.fixture()
 def fake_db():
     """A fresh in-memory database per test, with the real indexes applied."""
@@ -54,6 +67,9 @@ def fake_db():
     notification_service.ensure_indexes(db)
     daily_practice_service.ensure_indexes(db)
     streak_service.ensure_indexes(db)
+    from app.services.news.news_service import news_service
+
+    news_service.ensure_indexes(db)
     return db
 
 
