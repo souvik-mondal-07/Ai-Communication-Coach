@@ -1,3 +1,4 @@
+import { useAptitudeStore } from "@/store/aptitudeStore";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
 import { useCommunicationStore } from "@/store/communicationStore";
@@ -15,6 +16,7 @@ import { useVoiceConversationStore } from "@/store/voiceConversationStore";
  * otherwise their contents would still be on screen after someone else signs in on the same tab.
  */
 export function resetAllUserState(): void {
+  useAptitudeStore.getState().reset();
   useChatStore.getState().reset();
   useCommunicationStore.getState().reset();
   useCtfStore.getState().reset();

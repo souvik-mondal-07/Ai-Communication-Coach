@@ -345,6 +345,34 @@ def _voice(doc: dict) -> HistoryActivity:
     )
 
 
+def _aptitude(doc: dict) -> HistoryActivity:
+    started, completed = _utc(doc["started_at"]), _utc(doc.get("completed_at"))
+    mode = doc.get("mode")
+    title = {"timed_mock": "Timed Mock Test", "topic": "Topic Practice", "scenario": "Scenario Practice", "mixed": "Mixed Practice", "weak": "Weak Topic Practice"}.get(mode, "Aptitude Practice")
+    result = doc.get("result") or {}
+    total = result.get("total_questions")
+    return HistoryActivity(
+        id=str(doc["_id"]),
+        type="aptitude",
+        type_label="Aptitude",
+        title=title,
+        description=_join(f"{total} questions" if total else None, _humanize(doc.get("difficulty"))),
+        created_at=started,
+        updated_at=_utc(doc.get("updated_at")),
+        completed_at=completed,
+        duration_seconds=result.get("time_taken_seconds") if isinstance(result.get("time_taken_seconds"), int) else _elapsed(started, completed),
+        score=_score(result.get("accuracy")),
+        status=_status(doc.get("status")),
+        metadata={
+            "mode": mode,
+            "difficulty": doc.get("difficulty"),
+            "question_count": total,
+            "correct": result.get("correct"),
+            "topic_count": len(doc.get("topic_ids") or []),
+        },
+    )
+
+
 @dataclass(frozen=True)
 class _Source:
     type: ActivityType
@@ -401,6 +429,13 @@ _SOURCES: tuple[_Source, ...] = (
          "last_activity_at": 1, "turn_count": 1, "user_turn_count": 1, "linked.kind": 1,
          "summary.duration_seconds": 1, "summary.evaluation.overall_score": 1},
         _voice,
+    ),
+    _Source(
+        "aptitude", "Aptitude", Collections.APTITUDE_SESSIONS, "started_at",
+        ("mode", "topic_ids", "difficulty"), ("aptitude", "mock test", "reasoning"),
+        {**_COMMON, "mode": 1, "difficulty": 1, "topic_ids": 1, "started_at": 1, "result.accuracy": 1,
+         "result.total_questions": 1, "result.correct": 1, "result.time_taken_seconds": 1},
+        _aptitude,
     ),
 )
 _SOURCE_BY_TYPE = {s.type: s for s in _SOURCES}
@@ -603,6 +638,24 @@ class HistoryService:
             if full is None:
                 raise ActivityNotFoundError(activity_id)
             return activity, _practice_detail(full)
+
+        if activity_type == "aptitude":
+            # Completed sessions show the full result (answers are only released after submission);
+            # unfinished ones show the answer-free session. Not-found collapses to the shared 404.
+            from fastapi import HTTPException
+
+            from app.services.aptitude import sessions as aptitude_sessions
+
+            try:
+                if activity.status == "completed":
+                    detail = aptitude_sessions.get_result(db, user_id, activity_id)
+                else:
+                    detail = aptitude_sessions.get_session(db, user_id, activity_id)
+            except HTTPException as exc:
+                if exc.status_code == 404:
+                    raise ActivityNotFoundError(activity_id) from exc
+                raise
+            return activity, detail
 
         getters = {
             "interview": self._interviews.get_session,

@@ -1,5 +1,5 @@
 import {
-  BrainCircuit, Bell, ChartColumn, Clock, Flag, House, MessageCircle, MessageSquare, Mic, Newspaper, Settings, Shield, UserRound, type LucideIcon,
+  BrainCircuit, Bell, Calculator, ChartColumn, Clock, Flag, House, MessageCircle, MessageSquare, Mic, Newspaper, Settings, Shield, UserRound, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -34,6 +34,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: "Communication Practice", path: "/communication", icon: MessageCircle, title: "Communication" },
       { label: "Interview Simulator", path: "/interview", icon: UserRound, title: "Interview" },
       { label: "Pressure Training", path: "/pressure-training", icon: BrainCircuit },
+      { label: "Aptitude Practice", path: "/aptitude", icon: Calculator, title: "Aptitude" },
       { label: "Voice Conversation", path: "/voice-conversation", icon: Mic },
       { label: "Progress & Analytics", path: "/progress", icon: ChartColumn, title: "Progress", alsoActiveFor: ["/analytics"] },
       { label: "History", path: "/history", icon: Clock },
@@ -63,6 +64,7 @@ export interface Crumb {
 function detailLabel(root: string, second: string): string {
   if (root === "cybersecurity") return second === "practice" ? "Practice session" : "Topic";
   if (root === "history") return "Details";
+  if (root === "aptitude") return second === "result" ? "Result" : "Session";
   return "Session";
 }
 

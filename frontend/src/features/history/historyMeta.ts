@@ -1,4 +1,4 @@
-import { Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
+import { Calculator, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
 import type {
   DateRangePreset,
   HistoryActivityType,
@@ -85,6 +85,17 @@ export const TYPE_META: Record<HistoryActivityType, TypeMeta> = {
       title: "No voice conversations yet.",
       hint: "Start a voice practice session to build your communication skills.",
       cta: "Start a voice conversation",
+    },
+  },
+  aptitude: {
+    icon: Calculator,
+    tab: "Aptitude",
+    modulePath: "/aptitude",
+    sessionPath: "/aptitude/session",
+    empty: {
+      title: "No aptitude practice yet.",
+      hint: "Take a topic drill or a timed mock test to see your results here.",
+      cta: "Start aptitude practice",
     },
   },
 };

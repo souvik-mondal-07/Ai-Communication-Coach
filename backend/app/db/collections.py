@@ -34,3 +34,7 @@ class Collections(StrEnum):
     # Phase 22 (public cybersecurity news cache)
     NEWS_ARTICLES = "news_articles"
     NEWS_SOURCE_STATE = "news_source_state"
+    # Phase 23 (general aptitude & logical reasoning practice)
+    APTITUDE_QUESTIONS = "aptitude_questions"
+    APTITUDE_SESSIONS = "aptitude_sessions"
+    APTITUDE_ATTEMPTS = "aptitude_attempts"

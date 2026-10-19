@@ -453,6 +453,7 @@ def test_summary_counts_come_from_real_data(client, fake_db, alice, seeded):
     assert counts == {
         "cybersecurity_practice": 1, "ctf": 1, "communication": 1,
         "interview": 3, "pressure_training": 1, "voice_conversation": 1,
+        "aptitude": 0,  # Phase 23 registered a new History source; this user has none
     }
     assert summary["total"] == 8
     assert {t["label"] for t in summary["types"]} >= {"Interview", "Voice Conversation"}

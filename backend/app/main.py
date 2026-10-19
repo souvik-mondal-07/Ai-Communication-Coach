@@ -48,6 +48,12 @@ def _ensure_database_ready(db) -> bool:
         learning_service_module.learning_service.ensure_indexes(db)
         learning_service_module.learning_service.ensure_seeded(db)
 
+    def aptitude() -> None:
+        from app.services.aptitude import bank as aptitude_bank
+
+        aptitude_bank.ensure_indexes(db)
+        aptitude_bank.ensure_seeded(db)
+
     def communication() -> None:
         communication_service_module.communication_service.ensure_indexes(db)
         communication_service_module.communication_service.ensure_seeded(db)
@@ -70,6 +76,7 @@ def _ensure_database_ready(db) -> bool:
         ("voice conversation indexes", lambda: voice_conversation_module.voice_conversation_service.ensure_indexes(db)),
         ("notification / daily practice indexes", daily_and_notifications),
         ("news cache indexes", lambda: news_service.ensure_indexes(db)),
+        ("aptitude question bank", aptitude),
     )
     all_ok = True
     for label, step in steps:

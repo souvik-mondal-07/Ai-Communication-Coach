@@ -36,6 +36,9 @@ const Settings = lazy(() => import("@/pages/Settings"));
 const DailyPractice = lazy(() => import("@/pages/DailyPractice"));
 const Notifications = lazy(() => import("@/pages/Notifications"));
 const News = lazy(() => import("@/pages/News"));
+const Aptitude = lazy(() => import("@/pages/Aptitude"));
+const AptitudeSession = lazy(() => import("@/pages/AptitudeSession"));
+const AptitudeResult = lazy(() => import("@/pages/AptitudeResult"));
 
 export default function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -87,6 +90,10 @@ export default function App() {
           {/* Placeholder-only pages are not linked in the nav; old URLs go to the real feature. */}
           <Route path="/voice-conversation" element={<VoiceConversation />} />
           <Route path="/voice-conversation/:sessionId" element={<VoiceConversationSessionPage />} />
+
+          <Route path="/aptitude" element={<Aptitude />} />
+          <Route path="/aptitude/session/:sessionId" element={<AptitudeSession />} />
+          <Route path="/aptitude/result/:sessionId" element={<AptitudeResult />} />
 
           <Route path="/practice" element={<Practice />} />
           <Route path="/daily-practice" element={<DailyPractice />} />

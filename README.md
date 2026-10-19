@@ -320,3 +320,23 @@ Earlier per-step build notes are kept in [`docs/development-notes.md`](docs/deve
 `/news` is open to everyone (no account). See [docs/PHASE22_PUBLIC_NEWS.md](docs/PHASE22_PUBLIC_NEWS.md) for sources,
 caching, security controls and the optional `NEWS_*` / `NVD_API_KEY` settings. To test every source live:
 `cd backend && python -m app.services.news.check_sources`.
+
+
+## General aptitude & logical reasoning (Phase 23)
+
+Placement-style practice across a 26-topic (A-Z), 88-subtopic syllabus: quantitative aptitude, logical reasoning, data interpretation and data sufficiency. Open **Aptitude Practice** in the sidebar (`/aptitude`).
+
+**Modes:** topic practice, scenario practice, timed mock test (countdown, mark for review, auto-submit), mixed practice, and weak-topic practice (needs real history). Results show score, accuracy, server-measured time, topic breakdown, explanations/formulas and revision suggestions; completed sessions also appear in the History Center.
+
+**Scoring:** 1 mark per correct answer, 0 for incorrect/unanswered, no negative marking. Score, accuracy and total time are computed on the server; the browser only sends the displayed option position.
+
+**How questions are kept correct.** Question content is reviewed code (`backend/app/services/aptitude/content/`), not AI-generated at runtime. Before a question can be served it must pass `validate_question`: four distinct options, a valid answer key, an explanation that states the answer, no "all of the above", a stable id, no duplicates, and an **independent re-derivation of the answer** (a formula evaluated by a safe AST evaluator, or an enumeration such as dice outcomes, `itertools` permutations, Zeller's congruence for calendars, exhaustive Venn-region checks for syllogisms, brute-force solvers for seating puzzles and data sufficiency). A seed that fails is logged and never stored. 20 questions (blood relations, a few Venn/concept items) have no machine check and are flagged `manual_review`.
+
+```bash
+cd backend
+python -m app.services.aptitude.cli validate    # re-verify the whole bank (exit 1 on any failure)
+python -m app.services.aptitude.cli coverage    # regenerate docs/aptitude-coverage.md content
+python -m pytest tests/test_aptitude_bank.py tests/test_aptitude_api.py
+```
+
+The bank is seeded idempotently on startup (`aptitude_questions`, `aptitude_sessions`, `aptitude_attempts` collections and their indexes are created automatically). See [`docs/aptitude-coverage.md`](docs/aptitude-coverage.md) for per-subtopic counts and limits.

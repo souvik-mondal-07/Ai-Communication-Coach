@@ -9,9 +9,11 @@ import { QuestionReview } from "@/features/interview/QuestionReview";
 import { PressureResult } from "@/features/pressure/PressureResult";
 import { ConversationSummary } from "@/features/voice-conversation/ConversationSummary";
 import { ConversationTranscript } from "@/features/voice-conversation/ConversationTranscript";
+import { ResultView } from "@/features/aptitude/ResultView";
 import { PracticeDetail, type PracticeDetailData } from "@/features/history/PracticeDetail";
 import { TYPE_META } from "@/features/history/historyMeta";
 import { formatDateTime } from "@/utils/formatters";
+import type { AptitudeResult, AptitudeSession } from "@/types/aptitude";
 import type { InterviewSessionView } from "@/types/interview";
 import type { PressureSessionView } from "@/types/pressure";
 import type { HistoryActivityType } from "@/types/history";
@@ -213,6 +215,20 @@ function VoiceBody({ session }: { session: VoiceConversationSession }) {
   );
 }
 
+/** Finished sessions show the full result (answers appear only after submission); unfinished ones link back to the runner. */
+function AptitudeBody({ detail }: { detail: AptitudeResult | AptitudeSession }) {
+  if (detail.status === "completed") return <ResultView result={detail as AptitudeResult} />;
+  const s = detail as AptitudeSession;
+  return (
+    <Card>
+      <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
+        <p>This session is still in progress ({s.questions.filter((q) => q.selected_index !== null).length} of {s.question_count} answered). Answers and explanations appear after you submit.</p>
+        <Link to={`/aptitude/session/${s.session_id}`} className="font-medium text-link underline-offset-2 hover:underline">Continue this session</Link>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function ActivityDetailBody({ type, detail }: Props) {
   switch (type) {
     case "interview":
@@ -227,5 +243,7 @@ export function ActivityDetailBody({ type, detail }: Props) {
       return <VoiceBody session={detail as VoiceConversationSession} />;
     case "cybersecurity_practice":
       return <PracticeDetail data={detail as PracticeDetailData} />;
+    case "aptitude":
+      return <AptitudeBody detail={detail as AptitudeResult | AptitudeSession} />;
   }
 }
