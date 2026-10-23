@@ -1,4 +1,4 @@
-import { Calculator, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
+import { Binary, Calculator, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
 import type {
   DateRangePreset,
   HistoryActivityType,
@@ -96,6 +96,17 @@ export const TYPE_META: Record<HistoryActivityType, TypeMeta> = {
       title: "No aptitude practice yet.",
       hint: "Take a topic drill or a timed mock test to see your results here.",
       cta: "Start aptitude practice",
+    },
+  },
+  dsa: {
+    icon: Binary,
+    tab: "DSA",
+    modulePath: "/dsa",
+    sessionPath: "/dsa/session",
+    empty: {
+      title: "No DSA practice yet.",
+      hint: "Try a topic drill, a coding exercise or a timed mock test to see your results here.",
+      cta: "Start DSA practice",
     },
   },
 };

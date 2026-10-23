@@ -22,6 +22,7 @@ ActivityType = Literal[
     "pressure_training",
     "voice_conversation",
     "aptitude",
+    "dsa",
 ]
 
 # Normalized across every collection (voice "created"/"active" -> in_progress).

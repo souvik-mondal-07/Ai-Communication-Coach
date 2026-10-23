@@ -38,3 +38,7 @@ class Collections(StrEnum):
     APTITUDE_QUESTIONS = "aptitude_questions"
     APTITUDE_SESSIONS = "aptitude_sessions"
     APTITUDE_ATTEMPTS = "aptitude_attempts"
+    # Phase 24 (DSA interview practice)
+    DSA_QUESTIONS = "dsa_questions"
+    DSA_SESSIONS = "dsa_sessions"
+    DSA_ATTEMPTS = "dsa_attempts"

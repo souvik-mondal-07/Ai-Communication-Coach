@@ -345,6 +345,38 @@ def _voice(doc: dict) -> HistoryActivity:
     )
 
 
+def _dsa(doc: dict) -> HistoryActivity:
+    started, completed = _utc(doc["started_at"]), _utc(doc.get("completed_at"))
+    mode = doc.get("mode")
+    title = {"timed_mock": "DSA Timed Mock Test", "topic": "DSA Topic Practice", "interview": "DSA Interview Practice", "tracing": "DSA Code Tracing",
+             "complexity": "DSA Complexity Challenge", "coding": "DSA Coding Practice", "weak": "DSA Weak Topic Revision"}.get(mode, "DSA Practice")
+    result = doc.get("result") or {}
+    total = result.get("total_questions")
+    graded = result.get("graded_questions")
+    return HistoryActivity(
+        id=str(doc["_id"]),
+        type="dsa",
+        type_label="DSA",
+        title=title,
+        description=_join(f"{total} questions" if total else None, _humanize(doc.get("difficulty"))),
+        created_at=started,
+        updated_at=_utc(doc.get("updated_at")),
+        completed_at=completed,
+        duration_seconds=result.get("time_taken_seconds") if isinstance(result.get("time_taken_seconds"), int) else _elapsed(started, completed),
+        # Coding exercises are not auto-graded, so a session with no gradable questions has no score.
+        score=_score(result.get("accuracy")) if graded else None,
+        status=_status(doc.get("status")),
+        metadata={
+            "mode": mode,
+            "difficulty": doc.get("difficulty"),
+            "question_count": total,
+            "graded_count": graded,
+            "correct": result.get("correct"),
+            "topic_count": len(doc.get("topic_ids") or []),
+        },
+    )
+
+
 def _aptitude(doc: dict) -> HistoryActivity:
     started, completed = _utc(doc["started_at"]), _utc(doc.get("completed_at"))
     mode = doc.get("mode")
@@ -436,6 +468,13 @@ _SOURCES: tuple[_Source, ...] = (
         {**_COMMON, "mode": 1, "difficulty": 1, "topic_ids": 1, "started_at": 1, "result.accuracy": 1,
          "result.total_questions": 1, "result.correct": 1, "result.time_taken_seconds": 1},
         _aptitude,
+    ),
+    _Source(
+        "dsa", "DSA", Collections.DSA_SESSIONS, "started_at",
+        ("mode", "topic_ids", "difficulty"), ("dsa", "data structures", "algorithms", "mock test"),
+        {**_COMMON, "mode": 1, "difficulty": 1, "topic_ids": 1, "started_at": 1, "result.accuracy": 1, "result.total_questions": 1,
+         "result.graded_questions": 1, "result.correct": 1, "result.time_taken_seconds": 1},
+        _dsa,
     ),
 )
 _SOURCE_BY_TYPE = {s.type: s for s in _SOURCES}
@@ -638,6 +677,19 @@ class HistoryService:
             if full is None:
                 raise ActivityNotFoundError(activity_id)
             return activity, _practice_detail(full)
+
+        if activity_type == "dsa":
+            from fastapi import HTTPException
+
+            from app.services.dsa import sessions as dsa_sessions
+
+            try:
+                detail = dsa_sessions.get_result(db, user_id, activity_id) if activity.status == "completed" else dsa_sessions.get_session(db, user_id, activity_id)
+            except HTTPException as exc:
+                if exc.status_code == 404:
+                    raise ActivityNotFoundError(activity_id) from exc
+                raise
+            return activity, detail
 
         if activity_type == "aptitude":
             # Completed sessions show the full result (answers are only released after submission);

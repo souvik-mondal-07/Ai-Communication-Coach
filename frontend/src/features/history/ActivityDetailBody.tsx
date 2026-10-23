@@ -10,10 +10,12 @@ import { PressureResult } from "@/features/pressure/PressureResult";
 import { ConversationSummary } from "@/features/voice-conversation/ConversationSummary";
 import { ConversationTranscript } from "@/features/voice-conversation/ConversationTranscript";
 import { ResultView } from "@/features/aptitude/ResultView";
+import { ResultView as DsaResultView } from "@/features/dsa/ResultView";
 import { PracticeDetail, type PracticeDetailData } from "@/features/history/PracticeDetail";
 import { TYPE_META } from "@/features/history/historyMeta";
 import { formatDateTime } from "@/utils/formatters";
 import type { AptitudeResult, AptitudeSession } from "@/types/aptitude";
+import type { DsaResult, DsaSession } from "@/types/dsa";
 import type { InterviewSessionView } from "@/types/interview";
 import type { PressureSessionView } from "@/types/pressure";
 import type { HistoryActivityType } from "@/types/history";
@@ -229,6 +231,21 @@ function AptitudeBody({ detail }: { detail: AptitudeResult | AptitudeSession }) 
   );
 }
 
+/** DSA: the full result (answers, traces, reference solutions) only after submission; unfinished sessions link back to the runner. */
+function DsaBody({ detail }: { detail: DsaResult | DsaSession }) {
+  if (detail.status === "completed") return <DsaResultView result={detail as DsaResult} />;
+  const s = detail as DsaSession;
+  const answered = s.questions.filter((q) => q.selected_index !== null || Boolean(q.code_answer?.trim())).length;
+  return (
+    <Card>
+      <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
+        <p>This session is still in progress ({answered} of {s.question_count} answered). Answers and explanations appear after you submit.</p>
+        <Link to={`/dsa/session/${s.session_id}`} className="font-medium text-link underline-offset-2 hover:underline">Continue this session</Link>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function ActivityDetailBody({ type, detail }: Props) {
   switch (type) {
     case "interview":
@@ -243,6 +260,8 @@ export function ActivityDetailBody({ type, detail }: Props) {
       return <VoiceBody session={detail as VoiceConversationSession} />;
     case "cybersecurity_practice":
       return <PracticeDetail data={detail as PracticeDetailData} />;
+    case "dsa":
+      return <DsaBody detail={detail as DsaResult | DsaSession} />;
     case "aptitude":
       return <AptitudeBody detail={detail as AptitudeResult | AptitudeSession} />;
   }

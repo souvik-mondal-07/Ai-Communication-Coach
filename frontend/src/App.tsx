@@ -39,6 +39,9 @@ const News = lazy(() => import("@/pages/News"));
 const Aptitude = lazy(() => import("@/pages/Aptitude"));
 const AptitudeSession = lazy(() => import("@/pages/AptitudeSession"));
 const AptitudeResult = lazy(() => import("@/pages/AptitudeResult"));
+const Dsa = lazy(() => import("@/pages/Dsa"));
+const DsaSession = lazy(() => import("@/pages/DsaSession"));
+const DsaResult = lazy(() => import("@/pages/DsaResult"));
 
 export default function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -94,6 +97,9 @@ export default function App() {
           <Route path="/aptitude" element={<Aptitude />} />
           <Route path="/aptitude/session/:sessionId" element={<AptitudeSession />} />
           <Route path="/aptitude/result/:sessionId" element={<AptitudeResult />} />
+          <Route path="/dsa" element={<Dsa />} />
+          <Route path="/dsa/session/:sessionId" element={<DsaSession />} />
+          <Route path="/dsa/result/:sessionId" element={<DsaResult />} />
 
           <Route path="/practice" element={<Practice />} />
           <Route path="/daily-practice" element={<DailyPractice />} />

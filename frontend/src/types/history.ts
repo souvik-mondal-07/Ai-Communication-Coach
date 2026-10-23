@@ -11,7 +11,8 @@ export type HistoryActivityType =
   | "interview"
   | "pressure_training"
   | "voice_conversation"
-  | "aptitude";
+  | "aptitude"
+  | "dsa";
 
 export type HistoryStatus = "completed" | "in_progress" | "abandoned";
 

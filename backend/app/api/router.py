@@ -15,6 +15,7 @@ from app.api.routes import (
     ai,
     analytics,
     aptitude,
+    dsa,
     auth,
     communication,
     ctf,
@@ -62,3 +63,4 @@ api_router.include_router(analytics.router)
 # Phase 22: public, unauthenticated, read-only cybersecurity news.
 api_router.include_router(news.router)
 api_router.include_router(aptitude.router)
+api_router.include_router(dsa.router)
