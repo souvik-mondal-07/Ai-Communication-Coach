@@ -1,4 +1,4 @@
-import { BookOpen, Flag, MessageCircle, Mic } from "lucide-react";
+import { BookOpen, Database, Flag, MessageCircle, Mic } from "lucide-react";
 import { Link } from "react-router-dom";
 import { reveal } from "@/lib/motion";
 
@@ -7,6 +7,7 @@ const LINKS = [
   { label: "Open CTF Lab", to: "/ctf", icon: Flag },
   { label: "Chat with Mentor", to: "/mentor", icon: MessageCircle },
   { label: "Voice Practice", to: "/voice-conversation", icon: Mic },
+  { label: "DBMS & SQL Lab", to: "/dbms-sql", icon: Database },
 ];
 
 export function QuickAccessCard() {

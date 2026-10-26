@@ -1,4 +1,4 @@
-import { Binary, Calculator, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
+import { Binary, Calculator, Database, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
 import type {
   DateRangePreset,
   HistoryActivityType,
@@ -107,6 +107,17 @@ export const TYPE_META: Record<HistoryActivityType, TypeMeta> = {
       title: "No DSA practice yet.",
       hint: "Try a topic drill, a coding exercise or a timed mock test to see your results here.",
       cta: "Start DSA practice",
+    },
+  },
+  dbms_sql: {
+    icon: Database,
+    tab: "DBMS & SQL",
+    modulePath: "/dbms-sql",
+    sessionPath: "/dbms-sql/session",
+    empty: {
+      title: "No DBMS & SQL practice yet.",
+      hint: "Try a SQL query lab, a normalization exercise or a timed mock interview to see your results here.",
+      cta: "Start DBMS & SQL practice",
     },
   },
 };

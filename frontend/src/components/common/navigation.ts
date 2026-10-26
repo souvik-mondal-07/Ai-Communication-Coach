@@ -1,5 +1,5 @@
 import {
-  BrainCircuit, Bell, Binary, Calculator, ChartColumn, Clock, Flag, House, MessageCircle, MessageSquare, Mic, Newspaper, Settings, Shield, UserRound, type LucideIcon,
+  BrainCircuit, Bell, Binary, Calculator, ChartColumn, Clock, Database, Flag, House, MessageCircle, MessageSquare, Mic, Newspaper, Settings, Shield, UserRound, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -36,6 +36,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: "Pressure Training", path: "/pressure-training", icon: BrainCircuit },
       { label: "Aptitude Practice", path: "/aptitude", icon: Calculator, title: "Aptitude" },
       { label: "DSA Practice", path: "/dsa", icon: Binary, title: "DSA" },
+      { label: "DBMS & SQL Lab", path: "/dbms-sql", icon: Database, title: "DBMS & SQL" },
       { label: "Voice Conversation", path: "/voice-conversation", icon: Mic },
       { label: "Progress & Analytics", path: "/progress", icon: ChartColumn, title: "Progress", alsoActiveFor: ["/analytics"] },
       { label: "History", path: "/history", icon: Clock },
@@ -65,7 +66,7 @@ export interface Crumb {
 function detailLabel(root: string, second: string): string {
   if (root === "cybersecurity") return second === "practice" ? "Practice session" : "Topic";
   if (root === "history") return "Details";
-  if (root === "aptitude" || root === "dsa") return second === "result" ? "Result" : "Session";
+  if (root === "aptitude" || root === "dsa" || root === "dbms-sql") return second === "result" ? "Result" : "Session";
   return "Session";
 }
 

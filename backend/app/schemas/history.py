@@ -23,6 +23,7 @@ ActivityType = Literal[
     "voice_conversation",
     "aptitude",
     "dsa",
+    "dbms_sql",
 ]
 
 # Normalized across every collection (voice "created"/"active" -> in_progress).

@@ -1,4 +1,5 @@
 import { useAptitudeStore } from "@/store/aptitudeStore";
+import { useDbmsSqlStore } from "@/store/dbmsSqlStore";
 import { useDsaStore } from "@/store/dsaStore";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
@@ -18,6 +19,7 @@ import { useVoiceConversationStore } from "@/store/voiceConversationStore";
  */
 export function resetAllUserState(): void {
   useAptitudeStore.getState().reset();
+  useDbmsSqlStore.getState().reset();
   useDsaStore.getState().reset();
   useChatStore.getState().reset();
   useCommunicationStore.getState().reset();

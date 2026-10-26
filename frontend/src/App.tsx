@@ -39,6 +39,9 @@ const News = lazy(() => import("@/pages/News"));
 const Aptitude = lazy(() => import("@/pages/Aptitude"));
 const AptitudeSession = lazy(() => import("@/pages/AptitudeSession"));
 const AptitudeResult = lazy(() => import("@/pages/AptitudeResult"));
+const DbmsSql = lazy(() => import("@/pages/DbmsSql"));
+const DbmsSqlSession = lazy(() => import("@/pages/DbmsSqlSession"));
+const DbmsSqlResult = lazy(() => import("@/pages/DbmsSqlResult"));
 const Dsa = lazy(() => import("@/pages/Dsa"));
 const DsaSession = lazy(() => import("@/pages/DsaSession"));
 const DsaResult = lazy(() => import("@/pages/DsaResult"));
@@ -100,6 +103,10 @@ export default function App() {
           <Route path="/dsa" element={<Dsa />} />
           <Route path="/dsa/session/:sessionId" element={<DsaSession />} />
           <Route path="/dsa/result/:sessionId" element={<DsaResult />} />
+          <Route path="/dbms-sql" element={<DbmsSql />} />
+          <Route path="/dbms-sql/session/:sessionId" element={<DbmsSqlSession />} />
+          <Route path="/dbms-sql/result/:sessionId" element={<DbmsSqlResult />} />
+          <Route path="/practice/dbms-sql" element={<Navigate to="/dbms-sql" replace />} />
 
           <Route path="/practice" element={<Practice />} />
           <Route path="/daily-practice" element={<DailyPractice />} />

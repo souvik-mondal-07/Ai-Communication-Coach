@@ -1,0 +1,102 @@
+"""Unit A: Introduction to databases (27 theory questions; manual review, no executable check applies)."""
+
+from __future__ import annotations
+
+from app.services.dbms_sql.content.build import mcq as M
+
+
+def questions() -> list[dict]:
+    return [
+        # purpose-advantages
+        M("purpose-advantages", "easy", "Which problem of file-based storage does a DBMS mainly address by keeping one shared copy of the data under central control?",
+          "Uncontrolled data redundancy and inconsistency", ["A shortage of physical disk space", "The inability to store text", "Slow keyboard input"],
+          "Separate files per application duplicate data, so copies drift apart. A DBMS centralises storage and enforces integrity so there is one authoritative copy."),
+        M("purpose-advantages", "medium", "Payroll and HR applications each keep their own employee file, so an address change must be made twice. Which DBMS advantage removes this problem?",
+          "Controlled redundancy with a single shared source of truth", ["A faster CPU clock speed", "Longer file names", "Preventing more than one user from connecting"],
+          "Keeping the address in one place and letting both applications read it avoids duplicate updates and inconsistent copies."),
+        M("purpose-advantages", "hard", "Which of the following is NOT an advantage normally claimed for a DBMS over flat files?",
+          "Zero cost and zero performance overhead", ["Declarative integrity constraints", "Concurrent multi-user access with isolation", "Backup and crash recovery support"],
+          "A DBMS adds licence, administration and processing overhead; its advantages are integrity, sharing, security, recovery and data independence, not zero cost."),
+        # components-applications
+        M("components-applications", "easy", "Which DBMS component translates a declarative query into an efficient execution strategy?",
+          "Query optimizer", ["Data dictionary (catalog)", "Recovery log", "Buffer manager"],
+          "The query processor parses a query and the optimizer chooses a plan (access paths, join order). The catalog, log and buffer manager serve other roles."),
+        M("components-applications", "medium", "The data dictionary (system catalog) of a DBMS stores:",
+          "Metadata such as table, column, index and user definitions", ["Only backup copies of the tables", "Only the results of the most recent queries", "Only user passwords in plain text"],
+          "The catalog describes the database itself (its schema objects and privileges) and is consulted by the parser and optimizer."),
+        M("components-applications", "medium", "Which component guarantees that committed changes survive a crash by replaying a write-ahead log?",
+          "Recovery manager", ["Query optimizer", "Authorization manager", "Data definition compiler"],
+          "Crash recovery uses the log: redo for committed work and undo for uncommitted work. That is the recovery manager's job."),
+        # three-tier-architecture
+        M("three-tier-architecture", "easy", "In a three-tier database application, which tier contains the business logic?",
+          "The application (middle) tier", ["The presentation (client) tier only", "The data (database) tier only", "The network cabling layer"],
+          "The presentation tier shows the UI, the data tier stores data, and the application tier in between applies the business rules."),
+        M("three-tier-architecture", "medium", "Why do web applications usually let only the application tier connect to the database server?",
+          "To centralise security, validation and connection pooling instead of exposing the database to every client",
+          ["Because browsers cannot display text", "Because a database accepts only one connection", "Because SQL only runs on the client"],
+          "A middle tier hides the database from end users, enforces authorisation and business rules, and pools a small number of connections."),
+        M("three-tier-architecture", "medium", "What distinguishes a two-tier from a three-tier architecture?",
+          "In two-tier the client talks directly to the database server; in three-tier a middle tier mediates",
+          ["Two-tier has no database", "Three-tier removes the need for a client", "Two-tier can only use MongoDB"],
+          "Two-tier clients embed SQL and connect directly; three-tier adds an application server between client and database."),
+        # data-independence
+        M("data-independence", "medium", "Adding a new column to a table without having to change existing application queries that do not use it illustrates:",
+          "Logical data independence", ["Physical data independence", "Data redundancy", "Referential integrity"],
+          "Logical data independence is the ability to change the conceptual schema without changing external schemas or applications."),
+        M("data-independence", "easy", "Moving a table to a different disk or adding an index without changing the application is an example of:",
+          "Physical data independence", ["Logical data independence", "Entity integrity", "Atomicity"],
+          "Physical data independence means storage structures can change without affecting the logical schema or the programs that use it."),
+        M("data-independence", "hard", "Which kind of data independence is generally harder to achieve?",
+          "Logical data independence", ["Physical data independence", "They are equally trivial", "Neither exists in relational systems"],
+          "Applications depend on the logical structure (tables, columns), so changing it often forces application changes, unlike storage changes."),
+        # schema-instance
+        M("schema-instance", "easy", "The set of data stored in a database at a particular moment is called its:",
+          "Instance (database state)", ["Schema", "Catalog name", "Constraint"],
+          "The schema is the design; the instance is the actual data at one point in time."),
+        M("schema-instance", "easy", "Which of these changes most often in a running database?",
+          "The instance (the rows)", ["The schema", "The name of the data model", "The DBMS vendor"],
+          "Rows are inserted, updated and deleted constantly; the schema changes rarely and deliberately."),
+        M("schema-instance", "medium", "Which item is part of the schema rather than the instance?",
+          "The definition CREATE TABLE employees (emp_id INT, name TEXT)", ["The row (7, 'Gita')", "The number of rows currently in employees", "The salary stored for employee 4"],
+          "A table definition describes structure (schema). Row contents and counts are the current instance."),
+        # data-modelling
+        M("data-modelling", "easy", "Which modelling level describes file organisation, indexes and storage structures?",
+          "The physical data model", ["The conceptual data model", "The external (user view) model only", "A business glossary"],
+          "Conceptual and logical models describe entities and relationships; the physical model covers how data is stored."),
+        M("data-modelling", "medium", "A data model is usually described by which three elements?",
+          "Structures, operations and constraints", ["Hardware, firmware and drivers", "Keys, passwords and tokens", "Servers, clients and routers"],
+          "A data model defines how data is structured, what operations may be applied, and which constraints must hold."),
+        M("data-modelling", "easy", "Which data model organises records as a tree of parent-child relationships?",
+          "Hierarchical model", ["Relational model", "Document model", "Key-value model"],
+          "In the hierarchical model each child record has exactly one parent, forming a tree."),
+        # er-model
+        M("er-model", "easy", "In Chen notation for an ER diagram, a rectangle normally denotes:",
+          "An entity set", ["A relationship set", "An attribute", "A cardinality ratio"],
+          "Entities are drawn as rectangles, relationships as diamonds and attributes as ovals in Chen notation."),
+        M("er-model", "medium", "A many-to-many relationship between STUDENT and COURSE is implemented in the relational model by:",
+          "A separate junction (associative) table holding both foreign keys", ["A single foreign key column in STUDENT only", "A comma-separated list of course ids in one column", "Merging both tables into one with duplicate rows"],
+          "Each side can relate to many rows of the other, so a table such as enrolment(student_id, course_id) records each pairing."),
+        M("er-model", "hard", "A weak entity set is identified by:",
+          "Its partial key together with the primary key of its owner entity", ["Its own primary key alone", "A random surrogate only", "It can never have attributes"],
+          "A weak entity lacks a full key of its own, so identification depends on the owning (identifying) entity."),
+        # relational-model
+        M("relational-model", "easy", "In the relational model a table is formally called a:",
+          "Relation", ["Tuple", "Domain", "Schema graph"],
+          "A relation is a set of tuples over a set of attributes; informally a table, row and column."),
+        M("relational-model", "medium", "A relation has 4 attributes and 6 tuples. Its degree and cardinality are:",
+          "Degree 4, cardinality 6", ["Degree 6, cardinality 4", "Degree 4, cardinality 4", "Degree 6, cardinality 6"],
+          "Degree is the number of attributes; cardinality is the number of tuples."),
+        M("relational-model", "hard", "Which property is NOT true of a relation in the formal relational model?",
+          "Tuples have a fixed, meaningful order", ["Tuples are unique", "Attribute values are atomic", "Attribute names are distinct"],
+          "A relation is a set, so tuple order has no meaning. SQL result order is only defined when ORDER BY is used."),
+        # relational-vs-nonrelational
+        M("relational-vs-nonrelational", "easy", "Which workload most naturally favours a relational database?",
+          "Multi-row financial transfers that need strict ACID guarantees", ["Caching session tokens by key only", "Storing raw image files with no queries", "Holding throwaway log lines"],
+          "Relational systems provide mature transactions, constraints and joins, which fit money movement."),
+        M("relational-vs-nonrelational", "medium", "A common trade-off of many non-relational stores compared with relational ones is:",
+          "A flexible schema and easier horizontal scaling, often with weaker cross-record transactions or joins", ["Guaranteed support for standard SQL", "Mandatory normalization", "Fewer available data models"],
+          "Many NoSQL systems trade some consistency, joins or transaction scope for scale and flexibility; specifics vary by product."),
+        M("relational-vs-nonrelational", "medium", "Relational databases enforce structure at write time with a declared schema, whereas many document stores:",
+          "Allow documents in one collection to have different fields", ["Forbid nested data", "Require every document to have identical fields", "Cannot be queried"],
+          "Document stores are typically schema-flexible (optionally validated), so structure can vary between documents."),
+    ]

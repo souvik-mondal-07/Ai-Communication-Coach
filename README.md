@@ -22,7 +22,6 @@ training composure under pressure, and tracking how you improve over time.
 | **Interview simulator** | HR / technical interviews with per-answer and final evaluation. |
 | **Pressure training** | Five pressure levels (interruptions, follow-ups) for building composure. |
 | **Progress & profile** | Skill breakdown, trends, detected weaknesses, recommendations and an AI-written personal profile that ties every module together. |
-| **DSA interview practice (Phase 24)** | Syllabus-based data structures and algorithms practice covering complexity, arrays and linear structures, sorting/searching, trees, recursion, heaps/hashing and graphs. Includes question-based practice, coding prompts, complexity review, tracing, syllabus browsing, sessions, results and progress analytics. |
 | **Profile & account** | Editable profile (education, career goal, experience, interests, learning goals), mentor/learning/interview preferences, light/dark/system theme, profile-completion meter and secure password change. Stored on the existing user document for later personalization. |
 
 ## Architecture
@@ -56,14 +55,14 @@ used by every module.
 │   │   ├── services/        business logic, one package per feature:
 │   │   │                    ai, auth, mentor, cybersecurity, communication, interview, pressure,
 │   │   │                    voice, voice_conversation, progress, personalization, analytics,
-│   │   │                    history, daily_practice, notifications, aptitude, dsa
+│   │   │                    history, daily_practice, notifications
 │   │   └── utils/           logging, helpers
 │   ├── tests/               pytest suite (mongomock; Gemini / Whisper / TTS mocked)
 │   └── requirements.txt
 ├── frontend/                React + TypeScript + Vite
 │   └── src/
 │       ├── pages/           one component per route
-│       ├── features/        feature UI (mentor, cybersecurity, interview, aptitude, dsa, analytics, ...)
+│       ├── features/        feature UI (mentor, cybersecurity, interview, analytics, ...)
 │       ├── components/      shared UI and route guards
 │       ├── hooks/           recording, audio playback, reminder sync, ...
 │       ├── services/        the only code that talks to the backend (axios)
@@ -173,8 +172,6 @@ All routes are under `/api/v1`, return `{success, message, data}` (errors:
 | `interview` | `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/answer`, `POST /sessions/{id}/complete` |
 | `pressure` | `GET /config`, `POST/GET /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/response`, `POST /sessions/{id}/complete` |
 | `progress` | `GET /overview`, `/skills`, `/trends`, `/weaknesses`, `/recommendations`, `/activity`, `/profile`; `POST /recalculate`, `POST /recommendations/{id}/complete` |
-| `aptitude` (Phase 23) | Aptitude configuration, question/session creation, session answers/completion, results and practice history. |
-| `dsa` (Phase 24) | DSA syllabus/question bank, practice sessions, coding/trace questions, submission and evaluation, results and progress analytics. Consult `/docs` for the exact route definitions in the running version. |
 
 Interactive docs: `http://localhost:8000/docs`.
 
@@ -247,15 +244,10 @@ Transcripts are saved in the session so you can resume or review it.
 ```bash
 # Backend (no MongoDB, Gemini, Whisper or TTS needed – all mocked)
 cd backend
-python -m pytest -q
-
-# Targeted Phase 23/24 tests
-python -m pytest tests/test_aptitude_bank.py tests/test_aptitude_api.py
-python -m pytest tests/test_dsa_algorithms.py tests/test_dsa_api.py tests/test_dsa_bank.py
+pytest -q
 
 # Frontend
 cd frontend
-npm run test -- --run
 npm run build      # type-checks (tsc -b) then builds
 npm run lint
 ```
@@ -296,13 +288,8 @@ Frontend unit tests: `npm test` (Vitest).
   A database outage is a clean `503` with `Retry-After`.
   Framework debug mode is disabled so a `DEBUG=true` config cannot leak them.
 - CORS is an explicit origin allow-list. `.env` files are git-ignored.
-- The main API does not execute shell commands, AI-generated code, or arbitrary
-  user-submitted programs; the CTF mentor cannot scan, exploit or submit flags.
-  The DSA content/seed verification runner is a separate developer CLI for
-  trusted repository-owned seed code, not a sandbox for untrusted submissions.
-  Do not expose it as an API or use it to run code from users. Its resource
-  limits are platform-dependent and the Windows file-write quota wrapper is
-  best-effort, not an OS-level security boundary.
+- No code path executes shell commands or AI output; the CTF mentor cannot
+  scan, exploit or submit flags.
 - Third-party HTTP/SDK loggers are held at WARNING to keep credentials out of logs.
 
 ## Limitations
@@ -335,6 +322,25 @@ caching, security controls and the optional `NEWS_*` / `NVD_API_KEY` settings. T
 `cd backend && python -m app.services.news.check_sources`.
 
 
+## Phase 25: DBMS & SQL Interview Lab
+
+A module at `/dbms-sql` for database theory, SQL query writing, output prediction, debugging, normalization, transactions and
+MongoDB/NoSQL practice: 7 units, 70 topics, 333 validated questions, 12 practice modes and a read-only SQL playground.
+
+* **SQL is run only in an isolated sandbox** (stdlib `sqlite3`, in-memory disposable copy per run, SQLite authorizer, step/time/row
+  limits). It is never run against MongoDB or any application data. No new dependencies or environment variables.
+* **Grading is deterministic and server-side**: SQL by comparing result sets, normalization and transaction answers by algorithms
+  (closure, keys, chase, serializability, deadlock detection). Gemini is not used for answer keys or grading.
+* Honest about confidence: 123 of the 333 questions are machine-verified; the other 210 are definition-style theory with a written
+  justification but **no executable check** and need expert sign-off.
+* Full details, security limits, supported dialect, commands and test results: [`docs/PHASE25_DBMS_SQL.md`](docs/PHASE25_DBMS_SQL.md);
+  syllabus coverage: [`docs/dbms-sql-coverage.md`](docs/dbms-sql-coverage.md).
+
+```bash
+cd backend && python -m tools.verify_dbms_bank && python -m pytest tests/test_dbms_sql_*.py
+cd frontend && npx tsc -b && npm test && npm run build
+```
+
 ## General aptitude & logical reasoning (Phase 23)
 
 Placement-style practice across a 26-topic (A-Z), 88-subtopic syllabus: quantitative aptitude, logical reasoning, data interpretation and data sufficiency. Open **Aptitude Practice** in the sidebar (`/aptitude`).
@@ -353,37 +359,3 @@ python -m pytest tests/test_aptitude_bank.py tests/test_aptitude_api.py
 ```
 
 The bank is seeded idempotently on startup (`aptitude_questions`, `aptitude_sessions`, `aptitude_attempts` collections and their indexes are created automatically). See [`docs/aptitude-coverage.md`](docs/aptitude-coverage.md) for per-subtopic counts and limits.
-
-
-## DSA interview practice engine (Phase 24)
-
-Open **DSA Practice** from the sidebar (`/dsa`). The module is designed for
-placement and technical-interview preparation, with a browsable syllabus,
-practice setup, question navigation, coding prompts, complexity questions,
-algorithm tracing, test/result views and progress analytics.
-
-**Coverage:** complexity analysis; arrays and other linear data structures;
-sorting and searching; recursion; trees; heaps and hashing; and graphs. The
-question bank and syllabus definitions live under `backend/app/services/dsa/`.
-
-**Validation and maintenance:** the DSA bank is backed by MongoDB collections
-and is seeded/verified using developer tools. Run these from `backend` when
-maintaining the content:
-
-```bash
-python -m tools.dsa_seed_runner --help
-python -m tools.verify_dsa_bank --help
-python -m pytest tests/test_dsa_algorithms.py tests/test_dsa_api.py tests/test_dsa_bank.py
-```
-
-The exact CLI options may vary with the checked-out version; use each command's
-help output before running a seed or verification operation. The automated tests
-cover algorithms, bank validation and API behaviour.
-
-**Code-execution safety:** this feature should not be described as a secure,
-production-grade sandbox for arbitrary user code. The seed runner is intended
-only for trusted, repository-owned content verification. Do not pass untrusted
-user submissions to it. Any future online judge that runs user code needs a
-separate hardened isolation service (for example, an ephemeral container or VM
-with strict CPU, memory, filesystem, process and network controls), not the main
-FastAPI process.

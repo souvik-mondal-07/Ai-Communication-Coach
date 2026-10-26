@@ -15,6 +15,7 @@ from app.api.routes import (
     ai,
     analytics,
     aptitude,
+    dbms_sql,
     dsa,
     auth,
     communication,
@@ -64,3 +65,4 @@ api_router.include_router(analytics.router)
 api_router.include_router(news.router)
 api_router.include_router(aptitude.router)
 api_router.include_router(dsa.router)
+api_router.include_router(dbms_sql.router)

@@ -42,3 +42,6 @@ class Collections(StrEnum):
     DSA_QUESTIONS = "dsa_questions"
     DSA_SESSIONS = "dsa_sessions"
     DSA_ATTEMPTS = "dsa_attempts"
+    DBMS_SQL_QUESTIONS = "dbms_sql_questions"
+    DBMS_SQL_SESSIONS = "dbms_sql_sessions"
+    DBMS_SQL_ATTEMPTS = "dbms_sql_attempts"

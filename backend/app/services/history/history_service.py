@@ -345,6 +345,37 @@ def _voice(doc: dict) -> HistoryActivity:
     )
 
 
+def _dbms_sql(doc: dict) -> HistoryActivity:
+    started, completed = _utc(doc["started_at"]), _utc(doc.get("completed_at"))
+    mode = doc.get("mode")
+    title = {"timed_mock": "DBMS & SQL Timed Mock Interview", "topic": "DBMS & SQL Topic Practice", "mixed": "DBMS & SQL Mixed Practice", "interview": "DBMS & SQL Technical Interview",
+             "sql_lab": "SQL Query Lab", "predict_output": "SQL Predict the Output", "debug": "SQL Debug the Query", "complete": "SQL Complete the Query",
+             "design_lab": "Database Design Lab", "transaction_lab": "Transaction Scenario Lab", "nosql_lab": "NoSQL & MongoDB Lab",
+             "weak": "DBMS & SQL Weak Topic Revision"}.get(mode, "DBMS & SQL Practice")
+    result = doc.get("result") or {}
+    total = result.get("total_questions")
+    return HistoryActivity(
+        id=str(doc["_id"]),
+        type="dbms_sql",
+        type_label="DBMS & SQL",
+        title=title,
+        description=_join(f"{total} questions" if total else None, _humanize(doc.get("difficulty"))),
+        created_at=started,
+        updated_at=_utc(doc.get("updated_at")),
+        completed_at=completed,
+        duration_seconds=result.get("time_taken_seconds") if isinstance(result.get("time_taken_seconds"), int) else _elapsed(started, completed),
+        score=_score(result.get("accuracy")) if total else None,
+        status=_status(doc.get("status")),
+        metadata={
+            "mode": mode,
+            "difficulty": doc.get("difficulty"),
+            "question_count": total,
+            "correct": result.get("correct"),
+            "topic_count": len(doc.get("topic_ids") or []),
+        },
+    )
+
+
 def _dsa(doc: dict) -> HistoryActivity:
     started, completed = _utc(doc["started_at"]), _utc(doc.get("completed_at"))
     mode = doc.get("mode")
@@ -475,6 +506,13 @@ _SOURCES: tuple[_Source, ...] = (
         {**_COMMON, "mode": 1, "difficulty": 1, "topic_ids": 1, "started_at": 1, "result.accuracy": 1, "result.total_questions": 1,
          "result.graded_questions": 1, "result.correct": 1, "result.time_taken_seconds": 1},
         _dsa,
+    ),
+    _Source(
+        "dbms_sql", "DBMS & SQL", Collections.DBMS_SQL_SESSIONS, "started_at",
+        ("mode", "topic_ids", "difficulty"), ("dbms", "sql", "database", "mongodb", "normalization", "mock interview"),
+        {**_COMMON, "mode": 1, "difficulty": 1, "topic_ids": 1, "started_at": 1, "result.accuracy": 1, "result.total_questions": 1,
+         "result.correct": 1, "result.time_taken_seconds": 1},
+        _dbms_sql,
     ),
 )
 _SOURCE_BY_TYPE = {s.type: s for s in _SOURCES}
@@ -685,6 +723,19 @@ class HistoryService:
 
             try:
                 detail = dsa_sessions.get_result(db, user_id, activity_id) if activity.status == "completed" else dsa_sessions.get_session(db, user_id, activity_id)
+            except HTTPException as exc:
+                if exc.status_code == 404:
+                    raise ActivityNotFoundError(activity_id) from exc
+                raise
+            return activity, detail
+
+        if activity_type == "dbms_sql":
+            from fastapi import HTTPException
+
+            from app.services.dbms_sql import sessions as dbms_sql_sessions
+
+            try:
+                detail = dbms_sql_sessions.get_result(db, user_id, activity_id) if activity.status == "completed" else dbms_sql_sessions.get_session(db, user_id, activity_id)
             except HTTPException as exc:
                 if exc.status_code == 404:
                     raise ActivityNotFoundError(activity_id) from exc

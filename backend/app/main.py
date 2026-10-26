@@ -60,6 +60,12 @@ def _ensure_database_ready(db) -> bool:
         dsa_bank.ensure_indexes(db)
         dsa_bank.ensure_seeded(db)
 
+    def dbms_sql() -> None:
+        from app.services.dbms_sql import bank as dbms_sql_bank
+
+        dbms_sql_bank.ensure_indexes(db)
+        dbms_sql_bank.ensure_seeded(db)
+
     def communication() -> None:
         communication_service_module.communication_service.ensure_indexes(db)
         communication_service_module.communication_service.ensure_seeded(db)
@@ -84,6 +90,7 @@ def _ensure_database_ready(db) -> bool:
         ("news cache indexes", lambda: news_service.ensure_indexes(db)),
         ("aptitude question bank", aptitude),
         ("DSA question bank", dsa),
+        ("DBMS & SQL question bank", dbms_sql),
     )
     all_ok = True
     for label, step in steps:

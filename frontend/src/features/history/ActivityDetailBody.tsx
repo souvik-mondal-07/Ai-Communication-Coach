@@ -11,10 +11,12 @@ import { ConversationSummary } from "@/features/voice-conversation/ConversationS
 import { ConversationTranscript } from "@/features/voice-conversation/ConversationTranscript";
 import { ResultView } from "@/features/aptitude/ResultView";
 import { ResultView as DsaResultView } from "@/features/dsa/ResultView";
+import { ResultView as DbmsSqlResultView } from "@/features/dbms-sql/ResultView";
 import { PracticeDetail, type PracticeDetailData } from "@/features/history/PracticeDetail";
 import { TYPE_META } from "@/features/history/historyMeta";
 import { formatDateTime } from "@/utils/formatters";
 import type { AptitudeResult, AptitudeSession } from "@/types/aptitude";
+import type { DbmsResult, DbmsSession } from "@/types/dbmsSql";
 import type { DsaResult, DsaSession } from "@/types/dsa";
 import type { InterviewSessionView } from "@/types/interview";
 import type { PressureSessionView } from "@/types/pressure";
@@ -246,6 +248,21 @@ function DsaBody({ detail }: { detail: DsaResult | DsaSession }) {
   );
 }
 
+/** DBMS & SQL: the full scored review only after submission; unfinished sessions link back to the runner. */
+function DbmsSqlBody({ detail }: { detail: DbmsResult | DbmsSession }) {
+  if (detail.status === "completed") return <DbmsSqlResultView result={detail as DbmsResult} />;
+  const s = detail as DbmsSession;
+  const answered = s.questions.filter((q) => q.selected_index !== null || Boolean(q.sql_answer?.trim()) || Boolean(q.text_answer?.trim())).length;
+  return (
+    <Card>
+      <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
+        <p>This session is still in progress ({answered} of {s.question_count} answered). Answers and explanations appear after you submit.</p>
+        <Link to={`/dbms-sql/session/${s.session_id}`} className="font-medium text-link underline-offset-2 hover:underline">Continue this session</Link>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function ActivityDetailBody({ type, detail }: Props) {
   switch (type) {
     case "interview":
@@ -262,6 +279,8 @@ export function ActivityDetailBody({ type, detail }: Props) {
       return <PracticeDetail data={detail as PracticeDetailData} />;
     case "dsa":
       return <DsaBody detail={detail as DsaResult | DsaSession} />;
+    case "dbms_sql":
+      return <DbmsSqlBody detail={detail as DbmsResult | DbmsSession} />;
     case "aptitude":
       return <AptitudeBody detail={detail as AptitudeResult | AptitudeSession} />;
   }
