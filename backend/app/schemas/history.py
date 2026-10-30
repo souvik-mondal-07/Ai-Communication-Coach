@@ -24,6 +24,7 @@ ActivityType = Literal[
     "aptitude",
     "dsa",
     "dbms_sql",
+    "python_practice",
 ]
 
 # Normalized across every collection (voice "created"/"active" -> in_progress).

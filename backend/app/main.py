@@ -66,6 +66,12 @@ def _ensure_database_ready(db) -> bool:
         dbms_sql_bank.ensure_indexes(db)
         dbms_sql_bank.ensure_seeded(db)
 
+    def python_practice() -> None:
+        from app.services.python_practice import bank as python_bank
+
+        python_bank.ensure_indexes(db)
+        python_bank.ensure_seeded(db)
+
     def communication() -> None:
         communication_service_module.communication_service.ensure_indexes(db)
         communication_service_module.communication_service.ensure_seeded(db)
@@ -91,6 +97,7 @@ def _ensure_database_ready(db) -> bool:
         ("aptitude question bank", aptitude),
         ("DSA question bank", dsa),
         ("DBMS & SQL question bank", dbms_sql),
+        ("Python practice question bank", python_practice),
     )
     all_ok = True
     for label, step in steps:

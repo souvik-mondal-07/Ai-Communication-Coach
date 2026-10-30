@@ -476,9 +476,14 @@ class TestNoExecutionSurface:
 
         root = pathlib.Path(__file__).resolve().parents[1] / "app"
         pattern = re.compile(r"\b(subprocess|os\.system|os\.popen|eval|exec)\s*\(|shell\s*=\s*True|(?<![\w.])compile\s*\(")
+        # Phase 26: the ONLY file allowed to compile/exec submitted code. Its main() runs inside the isolated code runner (separate process,
+        # user/mount/PID/network namespaces, no capabilities, seccomp, resource limits; see docs/PHASE26_PYTHON_PRACTICE.md). The API process does
+        # import this module, but only for the pure `to_jsonable` helper (so expected values use the same canonical form); main() is never called there.
+        allowed = {"services/python_practice/sandbox/harness.py"}
         offenders = [
             f"{path.relative_to(root)}:{n}"
             for path in root.rglob("*.py")
+            if path.relative_to(root).as_posix() not in allowed
             for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
             if pattern.search(line) and not line.lstrip().startswith("#")
         ]

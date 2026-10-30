@@ -10,6 +10,7 @@ import { useInterviewStore } from "@/store/interviewStore";
 import { useNotificationStore } from "@/store/notificationStore";
 import { usePracticeStore } from "@/store/practiceStore";
 import { usePressureStore } from "@/store/pressureStore";
+import { usePythonPracticeStore } from "@/store/pythonPracticeStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useVoiceConversationStore } from "@/store/voiceConversationStore";
 
@@ -20,6 +21,7 @@ import { useVoiceConversationStore } from "@/store/voiceConversationStore";
 export function resetAllUserState(): void {
   useAptitudeStore.getState().reset();
   useDbmsSqlStore.getState().reset();
+  usePythonPracticeStore.getState().reset();
   useDsaStore.getState().reset();
   useChatStore.getState().reset();
   useCommunicationStore.getState().reset();

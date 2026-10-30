@@ -13,7 +13,8 @@ export type HistoryActivityType =
   | "voice_conversation"
   | "aptitude"
   | "dsa"
-  | "dbms_sql";
+  | "dbms_sql"
+  | "python_practice";
 
 export type HistoryStatus = "completed" | "in_progress" | "abandoned";
 

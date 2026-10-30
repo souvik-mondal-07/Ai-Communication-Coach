@@ -1,4 +1,4 @@
-import { Binary, Calculator, Database, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
+import { Binary, Calculator, Code2, Database, Flag, Gauge, AudioLines, MessagesSquare, Mic, ShieldHalf, type LucideIcon } from "lucide-react";
 import type {
   DateRangePreset,
   HistoryActivityType,
@@ -118,6 +118,17 @@ export const TYPE_META: Record<HistoryActivityType, TypeMeta> = {
       title: "No DBMS & SQL practice yet.",
       hint: "Try a SQL query lab, a normalization exercise or a timed mock interview to see your results here.",
       cta: "Start DBMS & SQL practice",
+    },
+  },
+  python_practice: {
+    icon: Code2,
+    tab: "Python",
+    modulePath: "/python-practice",
+    sessionPath: "/python-practice/session",
+    empty: {
+      title: "No Python practice yet.",
+      hint: "Try a coding challenge, a predict-the-output drill or a timed mock interview to see your results here.",
+      cta: "Start Python practice",
     },
   },
 };

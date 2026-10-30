@@ -1,4 +1,4 @@
-import { BookOpen, Database, Flag, MessageCircle, Mic } from "lucide-react";
+import { BookOpen, Code2, Database, Flag, MessageCircle, Mic } from "lucide-react";
 import { Link } from "react-router-dom";
 import { reveal } from "@/lib/motion";
 
@@ -8,6 +8,7 @@ const LINKS = [
   { label: "Chat with Mentor", to: "/mentor", icon: MessageCircle },
   { label: "Voice Practice", to: "/voice-conversation", icon: Mic },
   { label: "DBMS & SQL Lab", to: "/dbms-sql", icon: Database },
+  { label: "Python Interview Lab", to: "/python-practice", icon: Code2 },
 ];
 
 export function QuickAccessCard() {

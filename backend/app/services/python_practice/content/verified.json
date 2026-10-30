@@ -1,0 +1,1098 @@
+{
+ "pyq-002bf20755": {
+  "reference_passes": true
+ },
+ "pyq-009aa5b0c2": {
+  "hash": "fa281dc0e1351df3f616fc0513ea8d8325033b6c",
+  "observed": "[2, 4, 6]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-025fecae84": {
+  "reference_passes": true
+ },
+ "pyq-0288db25ee": {
+  "reference_passes": true
+ },
+ "pyq-02d7dbc198": {
+  "reference_passes": true
+ },
+ "pyq-036777f734": {
+  "hash": "0d48272819b00315ce58409875a80b26d1bf4b53",
+  "observed": "True False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0413051746": {
+  "hash": "2109878e720fd2231dc746dab2f05505a3f3fe53",
+  "observed": "False 7\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-042c5abff9": {
+  "hash": "26c0b7b012afc98bd7d9dcb8d98a8a4604380a2d",
+  "observed": "9 8 32\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0472220609": {
+  "hash": "7fe89512a45f67ccc40de9ae6bf69378cf08ad47",
+  "observed": "True False False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0475ccc92e": {
+  "hash": "234ca5b68a99b3cb6c4a7a98281683119557e989",
+  "observed": "3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-06321cad93": {
+  "hash": "81314f9e3a77db58e8bd1abf6087f9d9dff8d3a3",
+  "observed": "4 bad 6 ",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-06ad12c0ad": {
+  "hash": "529d7ae20fa1c4856e68261751875c73adee443b",
+  "observed": "[1, 2, 3, 4] [1, 2, 3, 4, 5]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0782fa4002": {
+  "hash": "8c8f9fd1ec59a762648cd7abe0c426ed00be9130",
+  "observed": "NotFound x\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-07c45576f0": {
+  "reference_passes": true
+ },
+ "pyq-0982f3155e": {
+  "hash": "227d6090c0391a5987afa58e6417caf76bb5b395",
+  "observed": "['a', 'b', 'c'] ['a']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-09ee3c35c7": {
+  "hash": "0320aa42f8f97ad282d58b299d3caaa9d96460ca",
+  "observed": "A\nB\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0a1333d426": {
+  "hash": "77ee8f9866bed6995c721cb5cf43b90497399349",
+  "observed": "['user,note', 'amy,\"said \"\"hi\"\", left\"']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0ba3046eac": {
+  "reference_passes": true
+ },
+ "pyq-0c1bcd2701": {
+  "hash": "e3c156f3935466c65eab62e597fa86a1611c7f9d",
+  "observed": "True False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0c7d3d6500": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "940f746e06bb7e48c410ab02149335d98e71349d"
+ },
+ "pyq-0c84a726d0": {
+  "hash": "657c52e7155dc879f31cc46db1f9c381b0e3837e",
+  "observed": "3 2 1 ",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0c9967c581": {
+  "hash": "0d4cba480da43fc56780c2baf473f306601f1a61",
+  "observed": "[1, 2, 3] []\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-0d580f0744": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "f8debda8cec9205ca9a05309558b184da1d3d013"
+ },
+ "pyq-104d270828": {
+  "hash": "62bf303e1b68191716cf21e8b861f9f4edae158b",
+  "observed": "True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-1704e8915a": {
+  "reference_passes": true
+ },
+ "pyq-1819447a6d": {
+  "hash": "474d8383975d5b8fa22eea5af02f777a3e3cbf4f",
+  "observed": "1 [2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-1955497b63": {
+  "hash": "2b2c47da321154fc8f611cf769a8327491299e10",
+  "observed": "ba7816bf8f01cfea d41d8cd98f00b204e9800998ecf8427e\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-19a22d37af": {
+  "reference_passes": true
+ },
+ "pyq-1c15995d0d": {
+  "hash": "8da6ab4e02b75699e58b6940dbfe469914d49950",
+  "observed": "__main__\nmath\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-1d85d3f59e": {
+  "hash": "69f48b1e6ef6ac37cdb0b2c160f6c5675e074514",
+  "observed": "3 1\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-1de46a5ab4": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "5c4487c1060288033369ccb9889cc1e33614f2d7"
+ },
+ "pyq-1f1b9ee60d": {
+  "hash": "7f893fb8ded3e9b36185626a56f64128f029d21d",
+  "observed": "empty\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-21bdfb942e": {
+  "hash": "d8607790cb2709cf804071b1723a8d153b091260",
+  "observed": "[[], [2], [1], [1, 2]]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-225fa62033": {
+  "hash": "24c58f41569c4099444f952193750c0b37c93245",
+  "observed": "a-b!c\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-24e556015b": {
+  "hash": "15692568647d9b85980b4d8c76ef550cf4345965",
+  "observed": "[2, 4, 6] []\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-25496f13c9": {
+  "hash": "51b80e1de59531657e449bf04c7851383c99237d",
+  "observed": "[2, 2, 2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-2585b6ab94": {
+  "hash": "49f1870dd4f229628d777b1d42ba6b1b7a20f1bc",
+  "observed": "5 0 generator\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-26e66f20b9": {
+  "hash": "a0c6da1b7b148ba63f0cf5c59d1327d6fe419493",
+  "observed": "[('amy', 30), ('bob', 25), ('cat', 25)]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-26f0abcc94": {
+  "hash": "399108d495c2a54cb6c326d654e174dc520f5b20",
+  "observed": "[0, 1, 3] 4\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-29c5e96216": {
+  "hash": "0ee727dc0b70b6bcf3d325e7b5384837a2d86f5c",
+  "observed": "{'a': 2}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-2b334d2b92": {
+  "hash": "df067d8801d7906f769a2735aa99fed9b712d6f9",
+  "observed": "1 [2, 3, 4] 5\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-2b64bcc900": {
+  "hash": "804d1f5d0965c97c8fa94e49f779e7a12121d449",
+  "observed": "['1', '2'] [1, 'a'] 24\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-2c2dba64e8": {
+  "hash": "b4c14e6c7c996051d1b7246ab26f992a034c5a3c",
+  "observed": "2 1\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-2cc90a6424": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "3889159756b0d455270592365c5485c26e853a83"
+ },
+ "pyq-30410c1609": {
+  "hash": "31e3f60a94cc8a90e3b1029017d688dd371c0010",
+  "observed": "D\nB\nC\nA\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-320d4ea661": {
+  "hash": "d665bf9e72c532a0f0f2daa2276e28ad765b053b",
+  "observed": "[1, 2] [1] True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-32194daca4": {
+  "reference_passes": true
+ },
+ "pyq-3361131a18": {
+  "hash": "2ae4495564ec0abd3d4077f435dd3d82b1e3904c",
+  "observed": "abc {'x': <class 'int'>, 'return': <class 'str'>}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-34717dda9d": {
+  "hash": "ea3af2cd2bdf756e1f6d833810d58962ccb08c28",
+  "observed": "2\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3472960e5c": {
+  "hash": "96220355b0721b3b45e010b48b275642973eb6d1",
+  "observed": "[2, 5, 8]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-34c0aa3768": {
+  "hash": "10a338d7f0791699d839a8202e2107f5729ba188",
+  "observed": "A\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-37201116b0": {
+  "hash": "9ff86553107299e6a83d66d6ac95b68e20e44f88",
+  "observed": "raises TypeError",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-37c209a76d": {
+  "hash": "86f799b474f47a07f413121951be000d82c1ed22",
+  "observed": "['bob']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-38164e9aac": {
+  "reference_passes": true
+ },
+ "pyq-39dbe0bc88": {
+  "hash": "026742e76932c6551f8698be624e20f110eb20b8",
+  "observed": "app.tar.gz .gz app.tar logs app.tar.txt\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3a2aa547f7": {
+  "hash": "549d0d33162a2374951ef67d512356d191cff1ba",
+  "observed": "raises UnboundLocalError",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3ae4008764": {
+  "hash": "11d22c3c1bed2a7f6ac61960aaa9a672a12ffba1",
+  "observed": "(3, ['a', 'b'])\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3b3a972b8e": {
+  "hash": "de66ff03f2c22280d17d53c4d48e51f2b417b9cb",
+  "observed": "[] True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3c45052d14": {
+  "hash": "e676670f86e479a7cf1d97ba18d0e66d05bb4f9f",
+  "observed": "<b>x</b>",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3d4555d2aa": {
+  "reference_passes": true
+ },
+ "pyq-3d4633044e": {
+  "hash": "9e62fdc6233e0e4afd97cb334458d4a0d112e2a3",
+  "observed": "ok 5 | bad | ",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-3d83388503": {
+  "reference_passes": true
+ },
+ "pyq-4001baf006": {
+  "hash": "1a1a339ec9928adb222824a4e916d55c66f7cd3a",
+  "observed": "3 [1, 2, 3]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4044306aaa": {
+  "hash": "8b612ec36740ee5a1dc97b1bfb9170a9b9870b11",
+  "observed": "['apple', 'fig', 'pear'] ['fig', 'pear', 'apple'] ['pear', 'fig', 'apple']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-40546091fe": {
+  "hash": "a91cc54d486493b31abf8ac068253f42974cea47",
+  "observed": "A object\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-40778eb593": {
+  "hash": "989ff7cd625537296a4c3f92caa205f9efc7dc90",
+  "observed": "[2, 2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-416856f330": {
+  "hash": "370ab5979357c6aa6d4fc2a7d4383d7ec9710f73",
+  "observed": "None 0 5 {'a': 1, 'c': 5}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4268fb8bb0": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "a9f8a0360c482058fff06d51cc0577ef6da1d86e"
+ },
+ "pyq-4417849e2d": {
+  "hash": "2f4f79ee947d934cccdd40604c3dc0fdb4cf2c24",
+  "observed": "[1, 9] [1]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-473f04a3db": {
+  "hash": "c7eb7e8a2875b2b8dc34c4fec8b0080fbbc43a10",
+  "observed": "a 3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-489d007ff6": {
+  "hash": "1caf749586ebd1c84de1b45d30338d65f1829910",
+  "observed": "test None default\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-48fd9990b1": {
+  "hash": "bf590683c414c02afbd966c07e9be8d151e1b116",
+  "observed": "['a.txt'] yo! 3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4b7f54c96e": {
+  "hash": "3236110319e12301e07000b98675ed19f9d0fb3e",
+  "observed": "832040 31\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4c3c1bc712": {
+  "reference_passes": true
+ },
+ "pyq-4cf5c2a7d2": {
+  "hash": "ce7842d3735dc4f5c6768949f65f4096de73cd30",
+  "observed": "2024-03-01 01/03/2024 4\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4e40666577": {
+  "hash": "cad837bc4a6c9ec71fada89e57b8386caf4fb67f",
+  "observed": "['a', 'b'] 5\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4ee32287d4": {
+  "hash": "8fc70607fd6592645a04bde5a39530064c227f89",
+  "observed": "[1, 2] 32\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-4ef0bea807": {
+  "reference_passes": true
+ },
+ "pyq-510852ceae": {
+  "hash": "2e00d1ef110136701a86aa6ed99241d6b09ac0f8",
+  "observed": "21\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-51783e7170": {
+  "hash": "0541a87c39f87d590fe8e6171b0d295e6328074b",
+  "observed": "8 0 0\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-51e86a2a5c": {
+  "hash": "6833a000e53debe35e3c925bb06283b6c3d85746",
+  "observed": "a1\nb1\na2\nb2\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-54aa1d91d5": {
+  "hash": "9ad7059f8cd3ca6e8fdd1cceb67be5d106aa5496",
+  "observed": "2\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-56767748fa": {
+  "hash": "10c1bcd5705c728887787134bb5e6af87f379e2c",
+  "observed": "WARN auth failed user=alice ip=203.0.113.9\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-581414de2f": {
+  "hash": "417a8b27a2e02a7f1b38afb0bdc59611e6efe413",
+  "observed": "['198.51.100.4', '203.0.113.7']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-584e684d21": {
+  "hash": "bf79ee6a97e883a88bc3fc9ee562f07fafa65912",
+  "observed": "no even\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-58cbbe3c47": {
+  "hash": "ed7293e333f9215f40cb5c5ba6bb73512eef3fd3",
+  "observed": "B ['D', 'B', 'C', 'A', 'object']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-58e9e338a7": {
+  "reference_passes": true
+ },
+ "pyq-593b914382": {
+  "reference_passes": true
+ },
+ "pyq-59933aa457": {
+  "hash": "3ff5bb1784a65c31a0b093382547e87d17ada4b9",
+  "observed": "True [1, 3]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-59d33c3445": {
+  "hash": "6eae0de2fa160f8b54070d514db691b3aee7da23",
+  "observed": "True True 256 False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-5b11c7f030": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "57e66095c6bbea348aab0ba0c5886e33ee4ded32"
+ },
+ "pyq-5b5cb7bdab": {
+  "reference_passes": true
+ },
+ "pyq-5d45239376": {
+  "hash": "dc422be1bd81ee650a78c169e4da88e1a3937418",
+  "observed": "['x</b><b>y'] ['x', 'y']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-5e918f66eb": {
+  "hash": "be22c43bf4fa23a5e4f10e2d96d3b749b3dfa00f",
+  "observed": "['a', 'b', 'c', 'd']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-5f8df2965a": {
+  "hash": "8f883164867ebe43905dc07e3276dfe185e8233c",
+  "observed": "[1, 1]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-617335d0af": {
+  "hash": "3f651c1228cec68df6145fa1df698f1abb908cba",
+  "observed": "raises RecursionError",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-64b1cdc338": {
+  "hash": "e01797a29135058185f746a2da4606671584ffeb",
+  "observed": "11 12\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-65d0b5a02c": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "96a7e36368d6f0757182ce19784960748ef8b2a1"
+ },
+ "pyq-65eccbe3ec": {
+  "hash": "c55ba386ddbf03fa5251e37c109833234e99fd0d",
+  "observed": "1 2 done\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-68b1d170ce": {
+  "hash": "7800d87a71786df603ee1b251e5e2769ac7b2e19",
+  "observed": "https example.com 8443 /a/b ['1', '3']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-6b4d889ad8": {
+  "hash": "78d2fe67355995e9f5a6f2f6ed65c49d590cb597",
+  "observed": "True [1, 2, 3]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-6ef354da88": {
+  "hash": "bddd2eae7b3d53ddb1e437a91a7369d256d6cbe5",
+  "observed": "False Dog True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-712359a166": {
+  "hash": "18550edeb8319fa766afd3e973be7dd606a2980b",
+  "observed": "[2, 3] [1, 2, 3, 4] [1] [1, 4]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7287d7fb92": {
+  "hash": "34fbcf02cc1b066bc6d53e35130c0ede887d5f75",
+  "observed": "['a', 'c'] True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7347bbe7aa": {
+  "hash": "c0ff9c443ae87f90b139e94af0fe1d620e2f5175",
+  "observed": "1 2 P(x=9, y=2) {'x': 1, 'y': 2}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-75d3ffa8cb": {
+  "reference_passes": true
+ },
+ "pyq-75e80465fc": {
+  "hash": "a5883f94257ae9c4ffe3330db62f1d76b0ce063f",
+  "observed": "[42, 7, None, None, None, None, None]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-775b26b33a": {
+  "hash": "e8b85270bb0a510529ee23d06d529059e4aeff69",
+  "observed": "float int int\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-77a6e3e9a0": {
+  "reference_passes": true
+ },
+ "pyq-77a8fbd470": {
+  "hash": "95aea6d633bb7262c07faaec646754facaeda3eb",
+  "observed": "0 2 3 5 6 8 ",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-786c438061": {
+  "hash": "8ae92f951647cc22188811467c6740631fff9e88",
+  "observed": "120\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-79de762cb2": {
+  "hash": "cdfad8c3cea6f9fdc0ceb32a4c43108c7d3bea65",
+  "observed": "finally try\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7a7ad5bc79": {
+  "reference_passes": true
+ },
+ "pyq-7ac58215c2": {
+  "hash": "0810f8a604894ed65bd8d5945ecb4fb932108162",
+  "observed": "['in', 'out']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7bb13610c5": {
+  "hash": "79eb474fa9e0fd15b800e4abeac0e514987edfde",
+  "observed": "raises TypeError",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7c5cc105dc": {
+  "hash": "22f4a60b18b633dd135a2317347e5428ad0e471d",
+  "observed": "7 12 tuple\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7ca279eb89": {
+  "hash": "cf63305579ffdc5045f9a1c103b1c51eb1de2f09",
+  "observed": "    42|42    |000042|42|2a\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7e5fe2f471": {
+  "hash": "43bb6157d2931a7a9de813304f84bb651c6e47aa",
+  "observed": "open\nclose\nhandled\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7f016307bd": {
+  "hash": "049a291a471484073eadb2d3dda38417b411a65a",
+  "observed": "a  5 2\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-7fffd54fe9": {
+  "hash": "cefb37381119b6ff6bd6b1dc4e19a7d1bea31984",
+  "observed": "0 1\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-82266874b2": {
+  "hash": "2aa26bd9d1ce12febcc256c19061be9bdf7f1175",
+  "observed": "[1, 2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-82c8de9086": {
+  "hash": "0a5b07c5e073d9864b62c2d6837e0f1d02481b00",
+  "observed": "[0, 4, 16]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-87d57119aa": {
+  "hash": "26f89830443574b657974dde98ece3246278b5e2",
+  "observed": "11\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-87e52e6316": {
+  "hash": "944dd8d27b788c2a88e4b92feaebddf6a213f408",
+  "observed": "amanaplan False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-8942876473": {
+  "hash": "82c10099f8b3406a9b6220e5dec88aa780e8e242",
+  "observed": "2\n2\n2\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-89c5437ecd": {
+  "reference_passes": true
+ },
+ "pyq-8a262c47ff": {
+  "hash": "831fb29372dd2db7578b285977949736a9e0a9da",
+  "observed": "[] [1]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-8a2f0df7a1": {
+  "hash": "a79f83454a1f083c3cb9c99b2eb2ecba5718fd4e",
+  "observed": "V(5) 5\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-8d39c6f32e": {
+  "hash": "06048deca2afbaceaee2f8716824429ae28b4f7a",
+  "observed": "(1, [2, 3, 4])\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-8e3d295ef8": {
+  "hash": "f0b3520c495140ef070f0a3926c04b8a28bce13e",
+  "observed": "ZeroDivisionError\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-90eb0f1703": {
+  "hash": "3768c7c70722a2a133c4fd9c998b129e541bcb26",
+  "observed": "[3, 2, 1]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-921121a635": {
+  "hash": "5985bc6b8122a733c78e99824c9f7a34a5a53601",
+  "observed": "{'h': 1, 'e': 1, 'l': 2, 'o': 1}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-979564150c": {
+  "hash": "8eb16fbb696ca1baa345405cb95910163333decd",
+  "observed": "[1] True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-98ec711ceb": {
+  "hash": "681bec31ca2af58d266da23ac53cdd903b05a5a1",
+  "observed": "changed global\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-9aa09b8d7c": {
+  "hash": "73beb6bc1571d36c3ac7d035ddf3e4c8046130f2",
+  "observed": "None [1, 2, 3] [1, 2, 3]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-9bb4e16bd9": {
+  "hash": "890e26fe43ce726c8fe4d7400c3a9c4eb23e9d56",
+  "observed": "-4 4 512\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-9bf8323f54": {
+  "hash": "cf2dadc907cb3127fbc6f1f4ceb947aa0e286f9e",
+  "observed": "[5, 6, 7] [1, 2, 3] [('a', 0), ('a', 1), ('b', 0)] [(1, 2), (1, 3), (2, 3)]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-9d9bb20426": {
+  "hash": "7746c40599b12ead363a22d59ab4f2628d208902",
+  "observed": "12-345 345 (7, 13) ['1', '2', '2']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-9f14fafcbd": {
+  "hash": "ca4ffc782ce5ec688275beb4a9e3a9596037ea8e",
+  "observed": "[[1, 0], [1, 0]]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-9f9296626f": {
+  "reference_passes": true
+ },
+ "pyq-a0b51ebe5e": {
+  "reference_passes": true
+ },
+ "pyq-a3160780a6": {
+  "hash": "e14efc3693552aa56fd47c982b4c7c59b6b27385",
+  "observed": "[(1, 'x'), (2, 'y')] [(1, 'x'), (2, 'y')]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-a4d68b567c": {
+  "hash": "7fb214f36fa1393bbee60a065c20d3af5abaad9d",
+  "observed": "True False 3 -3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-a4da77fdd3": {
+  "hash": "285a77a351f0f0a51ac71f8e8bda7c52cdb3de45",
+  "observed": "B.f\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-a55f354320": {
+  "hash": "51ff2e3bc0587d4f37607e87245362683dce7db8",
+  "observed": "None\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-abc231009c": {
+  "hash": "e062678c1cdf76d75f820a1f8f7a2a59e6331555",
+  "observed": "12 None None\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-b19017b1c4": {
+  "hash": "842d2743bbe197893c056f12915bcce07fee3573",
+  "observed": "done\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-b3aa9b8889": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "b9109c6f511748d528137a229c88b16793981297"
+ },
+ "pyq-b3bbfc7fa1": {
+  "hash": "02a1c0cdf43441de306ce26d0fa7964203a2e7f2",
+  "observed": "rejected\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-b4ffb72694": {
+  "hash": "1a1c8294041b9db268e2a406cb8e1efd7a69ac38",
+  "observed": "P(x=1, y=0) True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-b80a6f259b": {
+  "hash": "13109f4a3e8446b4b3b1c72ae024994effe08356",
+  "observed": "3 [('a', 3)] 0\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-b92759d959": {
+  "hash": "40866dce9a786d1e158f649d6b9341c648fda2ee",
+  "observed": "1\ngot hi\n2\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-c0ed206d02": {
+  "reference_passes": true
+ },
+ "pyq-c16e0a68cd": {
+  "hash": "cece590c694cd969bb93cd74f3f021212391adf6",
+  "observed": "{\"a\": [1, 2], \"b\": null, \"c\": true} [1, 2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-c3fa16fb85": {
+  "reference_passes": true
+ },
+ "pyq-c483638c85": {
+  "hash": "8188737bb35f7f0443318470515637b1d69d79cd",
+  "observed": "True False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-c48b0605be": {
+  "hash": "9b670809cace2a071aa13e6a7fb47a9a05ffe210",
+  "observed": "before\n8\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-c52500d21d": {
+  "reference_passes": true
+ },
+ "pyq-c69564c717": {
+  "hash": "588c8f79834819e3641147137abb8d9797fce192",
+  "observed": "i C 8\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-ca50e37ebd": {
+  "hash": "3ce4926d29ab4f5d7fecea2b211a4733684f9b8d",
+  "observed": "1 2 1\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-ca8080902b": {
+  "hash": "63d2277351384d36ba944ac71ed6b412b33a791e",
+  "observed": "0 1 2 ",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-cb8947467d": {
+  "hash": "51d9e8b4ebd6fb060fa1609dcbb010f92504ce18",
+  "observed": "1 3 3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-ccf617d223": {
+  "hash": "2ed960a1574064024a3ffdc89649b06a606ea864",
+  "observed": "{\"a\": [1, 2], \"b\": 1} \"\\u00e9\" \"\u00e9\"\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-ce441bdce1": {
+  "hash": "0ff5c2bfa76a369e02ec93a28e1ef29e6e413c63",
+  "observed": "True False False False False\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-d1234cecd8": {
+  "hash": "5f7a993863c1bd005cc97d60b932c08f0f5a67db",
+  "observed": "True True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-d26ded967a": {
+  "hash": "d086f77b43cb15f8b86f6b7d497ae70fcae96d28",
+  "observed": "{'y': 2}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-d501d53ac0": {
+  "hash": "6bf8049babbb980f3c18183177aff4c2078fefd3",
+  "observed": "['meow', 'woof']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-d5f701053e": {
+  "hash": "2c2d01f9a95d0c9b976c334659752813c41fae80",
+  "observed": "5 6 b'h\\xc3' True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-d7d2fce5c1": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "d15c1da54f717103c681e1c7878bcd310787ad47"
+ },
+ "pyq-d84ce59961": {
+  "reference_passes": true
+ },
+ "pyq-d9a1d35965": {
+  "hash": "7cd944ec6f65d66b7637bd0cbf88853a4fbb7522",
+  "observed": "bob 12\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-d9e737b49c": {
+  "hash": "e401c2ae0dfe52877011fedffb94e5f624a3b8dd",
+  "observed": "raises TypeError",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-da812cd983": {
+  "hash": "27253afb102707aabbe60139b59361f5d28a1a2a",
+  "observed": "16 3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-dbb9f80af1": {
+  "reference_passes": true
+ },
+ "pyq-dc1d7a97e7": {
+  "hash": "ebf76be384791682494834a91c378104db815002",
+  "observed": "A True True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-dc95d5513e": {
+  "reference_passes": true
+ },
+ "pyq-dded33c130": {
+  "hash": "e4ec199c792f4f7c90b33e967c55a1c0cda34ee4",
+  "observed": "3 math\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-e1f998f11d": {
+  "hash": "b383ca5fe3fd3e0c449b6c2f5703d31d278ee372",
+  "observed": "Ada True\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-e4b8dc6522": {
+  "hash": "57b40361c6f0decf50e3c508cd1bca45956a1e3f",
+  "observed": "fedcba ace  def\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-e56ef812af": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "506e2c449e1c6e9a81d7ab365e53938c298a5268"
+ },
+ "pyq-e5e79d0200": {
+  "reference_passes": true
+ },
+ "pyq-e625421f59": {
+  "hash": "ce020014932b5459a48b525592e1d5a0a1d20b56",
+  "observed": "5\nbad\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-e67f373bec": {
+  "hash": "3930e89e8609302f8b484aba808f4f1fa557ce58",
+  "observed": "1 3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-ec10afb6a5": {
+  "hash": "1c1a2b9ac07c7aec308a94310127abd17fba63e7",
+  "observed": "[1, 2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-ecd4f47028": {
+  "hash": "b3421e48c7ca0158675d24ebd5e57091e723b927",
+  "observed": "5\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-eed6df4d35": {
+  "hash": "7156d2563178790e1c3c78efb99e5f808e875e33",
+  "observed": "['A', 'skip:corrupt', 'C']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f14a925450": {
+  "hash": "42ddbbd5c88309bba13c46eda5589fa1582926ab",
+  "observed": "{'a': [1]} [2, 3, 4] [('b', 3)]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f14e0c0b52": {
+  "hash": "eb0157dbe5c7e6c2d205e28daaf6f379af83fd31",
+  "observed": "{'a': 1, 'bb': 2}\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f1d06c1689": {
+  "hash": "14fe59ad455ac64a324558a31cdf9f647ef066a2",
+  "observed": "Ada has 3.14\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f3be4afd83": {
+  "hash": "60f3645e1d12fe31c7fb7a5a72534ee0997e97a2",
+  "observed": "f doc\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f6edeffb7e": {
+  "hash": "1f4f33769fd4de61727cb4ffecdb49577cf9bdc2",
+  "observed": "3 3\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f77944f248": {
+  "hash": "0676fbb60fa7cf95190886ca4ac670abfb964063",
+  "observed": "['a.log', 'c.log']\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f8106d77ae": {
+  "hash": "92302987169b2a1b9fec34909db60390b3464467",
+  "observed": "2 [0]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-f9d884237e": {
+  "hash": "ae0621b4ba041c1054e1d43824770600608907c2",
+  "observed": "[0, 1, 4, 9]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-fa4d5d7965": {
+  "hash": "ea23c367304d42615843cc7951570c9542aad5a2",
+  "observed": "[1, 2]\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-fc12c6c1c1": {
+  "reference_passes": true
+ },
+ "pyq-fc6789f00d": {
+  "hash": "3827fb6fe82059a77b02e487d6619c5455e9be6e",
+  "observed": "[6, 4, 2] 5 4\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-fc9cfd10db": {
+  "hash": "00d650dc1da3dfd1b9c3c1d88efcaae9bd91d716",
+  "observed": "i w ter\n",
+  "ok": true,
+  "python": "3.12.3"
+ },
+ "pyq-fd05f7fb47": {
+  "reference_passes": true,
+  "starter_fails": true,
+  "starter_hash": "5761ea815a667fbafc9b304d800d6a800744bec1"
+ },
+ "pyq-fdf44b4cef": {
+  "hash": "fd14d9fb7448bf5c373dab96cf4dcdd367b79bd1",
+  "observed": "['a', 'b ', 'c'] 1x2x3\n",
+  "ok": true,
+  "python": "3.12.3"
+ }
+}

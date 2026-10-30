@@ -456,6 +456,7 @@ def test_summary_counts_come_from_real_data(client, fake_db, alice, seeded):
         "aptitude": 0,  # Phase 23 registered a new History source; this user has none
         "dsa": 0,  # Phase 24 registered another; this user has none
         "dbms_sql": 0,  # Phase 25 registered another; this user has none
+        "python_practice": 0,  # Phase 26 registered another; this user has none
     }
     assert summary["total"] == 8
     assert {t["label"] for t in summary["types"]} >= {"Interview", "Voice Conversation"}

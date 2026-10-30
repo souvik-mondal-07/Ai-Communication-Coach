@@ -42,6 +42,9 @@ const AptitudeResult = lazy(() => import("@/pages/AptitudeResult"));
 const DbmsSql = lazy(() => import("@/pages/DbmsSql"));
 const DbmsSqlSession = lazy(() => import("@/pages/DbmsSqlSession"));
 const DbmsSqlResult = lazy(() => import("@/pages/DbmsSqlResult"));
+const PythonPractice = lazy(() => import("@/pages/PythonPractice"));
+const PythonPracticeSession = lazy(() => import("@/pages/PythonPracticeSession"));
+const PythonPracticeResult = lazy(() => import("@/pages/PythonPracticeResult"));
 const Dsa = lazy(() => import("@/pages/Dsa"));
 const DsaSession = lazy(() => import("@/pages/DsaSession"));
 const DsaResult = lazy(() => import("@/pages/DsaResult"));
@@ -107,6 +110,10 @@ export default function App() {
           <Route path="/dbms-sql/session/:sessionId" element={<DbmsSqlSession />} />
           <Route path="/dbms-sql/result/:sessionId" element={<DbmsSqlResult />} />
           <Route path="/practice/dbms-sql" element={<Navigate to="/dbms-sql" replace />} />
+          <Route path="/python-practice" element={<PythonPractice />} />
+          <Route path="/python-practice/session/:sessionId" element={<PythonPracticeSession />} />
+          <Route path="/python-practice/result/:sessionId" element={<PythonPracticeResult />} />
+          <Route path="/practice/python" element={<Navigate to="/python-practice" replace />} />
 
           <Route path="/practice" element={<Practice />} />
           <Route path="/daily-practice" element={<DailyPractice />} />

@@ -45,3 +45,7 @@ class Collections(StrEnum):
     DBMS_SQL_QUESTIONS = "dbms_sql_questions"
     DBMS_SQL_SESSIONS = "dbms_sql_sessions"
     DBMS_SQL_ATTEMPTS = "dbms_sql_attempts"
+    # Phase 26 (Python interview practice)
+    PYTHON_QUESTIONS = "python_questions"
+    PYTHON_SESSIONS = "python_sessions"
+    PYTHON_ATTEMPTS = "python_attempts"

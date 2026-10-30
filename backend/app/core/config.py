@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     # enforce their own, larger limit (VOICE_MAX_AUDIO_BYTES).
     max_request_body_bytes: int = 1_048_576
 
+    # --- Python practice (Phase 26) ---
+    # Master switch for running submitted Python in the isolated runner. Even when true, the runner stays disabled unless
+    # its start-up self-test proves isolation on this host (Linux with unprivileged user namespaces).
+    python_runner_enabled: bool = True
+
     # --- CORS ---
     # Comma-separated list of allowed origins, configurable per environment.
     cors_allowed_origins: str = "http://localhost:5173"

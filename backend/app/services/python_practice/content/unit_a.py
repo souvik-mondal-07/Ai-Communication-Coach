@@ -1,0 +1,56 @@
+"""Unit A: Python fundamentals."""
+
+from __future__ import annotations
+
+from app.services.python_practice.content.build import mcq as M, out as O
+
+
+def questions() -> list[dict]:
+    return [
+        M("features-use-cases", "easy", "Which statement best describes Python's typing model?", "Dynamically typed: names are bound to objects, and types belong to the objects", ["Statically typed: every variable must be declared with a type", "Untyped: values have no type at runtime", "Weakly typed: '2' + 2 silently gives 4"],
+          "A name can be rebound to objects of any type; the type lives on the object. Python is also strongly typed: '2' + 2 raises TypeError."),
+        M("features-use-cases", "medium", "A team needs a quick glue script to parse logs, call a REST API and write a report. Which Python trait most directly supports this choice?", "A large standard library and readable, concise syntax", ["Compilation to native machine code by default", "Manual memory management for speed", "Compile-time type checking of every call"],
+          "Python's batteries-included standard library (re, json, csv, pathlib, urllib) and concise syntax make it a common scripting and automation language."),
+        M("interpreter-execution", "easy", "What does CPython do with a .py file before running it?", "Compiles it to bytecode, which the virtual machine then executes", ["Translates it directly to native machine code ahead of time", "Interprets each character without any intermediate form", "Sends it to a separate compiler service"],
+          "CPython compiles source to bytecode (cached as .pyc in __pycache__) and its virtual machine executes that bytecode."),
+        O("interpreter-execution", "medium", "What does this script print when run directly as `python script.py`?", "print(__name__)\nimport math\nprint(math.__name__)", "__main__\nmath", ["script\nmath", "__main__\n__main__", "main\nmath"],
+          "A file run directly has __name__ == '__main__'; an imported module's __name__ is its own module name."),
+        M("variables-naming", "easy", "Which is a valid Python identifier?", "_total2", ["2total", "total-amount", "class"], "Identifiers may contain letters, digits and underscores but cannot start with a digit, contain hyphens or be a keyword such as class."),
+        O("variables-naming", "medium", "What is printed?", "a = b = [1]\na += [2]\nprint(b)", "[1, 2]", ["[1]", "[2]", "[1, [2]]"],
+          "Both names refer to the same list. `+=` on a list extends it in place, so b sees the change.", hints=("Does += create a new list for lists?",)),
+        M("builtin-types", "easy", "Which of these built-in types is an ordered, immutable sequence?", "tuple", ["list", "set", "dict"], "A tuple keeps order and cannot be modified after creation; a list is mutable, and a set is unordered."),
+        O("builtin-types", "medium", "What is printed?", "print(type(3 / 2).__name__, type(3 // 2).__name__, type(3 % 2).__name__)", "float int int", ["int int int", "float float int", "float int float"],
+          "`/` always returns a float in Python 3; `//` and `%` on two ints return ints."),
+        M("mutability", "easy", "Which of these objects is immutable?", "A string", ["A list", "A dictionary", "A set"], "str, int, float, bool, tuple, frozenset and bytes are immutable; list, dict and set can be changed in place."),
+        O("mutability", "medium", "What is printed?", "t = (1, [2, 3])\nt[1].append(4)\nprint(t)", "(1, [2, 3, 4])", ["TypeError", "(1, [2, 3])", "(1, 2, 3, 4)"],
+          "The tuple's references cannot change, but the list it refers to is mutable, so appending to it is allowed."),
+        M("type-conversion", "easy", "What does int('42') + 1 evaluate to?", "43", ["'421'", "TypeError", "42"], "int() converts the string to the integer 42, and 42 + 1 is 43."),
+        O("type-conversion", "medium", "What is printed?", "print(bool('False'), bool(''), int(3.9), int(-3.9))", "True False 3 -3", ["False False 3 -4", "True False 4 -4", "True True 3 -3"],
+          "Any non-empty string is truthy, even 'False'. int() truncates toward zero, so -3.9 becomes -3."),
+        M("operators-precedence", "easy", "What does 2 + 3 * 4 ** 2 evaluate to?", "50", ["80", "400", "98"], "Exponentiation binds tighter than multiplication, which binds tighter than addition: 4**2 = 16, 3*16 = 48, 2+48 = 50."),
+        O("operators-precedence", "hard", "What is printed?", "print(-2 ** 2, (-2) ** 2, 2 ** 3 ** 2)", "-4 4 512", ["4 4 64", "-4 4 64", "4 -4 512"],
+          "`**` binds tighter than unary minus, so -2 ** 2 is -(2**2). `**` is right-associative: 2 ** (3 ** 2) = 512."),
+        O("input-output", "easy", "What is printed?", "print('a', 'b', sep='-', end='!')\nprint('c')", "a-b!c", ["a b\nc", "a-b\nc", "a-b! c"], "sep goes between items and end replaces the newline, so the second print continues on the same line."),
+        M("input-output", "medium", "What type does input() return in Python 3?", "str, always, even if the user types digits", ["int when digits are typed", "float when a decimal point is typed", "A type chosen by the interpreter from the text"],
+          "input() returns a string; convert it explicitly with int() or float()."),
+        M("conditionals", "easy", "Which keyword introduces an additional condition after an if without nesting another if?", "elif", ["else if", "elseif", "otherwise"], "Python spells it elif."),
+        O("conditionals", "medium", "What is printed?", "x = 15\nif x > 10:\n    print('A')\nelif x > 5:\n    print('B')\nelse:\n    print('C')", "A", ["B", "A\nB", "C"], "Only the first true branch runs; elif is skipped once an earlier condition matched."),
+        O("loops", "easy", "What is printed?", "n = 3\nwhile n > 0:\n    print(n, end=' ')\n    n -= 1", "3 2 1", ["1 2 3", "3 2 1 0", "2 1 0"], "The loop runs while n > 0 and decrements each time."),
+        O("loops", "medium", "What is printed?", "for i in range(3):\n    pass\nprint(i)", "2", ["NameError", "3", "None"], "The loop variable remains bound after the loop, holding the last value."),
+        O("break-continue-pass", "easy", "What is printed?", "for i in range(5):\n    if i == 3:\n        break\n    print(i, end=' ')", "0 1 2", ["0 1 2 3", "0 1 2 4", "3"], "break exits the loop immediately when i is 3, before printing it."),
+        O("break-continue-pass", "medium", "What is printed?", "for i in range(3):\n    for j in range(3):\n        if j == 1:\n            continue\n        print(i * 3 + j, end=' ')", "0 2 3 5 6 8", ["0 3 6", "0 1 2 3 4 5 6 7 8", "0 2 5 8"],
+          "continue skips only the j == 1 iteration of the inner loop, so the middle value of each row is missing."),
+        O("break-continue-pass", "medium", "What does this loop's else clause do?", "for n in [1, 3, 5]:\n    if n % 2 == 0:\n        break\nelse:\n    print('no even')", "no even", ["Nothing is printed", "no even printed three times", "SyntaxError"],
+          "A loop's else runs only when the loop finishes without hitting break."),
+        O("comprehensions-basic", "easy", "What is printed?", "print([x * x for x in range(5) if x % 2 == 0])", "[0, 4, 16]", ["[0, 1, 4, 9, 16]", "[4, 16]", "[0, 2, 4]"], "The condition keeps even x (0, 2, 4) and squares them."),
+        O("comprehensions-basic", "medium", "What is printed?", "d = {k: len(k) for k in ['a', 'bb', 'a']}\nprint(d)", "{'a': 1, 'bb': 2}", ["{'a': 1, 'bb': 2, 'a': 1}", "{'a', 'bb'}", "[('a', 1), ('bb', 2)]"], "Dict keys are unique, so the second 'a' just overwrites the first with the same value."),
+        O("range-enumerate-zip", "easy", "What is printed?", "print(list(range(2, 10, 3)))", "[2, 5, 8]", ["[2, 5, 8, 11]", "[2, 3, 4]", "[5, 8]"], "range(start, stop, step) stops before 10: 2, 5, 8."),
+        O("range-enumerate-zip", "medium", "What is printed?", "a = [1, 2, 3]\nb = ['x', 'y']\nprint(list(zip(a, b)), list(enumerate(b, start=1)))", "[(1, 'x'), (2, 'y')] [(1, 'x'), (2, 'y')]", ["[(1, 'x'), (2, 'y'), (3, None)] [(0, 'x'), (1, 'y')]", "[(1, 'x'), (2, 'y')] [(0, 'x'), (1, 'y')]", "ValueError"],
+          "zip stops at the shortest input; enumerate(start=1) numbers from 1."),
+        M("truthiness", "easy", "Which of these values is falsy?", "[] (an empty list)", ["'0' (a string)", "[0]", "' ' (a space)"], "Empty containers, 0, 0.0, None and False are falsy. A non-empty string, even '0' or ' ', is truthy."),
+        O("truthiness", "medium", "What is printed?", "print(0 or 'a', '' and 'b', None or [] or 5, 1 and 2)", "a  5 2", ["0  [] 1", "a b 5 2", "a   2"],
+          "`or` returns the first truthy operand (or the last); `and` returns the first falsy operand (or the last). `'' and 'b'` is the empty string, so two spaces appear."),
+        O("identity-equality", "easy", "What is printed?", "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)", "True False", ["True True", "False False", "False True"], "== compares values; `is` compares object identity, and a and b are two separate list objects."),
+        O("identity-equality", "hard", "On CPython, what does this typically print?", "a = 256\nb = 256\nx = 1000\ny = int('1000')\nprint(a is b, x is y)", "True False", ["True True", "False False", "False True"],
+          "CPython caches small ints (-5 to 256), so equal small ints share one object. A freshly created 1000 is a different object. Never rely on this: use == for values.", py="3.12 (CPython)", hints=("Which integers does CPython pre-create?",)),
+    ]
